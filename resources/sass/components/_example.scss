@@ -1,0 +1,52 @@
+// Styles for Example component
+.home {
+  font-family: 'Nunito', sans-serif;
+  .container {
+    max-width: 900px;
+    margin: 24px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  }
+
+  form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    input[type="text"], input[type="email"] {
+      padding: 8px 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      flex: 1 1 200px;
+    }
+
+    input[type="submit"] {
+      background: #007bff;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    div[style] {
+      margin-bottom: 12px;
+    }
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    th, td {
+      border: 1px solid #eee;
+      padding: 8px 10px;
+      text-align: left;
+    }
+    th {
+      background: #f7f7f7;
+    }
+  }
+
+}
