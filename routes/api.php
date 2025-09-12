@@ -17,6 +17,8 @@ use App\Http\Controllers\ProfileController;
 */
 Route::post('/register', [ProfileController::class, 'store']);
 Route::get('/profiles', [ProfileController::class, 'show']);
+Route::put('/profiles/{profile}', [ProfileController::class, 'update']);
+Route::delete('/profiles/{profile}', [ProfileController::class, 'destroy']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

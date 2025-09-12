@@ -13,6 +13,8 @@ export default function Example() {
     const [profiles, setProfiles] = useState([]);
     const [errors, setErrors] = useState({});
     const [message, setMessage] = useState(null);
+    const [editingId, setEditingId] = useState(null);
+    const [editingData, setEditingData] = useState({});
 
 
     const handleSubmit = async (e) => {
@@ -71,6 +73,49 @@ export default function Example() {
             console.error("Error fetching profiles:", error);
         }
     };
+
+    const startEdit = (profile) => {
+        setEditingId(profile.id);
+        setEditingData({ ...profile });
+        setErrors({});
+        setMessage(null);
+    };
+
+    const cancelEdit = () => {
+        setEditingId(null);
+        setEditingData({});
+    }
+
+    const submitEdit = async (e) => {
+        e.preventDefault();
+        try {
+            const resp = await axios.put(`/api/profiles/${editingId}`, editingData);
+            // update local list
+            setProfiles((list) => list.map(p => p.id === editingId ? resp.data.profile : p));
+            setMessage('Profile updated');
+            cancelEdit();
+        } catch (err) {
+            if (err.response && err.response.status === 422) {
+                setErrors(err.response.data.errors || {});
+            } else {
+                console.error('Update error', err);
+                setMessage('Error updating profile');
+            }
+        }
+    }
+
+    const deleteProfile = async (id) => {
+        if (!confirm('Delete this profile?')) return;
+        try {
+            await axios.delete(`/api/profiles/${id}`);
+            setProfiles((list) => list.filter(p => p.id !== id));
+            if (editingId === id) cancelEdit();
+            setMessage('Profile deleted');
+        } catch (err) {
+            console.error('Delete error', err);
+            setMessage('Error deleting profile');
+        }
+    }
 
 
     useEffect(() => {
@@ -145,8 +190,8 @@ export default function Example() {
                         onChange={(e) => setCountry(e.target.value)}
                     />
                     <input type="submit" />
-                </form>
-                <table>
+                </form>                                <div className="table-wrapper">
+                                    <table>
                     <thead>
                         <tr>
                             <th>Firstname</th>
@@ -162,20 +207,70 @@ export default function Example() {
                     </thead>
                     <tbody>
                         {profiles.map((profile) => (
-                            <tr key={profile.id}>
-                                <td>{profile.fname}</td>
-                                <td>{profile.lname}</td>
-                                <td>{profile.email}</td>
-                                <td>{profile.phone}</td>
-                                <td>{profile.address}</td>
-                                <td>{profile.city}</td>
-                                <td>{profile.state}</td>
-                                <td>{profile.zip}</td>
-                                <td>{profile.country}</td>
+                            <tr key={profile.id} className={editingId === profile.id ? 'editing' : ''}>
+                                <td>
+                                    {editingId === profile.id ? (
+                                        <input value={editingData.fname || ''} onChange={e => setEditingData(d => ({ ...d, fname: e.target.value }))} />
+                                    ) : profile.fname}
+                                </td>
+                                <td>
+                                    {editingId === profile.id ? (
+                                        <input value={editingData.lname || ''} onChange={e => setEditingData(d => ({ ...d, lname: e.target.value }))} />
+                                    ) : profile.lname}
+                                </td>
+                                <td>
+                                    {editingId === profile.id ? (
+                                        <input value={editingData.email || ''} onChange={e => setEditingData(d => ({ ...d, email: e.target.value }))} />
+                                    ) : profile.email}
+                                </td>
+                                <td>
+                                    {editingId === profile.id ? (
+                                        <input value={editingData.phone || ''} onChange={e => setEditingData(d => ({ ...d, phone: e.target.value }))} />
+                                    ) : profile.phone}
+                                </td>
+                                <td>
+                                    {editingId === profile.id ? (
+                                        <input value={editingData.address || ''} onChange={e => setEditingData(d => ({ ...d, address: e.target.value }))} />
+                                    ) : profile.address}
+                                </td>
+                                <td>
+                                    {editingId === profile.id ? (
+                                        <input value={editingData.city || ''} onChange={e => setEditingData(d => ({ ...d, city: e.target.value }))} />
+                                    ) : profile.city}
+                                </td>
+                                <td>
+                                    {editingId === profile.id ? (
+                                        <input value={editingData.state || ''} onChange={e => setEditingData(d => ({ ...d, state: e.target.value }))} />
+                                    ) : profile.state}
+                                </td>
+                                <td>
+                                    {editingId === profile.id ? (
+                                        <input value={editingData.zip || ''} onChange={e => setEditingData(d => ({ ...d, zip: e.target.value }))} />
+                                    ) : profile.zip}
+                                </td>
+                                <td>
+                                    {editingId === profile.id ? (
+                                        <input value={editingData.country || ''} onChange={e => setEditingData(d => ({ ...d, country: e.target.value }))} />
+                                    ) : profile.country}
+                                </td>
+                                <td className="actions">
+                                    {editingId === profile.id ? (
+                                        <>
+                                            <button type="button" className="btn btn-save" onClick={(e) => submitEdit(e)}>Save</button>
+                                            <button type="button" className="btn btn-cancel" onClick={cancelEdit}>Cancel</button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <button type="button" className="btn btn-edit" onClick={() => startEdit(profile)}>Edit</button>
+                                            <button type="button" className="btn btn-delete" onClick={() => deleteProfile(profile.id)}>Delete</button>
+                                        </>
+                                    )}
+                                </td>
                             </tr>
                         ))}
                     </tbody>
-                </table>
+                  </table>
+                </div>
             </div>
         </div>
     );

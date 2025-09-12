@@ -11982,94 +11982,442 @@ textarea.form-control-lg {
 }
 .home {
   font-family: "Nunito", sans-serif;
+  color: #263238;
 }
 .home .container {
-  max-width: 900px;
-  margin: 24px auto;
-  padding: 20px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  max-width: 980px;
+  margin: 28px auto;
+  padding: 22px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(6, 24, 44, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.03);
 }
 .home form {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
+  align-items: center;
 }
 .home form input[type=text], .home form input[type=email] {
-  padding: 8px 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  flex: 1 1 200px;
+  padding: 10px 12px;
+  border: 1px solid #e0e6eb;
+  border-radius: 6px;
+  background: #fbfdff;
+  flex: 1 1 210px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.home form input[type=text]:focus, .home form input[type=email]:focus {
+  outline: none;
+  border-color: #4f9cf9;
+  box-shadow: 0 4px 12px rgba(79, 156, 249, 0.12);
 }
 .home form input[type=submit] {
-  background: #007bff;
+  background: #1976d2;
   color: white;
-  padding: 8px 16px;
+  padding: 10px 18px;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
+  box-shadow: 0 6px 14px rgba(25, 118, 210, 0.12);
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
 }
-.home form div[style] {
-  margin-bottom: 12px;
+.home form input[type=submit]:active {
+  transform: translateY(1px);
+}
+.home form .form-meta {
+  width: 100%;
+  margin-top: 6px;
+  color: #546e7a;
+  font-size: 13px;
+}
+.home .message {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+.home .message.success {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid rgba(46, 125, 50, 0.12);
+}
+.home .message.error {
+  background: #ffebee;
+  color: #c62828;
+  border: 1px solid rgba(198, 40, 40, 0.08);
+}
+.home .table-wrapper {
+  margin-top: 20px;
+  border-radius: 8px;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  box-shadow: 0 8px 20px rgba(6, 24, 44, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  background: #fff;
 }
 .home table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  font-size: 14px;
+  /* keep columns stable when inputs appear */
+  table-layout: fixed;
+  word-break: break-word;
 }
 .home table th, .home table td {
-  border: 1px solid #eee;
-  padding: 8px 10px;
+  border-bottom: 1px solid #f1f5f8;
+  padding: 14px 12px;
   text-align: left;
+  vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .home table th {
-  background: #f7f7f7;
+  background: #fafbfd;
+  color: #37474f;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.2px;
+}
+.home table tbody tr {
+  transition: background 0.12s ease, transform 0.06s ease;
+}
+.home table {
+  /* highlight row while editing */
+}
+.home table tbody tr.editing {
+  background: linear-gradient(90deg, rgba(79, 156, 249, 0.03), rgba(79, 156, 249, 0.01));
+}
+.home table {
+  /* inputs inside table while editing — constrained so they don't force table width */
+}
+.home table tbody input[type=text], .home table tbody input[type=email] {
+  padding: 8px 10px;
+  border: 1px solid #d7e6ff;
+  border-radius: 6px;
+  background: #ffffff;
+  width: 100%;
+  max-width: 160px;
+  box-sizing: border-box;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.home table {
+  /* actions column — keep consistent width so buttons don't jump */
+}
+.home table td.actions {
+  width: 190px;
+  text-align: center;
+  white-space: nowrap;
+}
+.home .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: transform 0.08s ease, box-shadow 0.12s ease, opacity 0.08s ease;
+}
+.home .btn:active {
+  transform: translateY(1px);
+}
+.home .btn-edit {
+  background: #fff8e1;
+  color: #8a6d00;
+  border: 1px solid rgba(138, 109, 0, 0.12);
+  box-shadow: 0 6px 14px rgba(255, 193, 7, 0.06);
+  padding: 6px 10px;
+  font-weight: 600;
+}
+.home .btn-delete {
+  background: #ffebee;
+  color: #b71c1c;
+  border: 1px solid rgba(183, 28, 28, 0.12);
+  padding: 6px 10px;
+  font-weight: 700;
+  box-shadow: 0 6px 14px rgba(183, 28, 28, 0.06);
+}
+.home .btn-save {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid rgba(46, 125, 50, 0.08);
+  padding: 6px 10px;
+  font-weight: 700;
+}
+.home .btn-cancel {
+  background: #f5f7fa;
+  color: #37474f;
+  border: 1px solid rgba(55, 71, 79, 0.06);
+  padding: 6px 10px;
+  font-weight: 600;
+}
+.home {
+  /* hover/focus accessibility */
+}
+.home .btn:hover, .home .btn:focus {
+  box-shadow: 0 8px 20px rgba(6, 24, 44, 0.06);
+  opacity: 0.98;
+  outline: none;
+}
+.home {
+  /* container + form tweaks for accessibility */
+}
+.home .container {
+  padding: 26px;
+}
+.home form input[type=text], .home form input[type=email] {
+  min-height: 44px;
+  font-size: 15px;
+}
+.home {
+  /* small helper: visually distinct delete button for screen readers */
+}
+.home .sr-only {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+}
+.home .btn .icon {
+  font-size: 14px;
+  opacity: 0.9;
+}
+@media (max-width: 720px) {
+  .home .container {
+    padding: 14px;
+  }
+  .home table {
+    font-size: 13px;
+  }
+  .home td.actions {
+    width: auto;
+    display: flex;
+    gap: 6px;
+  }
 }
 
 .home {
   font-family: "Nunito", sans-serif;
+  color: #263238;
 }
 .home .container {
-  max-width: 900px;
-  margin: 24px auto;
-  padding: 20px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  max-width: 980px;
+  margin: 28px auto;
+  padding: 22px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(6, 24, 44, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.03);
 }
 .home form {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
+  align-items: center;
 }
 .home form input[type=text], .home form input[type=email] {
-  padding: 8px 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  flex: 1 1 200px;
+  padding: 10px 12px;
+  border: 1px solid #e0e6eb;
+  border-radius: 6px;
+  background: #fbfdff;
+  flex: 1 1 210px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.home form input[type=text]:focus, .home form input[type=email]:focus {
+  outline: none;
+  border-color: #4f9cf9;
+  box-shadow: 0 4px 12px rgba(79, 156, 249, 0.12);
 }
 .home form input[type=submit] {
-  background: #007bff;
+  background: #1976d2;
   color: white;
-  padding: 8px 16px;
+  padding: 10px 18px;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
+  box-shadow: 0 6px 14px rgba(25, 118, 210, 0.12);
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
 }
-.home form div[style] {
-  margin-bottom: 12px;
+.home form input[type=submit]:active {
+  transform: translateY(1px);
+}
+.home form .form-meta {
+  width: 100%;
+  margin-top: 6px;
+  color: #546e7a;
+  font-size: 13px;
+}
+.home .message {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+.home .message.success {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid rgba(46, 125, 50, 0.12);
+}
+.home .message.error {
+  background: #ffebee;
+  color: #c62828;
+  border: 1px solid rgba(198, 40, 40, 0.08);
+}
+.home .table-wrapper {
+  margin-top: 20px;
+  border-radius: 8px;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  box-shadow: 0 8px 20px rgba(6, 24, 44, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  background: #fff;
 }
 .home table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  font-size: 14px;
+  /* keep columns stable when inputs appear */
+  table-layout: fixed;
+  word-break: break-word;
 }
 .home table th, .home table td {
-  border: 1px solid #eee;
-  padding: 8px 10px;
+  border-bottom: 1px solid #f1f5f8;
+  padding: 14px 12px;
   text-align: left;
+  vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .home table th {
-  background: #f7f7f7;
+  background: #fafbfd;
+  color: #37474f;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.2px;
+}
+.home table tbody tr {
+  transition: background 0.12s ease, transform 0.06s ease;
+}
+.home table {
+  /* highlight row while editing */
+}
+.home table tbody tr.editing {
+  background: linear-gradient(90deg, rgba(79, 156, 249, 0.03), rgba(79, 156, 249, 0.01));
+}
+.home table {
+  /* inputs inside table while editing — constrained so they don't force table width */
+}
+.home table tbody input[type=text], .home table tbody input[type=email] {
+  padding: 8px 10px;
+  border: 1px solid #d7e6ff;
+  border-radius: 6px;
+  background: #ffffff;
+  width: 100%;
+  max-width: 160px;
+  box-sizing: border-box;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.home table {
+  /* actions column — keep consistent width so buttons don't jump */
+}
+.home table td.actions {
+  width: 190px;
+  text-align: center;
+  white-space: nowrap;
+}
+.home .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: transform 0.08s ease, box-shadow 0.12s ease, opacity 0.08s ease;
+}
+.home .btn:active {
+  transform: translateY(1px);
+}
+.home .btn-edit {
+  background: #fff8e1;
+  color: #8a6d00;
+  border: 1px solid rgba(138, 109, 0, 0.12);
+  box-shadow: 0 6px 14px rgba(255, 193, 7, 0.06);
+  padding: 6px 10px;
+  font-weight: 600;
+}
+.home .btn-delete {
+  background: #ffebee;
+  color: #b71c1c;
+  border: 1px solid rgba(183, 28, 28, 0.12);
+  padding: 6px 10px;
+  font-weight: 700;
+  box-shadow: 0 6px 14px rgba(183, 28, 28, 0.06);
+}
+.home .btn-save {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid rgba(46, 125, 50, 0.08);
+  padding: 6px 10px;
+  font-weight: 700;
+}
+.home .btn-cancel {
+  background: #f5f7fa;
+  color: #37474f;
+  border: 1px solid rgba(55, 71, 79, 0.06);
+  padding: 6px 10px;
+  font-weight: 600;
+}
+.home {
+  /* hover/focus accessibility */
+}
+.home .btn:hover, .home .btn:focus {
+  box-shadow: 0 8px 20px rgba(6, 24, 44, 0.06);
+  opacity: 0.98;
+  outline: none;
+}
+.home {
+  /* container + form tweaks for accessibility */
+}
+.home .container {
+  padding: 26px;
+}
+.home form input[type=text], .home form input[type=email] {
+  min-height: 44px;
+  font-size: 15px;
+}
+.home {
+  /* small helper: visually distinct delete button for screen readers */
+}
+.home .sr-only {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+}
+.home .btn .icon {
+  font-size: 14px;
+  opacity: 0.9;
+}
+@media (max-width: 720px) {
+  .home .container {
+    padding: 14px;
+  }
+  .home table {
+    font-size: 13px;
+  }
+  .home td.actions {
+    width: auto;
+    display: flex;
+    gap: 6px;
+  }
 }

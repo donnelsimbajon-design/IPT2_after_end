@@ -86,7 +86,24 @@ class ProfileController extends Controller
      */
     public function update(Request $request, Profile $profile)
     {
-        //
+        $validated = $request->validate([
+            'fname' => 'required|string|max:255',
+            'lname' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:profiles_tables,email,' . $profile->id,
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:255',
+            'city' => 'nullable|string|max:100',
+            'state' => 'nullable|string|max:100',
+            'zip' => 'nullable|string|max:20',
+            'country' => 'nullable|string|max:100',
+        ]);
+
+        $profile->update($validated);
+
+        return response()->json([
+            'message' => 'Profile updated successfully',
+            'profile' => $profile
+        ]);
     }
 
     /**
@@ -97,6 +114,10 @@ class ProfileController extends Controller
      */
     public function destroy(Profile $profile)
     {
-        //
+        $profile->delete();
+
+        return response()->json([
+            'message' => 'Profile deleted'
+        ], 200);
     }
 }
