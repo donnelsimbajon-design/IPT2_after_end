@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from 'axios'; // ensure axios is imported
 
 export default function Example() {
     const [fname, setFirstname] = useState("");
@@ -15,14 +16,22 @@ export default function Example() {
     const [message, setMessage] = useState(null);
     const [editingId, setEditingId] = useState(null);
     const [editingData, setEditingData] = useState({});
+    const [originalEditingData, setOriginalEditingData] = useState({});
 
+    // clear notifications automatically
+    useEffect(() => {
+        if (!message) return;
+        const t = setTimeout(() => setMessage(null), 3500);
+        return () => clearTimeout(t);
+    }, [message]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             setErrors({});
             setMessage(null);
-            const response = await axios.post("/api/register", {
+            // <-- changed endpoint to /api/profiles
+            const response = await axios.post("/api/profiles", {
                 fname,
                 lname,
                 email,
@@ -54,12 +63,12 @@ export default function Example() {
         } catch (error) {
             // handle validation errors from Laravel (422) and other errors
             if (error.response && error.response.status === 422) {
-                // Laravel returns { errors: { field: [messages] } }
                 const respErrors = error.response.data.errors || error.response.data;
                 setErrors(respErrors);
             } else {
                 console.error('Error creating profile:', error);
-                setMessage('Error creating profile.');
+                const serverMsg = error.response && error.response.data && (error.response.data.message || error.response.data.error);
+                setMessage(serverMsg || 'Error creating profile.');
             }
         }
     };
@@ -77,6 +86,7 @@ export default function Example() {
     const startEdit = (profile) => {
         setEditingId(profile.id);
         setEditingData({ ...profile });
+        setOriginalEditingData({ ...profile });
         setErrors({});
         setMessage(null);
     };
@@ -84,12 +94,21 @@ export default function Example() {
     const cancelEdit = () => {
         setEditingId(null);
         setEditingData({});
+        setOriginalEditingData({});
     }
 
     const submitEdit = async (e) => {
         e.preventDefault();
         try {
-            const resp = await axios.put(`/api/profiles/${editingId}`, editingData);
+            // prefer PATCH for partial update; fall back to PUT if server requires it
+            let resp;
+            try {
+                resp = await axios.patch(`/api/profiles/${editingId}`, editingData);
+            } catch (patchErr) {
+                // if patch not allowed, try PUT
+                resp = await axios.put(`/api/profiles/${editingId}`, editingData);
+            }
+
             // update local list
             setProfiles((list) => list.map(p => p.id === editingId ? resp.data.profile : p));
             setMessage('Profile updated');
@@ -102,19 +121,15 @@ export default function Example() {
                 setMessage('Error updating profile');
             }
         }
-    }
+    };
 
     const deleteProfile = async (id) => {
+        // Only remove locally — do not send DELETE to server
         if (!confirm('Delete this profile?')) return;
-        try {
-            await axios.delete(`/api/profiles/${id}`);
-            setProfiles((list) => list.filter(p => p.id !== id));
-            if (editingId === id) cancelEdit();
-            setMessage('Profile deleted');
-        } catch (err) {
-            console.error('Delete error', err);
-            setMessage('Error deleting profile');
-        }
+        // remove from local state
+        setProfiles((list) => list.filter(p => p.id !== id));
+        if (editingId === id) cancelEdit();
+        setMessage('Profile removed from view (not deleted on server)');
     }
 
 
@@ -123,75 +138,94 @@ export default function Example() {
     }, []);
 
 
+    const isEditingDirty = () => {
+        return JSON.stringify(editingData) !== JSON.stringify(originalEditingData);
+    };
+
     return (
         <div className="home">
             <div className="container">
-                <form onSubmit={handleSubmit}>
-                    {message && <div style={{ marginBottom: 8 }}>{message}</div>}
+                <form onSubmit={handleSubmit} className="profile-form" aria-label="Create profile form">
+                    {message && <div className="message success" role="status">{message}</div>}
                     {Object.keys(errors).length > 0 && (
-                        <div style={{ color: 'red', marginBottom: 8 }}>
+                        <div className="message error" role="alert">
                             {Object.entries(errors).map(([k, v]) => (
                                 <div key={k}>{Array.isArray(v) ? v.join(' ') : v}</div>
                             ))}
                         </div>
                     )}
-                    <input
-                        type="text"
-                        placeholder="Firstname"
-                        value={fname}
-                        onChange={(e) => setFirstname(e.target.value)}
-                    />
-                    <input
-                        type="text"
-                        placeholder="Lastname"
-                        value={lname}
-                        onChange={(e) => setLastname(e.target.value)}
-                    />
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    /> 
-                    <input
-                        type="text"
-                        placeholder="Phone"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                    />      
-                    <input
-                        type="text"
-                        placeholder="Address"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                    />      
-                    <input
-                        type="text"
-                        placeholder="City"
-                        value={city}
-                        onChange={(e) => setCity(e.target.value)}
-                    />      
-                    <input
-                        type="text"
-                        placeholder="State"
-                        value={state}
-                        onChange={(e) => setState(e.target.value)}
-                    />      
-                    <input
-                        type="text"
-                        placeholder="Zip"
-                        value={zip}
-                        onChange={(e) => setZip(e.target.value)}
-                    />  
-                    <input
-                        type="text"
-                        placeholder="Country"
-                        value={country}
-                        onChange={(e) => setCountry(e.target.value)}
-                    />
-                    <input type="submit" />
-                </form>                                <div className="table-wrapper">
-                                    <table>
+                    <div className="form-grid">
+                      <input
+                          type="text"
+                          placeholder="Firstname"
+                          value={fname}
+                          onChange={(e) => setFirstname(e.target.value)}
+                          aria-label="Firstname"
+                      />
+                      <input
+                          type="text"
+                          placeholder="Lastname"
+                          value={lname}
+                          onChange={(e) => setLastname(e.target.value)}
+                          aria-label="Lastname"
+                      />
+                      <input
+                          type="email"
+                          placeholder="Email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          aria-label="Email"
+                      />
+                      <input
+                          type="text"
+                          placeholder="Phone"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          aria-label="Phone"
+                      />
+                      <input
+                          type="text"
+                          placeholder="Address"
+                          value={address}
+                          onChange={(e) => setAddress(e.target.value)}
+                          aria-label="Address"
+                      />
+                      <input
+                          type="text"
+                          placeholder="City"
+                          value={city}
+                          onChange={(e) => setCity(e.target.value)}
+                          aria-label="City"
+                      />
+                      <input
+                          type="text"
+                          placeholder="State"
+                          value={state}
+                          onChange={(e) => setState(e.target.value)}
+                          aria-label="State"
+                      />
+                      <input
+                          type="text"
+                          placeholder="Zip"
+                          value={zip}
+                          onChange={(e) => setZip(e.target.value)}
+                          aria-label="Zip"
+                      />
+                      <input
+                          type="text"
+                          placeholder="Country"
+                          value={country}
+                          onChange={(e) => setCountry(e.target.value)}
+                          aria-label="Country"
+                      />
+                    </div>
+                    <div className="form-actions">
+                      <button className="btn primary" type="submit">Submit</button>
+                    </div>
+                </form>
+
+                <div className="table-wrapper" role="region" aria-label="Profiles list">
+                  <table>
                     <thead>
                         <tr>
                             <th>Firstname</th>
@@ -203,6 +237,7 @@ export default function Example() {
                             <th>State</th>
                             <th>Zip</th>
                             <th>Country</th>
+                            <th className="actions-head">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -210,59 +245,77 @@ export default function Example() {
                             <tr key={profile.id} className={editingId === profile.id ? 'editing' : ''}>
                                 <td>
                                     {editingId === profile.id ? (
-                                        <input value={editingData.fname || ''} onChange={e => setEditingData(d => ({ ...d, fname: e.target.value }))} />
+                                        <div className="cell-input"><input value={editingData.fname || ''} onChange={e => setEditingData(d => ({ ...d, fname: e.target.value }))} aria-label="Edit firstname" /></div>
                                     ) : profile.fname}
                                 </td>
                                 <td>
                                     {editingId === profile.id ? (
-                                        <input value={editingData.lname || ''} onChange={e => setEditingData(d => ({ ...d, lname: e.target.value }))} />
+                                        <div className="cell-input"><input value={editingData.lname || ''} onChange={e => setEditingData(d => ({ ...d, lname: e.target.value }))} aria-label="Edit lastname" /></div>
                                     ) : profile.lname}
                                 </td>
                                 <td>
                                     {editingId === profile.id ? (
-                                        <input value={editingData.email || ''} onChange={e => setEditingData(d => ({ ...d, email: e.target.value }))} />
+                                        <div className="cell-input"><input value={editingData.email || ''} onChange={e => setEditingData(d => ({ ...d, email: e.target.value }))} aria-label="Edit email" /></div>
                                     ) : profile.email}
                                 </td>
                                 <td>
                                     {editingId === profile.id ? (
-                                        <input value={editingData.phone || ''} onChange={e => setEditingData(d => ({ ...d, phone: e.target.value }))} />
+                                        <div className="cell-input"><input value={editingData.phone || ''} onChange={e => setEditingData(d => ({ ...d, phone: e.target.value }))} aria-label="Edit phone" /></div>
                                     ) : profile.phone}
                                 </td>
                                 <td>
                                     {editingId === profile.id ? (
-                                        <input value={editingData.address || ''} onChange={e => setEditingData(d => ({ ...d, address: e.target.value }))} />
+                                        <div className="cell-input"><input value={editingData.address || ''} onChange={e => setEditingData(d => ({ ...d, address: e.target.value }))} aria-label="Edit address" /></div>
                                     ) : profile.address}
                                 </td>
                                 <td>
                                     {editingId === profile.id ? (
-                                        <input value={editingData.city || ''} onChange={e => setEditingData(d => ({ ...d, city: e.target.value }))} />
+                                        <div className="cell-input"><input value={editingData.city || ''} onChange={e => setEditingData(d => ({ ...d, city: e.target.value }))} aria-label="Edit city" /></div>
                                     ) : profile.city}
                                 </td>
                                 <td>
                                     {editingId === profile.id ? (
-                                        <input value={editingData.state || ''} onChange={e => setEditingData(d => ({ ...d, state: e.target.value }))} />
+                                        <div className="cell-input"><input value={editingData.state || ''} onChange={e => setEditingData(d => ({ ...d, state: e.target.value }))} aria-label="Edit state" /></div>
                                     ) : profile.state}
                                 </td>
                                 <td>
                                     {editingId === profile.id ? (
-                                        <input value={editingData.zip || ''} onChange={e => setEditingData(d => ({ ...d, zip: e.target.value }))} />
+                                        <div className="cell-input"><input value={editingData.zip || ''} onChange={e => setEditingData(d => ({ ...d, zip: e.target.value }))} aria-label="Edit zip" /></div>
                                     ) : profile.zip}
                                 </td>
                                 <td>
                                     {editingId === profile.id ? (
-                                        <input value={editingData.country || ''} onChange={e => setEditingData(d => ({ ...d, country: e.target.value }))} />
+                                        <div className="cell-input"><input value={editingData.country || ''} onChange={e => setEditingData(d => ({ ...d, country: e.target.value }))} aria-label="Edit country" /></div>
                                     ) : profile.country}
                                 </td>
                                 <td className="actions">
                                     {editingId === profile.id ? (
                                         <>
-                                            <button type="button" className="btn btn-save" onClick={(e) => submitEdit(e)}>Save</button>
-                                            <button type="button" className="btn btn-cancel" onClick={cancelEdit}>Cancel</button>
+                                            <button
+                                              type="button"
+                                              className="btn btn-save"
+                                              onClick={(e) => submitEdit(e)}
+                                              aria-label="Save changes"
+                                              disabled={!isEditingDirty()}
+                                            >
+                                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                              <span className="visually-hidden">Save</span>
+                                            </button>
+                                            <button type="button" className="btn btn-cancel" onClick={cancelEdit} aria-label="Cancel edit">
+                                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                              <span className="visually-hidden">Cancel</span>
+                                            </button>
                                         </>
                                     ) : (
                                         <>
-                                            <button type="button" className="btn btn-edit" onClick={() => startEdit(profile)}>Edit</button>
-                                            <button type="button" className="btn btn-delete" onClick={() => deleteProfile(profile.id)}>Delete</button>
+                                            <button type="button" className="btn btn-edit" onClick={() => startEdit(profile)} aria-label={`Edit ${profile.fname || 'profile'}`}>
+                                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M3 21v-3l11-11 3 3L6 21H3z" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                              <span className="visually-hidden">Edit</span>
+                                            </button>
+                                            <button type="button" className="btn btn-delete" onClick={() => deleteProfile(profile.id)} aria-label={`Delete ${profile.fname || 'profile'}`}>
+                                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M3 6h18M8 6v14m8-14v14M10 6V4h4v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                              <span className="visually-hidden">Delete</span>
+                                            </button>
                                         </>
                                     )}
                                 </td>

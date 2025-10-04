@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 
+Route::post('/register', [ProfileController::class, 'store']);
+
 
 /*
 |--------------------------------------------------------------------------
@@ -15,10 +17,14 @@ use App\Http\Controllers\ProfileController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('/register', [ProfileController::class, 'store']);
-Route::get('/profiles', [ProfileController::class, 'show']);
-Route::put('/profiles/{profile}', [ProfileController::class, 'update']);
-Route::delete('/profiles/{profile}', [ProfileController::class, 'destroy']);
+Route::get('/profiles', [ProfileController::class, 'index']);
+Route::post('/profiles', [ProfileController::class, 'store']);
+
+// support both PUT and PATCH for updates
+Route::put('/profiles/{id}', [ProfileController::class, 'update']);
+Route::patch('/profiles/{id}', [ProfileController::class, 'update']);
+
+Route::delete('/profiles/{id}', [ProfileController::class, 'destroy']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

@@ -11985,131 +11985,43 @@ textarea.form-control-lg {
   color: #263238;
 }
 .home .container {
-  max-width: 980px;
+  max-width: 1100px;
   margin: 28px auto;
   padding: 22px;
   background: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 8px 30px rgba(6, 24, 44, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.03);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(6, 24, 44, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.04);
 }
-.home form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
+.home .profile-form {
+  display: block;
+  margin-bottom: 18px;
 }
-.home form input[type=text], .home form input[type=email] {
-  padding: 10px 12px;
-  border: 1px solid #e0e6eb;
-  border-radius: 6px;
-  background: #fbfdff;
-  flex: 1 1 210px;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+.home .form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
 }
-.home form input[type=text]:focus, .home form input[type=email]:focus {
-  outline: none;
-  border-color: #4f9cf9;
-  box-shadow: 0 4px 12px rgba(79, 156, 249, 0.12);
-}
-.home form input[type=submit] {
-  background: #1976d2;
-  color: white;
-  padding: 10px 18px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  box-shadow: 0 6px 14px rgba(25, 118, 210, 0.12);
-  transition: transform 0.08s ease, box-shadow 0.08s ease;
-}
-.home form input[type=submit]:active {
-  transform: translateY(1px);
-}
-.home form .form-meta {
-  width: 100%;
-  margin-top: 6px;
-  color: #546e7a;
-  font-size: 13px;
-}
-.home .message {
+.home .form-actions {
   margin-top: 12px;
-  padding: 10px 12px;
-  border-radius: 6px;
-  font-size: 14px;
+  display: flex;
+  justify-content: flex-end;
 }
-.home .message.success {
-  background: #e8f5e9;
-  color: #2e7d32;
-  border: 1px solid rgba(46, 125, 50, 0.12);
-}
-.home .message.error {
-  background: #ffebee;
-  color: #c62828;
-  border: 1px solid rgba(198, 40, 40, 0.08);
-}
-.home .table-wrapper {
-  margin-top: 20px;
+.home input[type=text], .home input[type=email] {
+  width: 100%;
+  padding: 12px 14px;
   border-radius: 8px;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-  box-shadow: 0 8px 20px rgba(6, 24, 44, 0.04);
-  border: 1px solid rgba(0, 0, 0, 0.03);
-  background: #fff;
-}
-.home table {
-  width: 100%;
-  border-collapse: collapse;
+  border: 1px solid #e6eef6;
+  background: #fbfdff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
   font-size: 14px;
-  /* keep columns stable when inputs appear */
-  table-layout: fixed;
-  word-break: break-word;
-}
-.home table th, .home table td {
-  border-bottom: 1px solid #f1f5f8;
-  padding: 14px 12px;
-  text-align: left;
-  vertical-align: middle;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.home table th {
-  background: #fafbfd;
-  color: #37474f;
-  font-weight: 600;
-  font-size: 13px;
-  letter-spacing: 0.2px;
-}
-.home table tbody tr {
-  transition: background 0.12s ease, transform 0.06s ease;
-}
-.home table {
-  /* highlight row while editing */
-}
-.home table tbody tr.editing {
-  background: linear-gradient(90deg, rgba(79, 156, 249, 0.03), rgba(79, 156, 249, 0.01));
-}
-.home table {
-  /* inputs inside table while editing — constrained so they don't force table width */
-}
-.home table tbody input[type=text], .home table tbody input[type=email] {
-  padding: 8px 10px;
-  border: 1px solid #d7e6ff;
-  border-radius: 6px;
-  background: #ffffff;
-  width: 100%;
-  max-width: 160px;
   box-sizing: border-box;
-  white-space: nowrap;
-  overflow: hidden;
+  transition: border 0.15s ease, box-shadow 0.15s ease;
 }
-.home table {
-  /* actions column — keep consistent width so buttons don't jump */
-}
-.home table td.actions {
-  width: 190px;
-  text-align: center;
-  white-space: nowrap;
+.home input[type=text]:focus, .home input[type=email]:focus {
+  outline: none;
+  border-color: #84a9ff;
+  box-shadow: 0 4px 18px rgba(38, 99, 255, 0.08);
 }
 .home .btn {
   display: inline-flex;
@@ -12119,305 +12031,331 @@ textarea.form-control-lg {
   border-radius: 8px;
   border: none;
   cursor: pointer;
-  font-size: 14px;
-  transition: transform 0.08s ease, box-shadow 0.12s ease, opacity 0.08s ease;
+  font-weight: 600;
+  font-size: 13px;
+  transition: transform 0.08s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+  box-shadow: 0 2px 8px rgba(14, 30, 37, 0.06);
+  color: #fff;
+  background: #6b7280;
+}
+.home .btn svg {
+  opacity: 0.95;
 }
 .home .btn:active {
   transform: translateY(1px);
 }
+.home .btn.primary {
+  background: linear-gradient(90deg, #2563eb, #1e40af);
+}
 .home .btn-edit {
-  background: #fff8e1;
-  color: #8a6d00;
-  border: 1px solid rgba(138, 109, 0, 0.12);
-  box-shadow: 0 6px 14px rgba(255, 193, 7, 0.06);
-  padding: 6px 10px;
-  font-weight: 600;
+  background: #0ea5e9;
+  color: #fff;
+  padding: 8px 10px;
 }
 .home .btn-delete {
-  background: #ffebee;
-  color: #b71c1c;
-  border: 1px solid rgba(183, 28, 28, 0.12);
-  padding: 6px 10px;
-  font-weight: 700;
-  box-shadow: 0 6px 14px rgba(183, 28, 28, 0.06);
+  background: #ef4444;
+  color: #fff;
+  padding: 8px 10px;
 }
 .home .btn-save {
-  background: #e8f5e9;
-  color: #2e7d32;
-  border: 1px solid rgba(46, 125, 50, 0.08);
-  padding: 6px 10px;
-  font-weight: 700;
+  background: #10b981;
+  color: #fff;
+  padding: 8px 10px;
 }
 .home .btn-cancel {
-  background: #f5f7fa;
-  color: #37474f;
-  border: 1px solid rgba(55, 71, 79, 0.06);
-  padding: 6px 10px;
-  font-weight: 600;
+  background: #6b7280;
+  color: #fff;
+  padding: 8px 10px;
 }
-.home {
-  /* hover/focus accessibility */
+.home .message {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
 }
-.home .btn:hover, .home .btn:focus {
-  box-shadow: 0 8px 20px rgba(6, 24, 44, 0.06);
-  opacity: 0.98;
-  outline: none;
+.home .message.success {
+  background: #e6fbf1;
+  color: #065f46;
+  border: 1px solid rgba(16, 185, 129, 0.12);
 }
-.home {
-  /* container + form tweaks for accessibility */
+.home .message.error {
+  background: #fff1f2;
+  color: #7f1d1d;
+  border: 1px solid rgba(239, 68, 68, 0.08);
 }
-.home .container {
-  padding: 26px;
+.home .table-wrapper {
+  margin-top: 12px;
+  overflow-x: auto;
+  border-top: 1px solid #f0f3f6;
 }
-.home form input[type=text], .home form input[type=email] {
-  min-height: 44px;
-  font-size: 15px;
+.home table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  min-width: 900px;
+  background: transparent;
 }
-.home {
-  /* small helper: visually distinct delete button for screen readers */
+.home th, .home td {
+  padding: 14px 12px;
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-bottom: 1px solid #f3f6f9;
+  font-size: 14px;
 }
-.home .sr-only {
+.home thead th {
+  background: #fbfdff;
+  font-weight: 700;
+  color: #1f2937;
+}
+.home tbody tr.editing {
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.04), rgba(16, 185, 129, 0.02));
+}
+.home .cell-input {
+  display: block;
+}
+.home .cell-input input {
+  width: 100%;
+  max-width: 240px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #e6eef6;
+  box-sizing: border-box;
+  font-size: 13px;
+  background: #fff;
+}
+.home td.actions {
+  width: 160px;
+  white-space: nowrap;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  align-items: center;
+}
+.home .actions-head {
+  width: 160px;
+}
+.home .visually-hidden {
   position: absolute !important;
   height: 1px;
   width: 1px;
   overflow: hidden;
   clip: rect(1px, 1px, 1px, 1px);
+  white-space: nowrap;
 }
-.home .btn .icon {
-  font-size: 14px;
-  opacity: 0.9;
-}
-@media (max-width: 720px) {
-  .home .container {
-    padding: 14px;
+@media (max-width: 980px) {
+  .home .form-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
   .home table {
+    min-width: 800px;
+  }
+}
+@media (max-width: 640px) {
+  .home .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .home td, .home th {
+    padding: 10px;
     font-size: 13px;
   }
   .home td.actions {
-    width: auto;
-    display: flex;
-    gap: 6px;
+    width: 120px;
   }
 }
 
-.home {
-  font-family: "Nunito", sans-serif;
-  color: #263238;
+#homepage {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  color: #222;
+  background: linear-gradient(120deg, #f0f4ff 0%, #eaf6fb 100%);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(44, 62, 80, 0.08);
 }
-.home .container {
-  max-width: 980px;
-  margin: 28px auto;
-  padding: 22px;
-  background: #ffffff;
+#homepage h1, #homepage .h1 {
+  font-size: 2.7rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+}
+#homepage p {
+  font-size: 1.15rem;
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  color: #555;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+#homepage section {
+  margin-bottom: 2.5rem;
+  background: #f8f9fa;
+  padding: 2rem 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(44, 62, 80, 0.07);
+  border: 1px solid #e3eafc;
+}
+#homepage section h2, #homepage section .h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #1e3a8a;
+  letter-spacing: 0.5px;
+}
+#homepage section p {
+  font-size: 1.08rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+#homepage a {
+  display: inline-block;
+  text-decoration: none;
+  background: linear-gradient(90deg, #2563eb 60%, #1e40af 100%);
+  color: white;
+  padding: 0.8rem 1.7rem;
   border-radius: 10px;
-  box-shadow: 0 8px 30px rgba(6, 24, 44, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.03);
+  font-weight: 600;
+  font-size: 1.08rem;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.1);
+  transition: background 0.3s, transform 0.18s, box-shadow 0.18s;
+  border: none;
 }
-.home form {
+#homepage a:hover, #homepage a:focus {
+  background: linear-gradient(90deg, #1d4ed8 60%, #1e40af 100%);
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.14);
+  outline: none;
+}
+@media (max-width: 600px) {
+  #homepage {
+    padding: 1rem;
+  }
+  #homepage h1, #homepage .h1 {
+    font-size: 2rem;
+  }
+  #homepage section {
+    padding: 1.2rem 0.5rem;
+  }
+  #homepage section h2, #homepage section .h2 {
+    font-size: 1.3rem;
+  }
+  #homepage section p {
+    font-size: 0.98rem;
+  }
+  #homepage a {
+    padding: 0.6rem 1rem;
+    font-size: 0.98rem;
+  }
+}
+
+.home-login {
+  min-height: 100vh;
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #f4f7ff 0%, #eef9ff 100%);
+  font-family: "Poppins", sans-serif;
+}
+.home-login .login-card {
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 28px;
+  box-shadow: 0 12px 40px rgba(14, 30, 37, 0.06);
+  border: 1px solid rgba(18, 38, 63, 0.04);
+}
+.home-login .login-card .brand {
+  text-align: center;
+  margin-bottom: 18px;
+}
+.home-login .login-card .brand h1, .home-login .login-card .brand .h1 {
+  font-size: 1.4rem;
+  margin: 0;
+  color: #0f172a;
+  font-weight: 700;
+}
+.home-login .login-card .brand p {
+  margin: 6px 0 0;
+  color: #475569;
+  font-size: 0.95rem;
+}
+.home-login .login-card .message {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.home-login .login-card .message.error {
+  background: #fff1f2;
+  color: #7f1d1d;
+  border: 1px solid rgba(239, 68, 68, 0.08);
+}
+.home-login .login-card .message.success {
+  background: #e6fbf1;
+  color: #065f46;
+  border: 1px solid rgba(16, 185, 129, 0.12);
+}
+.home-login .login-card form {
+  display: grid;
+  gap: 12px;
+}
+.home-login .login-card form input[type=email], .home-login .login-card form input[type=password] {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #e6eef6;
+  background: #fbfdff;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+}
+.home-login .login-card form input:focus {
+  outline: none;
+  border-color: #7aa2ff;
+  box-shadow: 0 8px 30px rgba(38, 99, 255, 0.06);
+}
+.home-login .login-card form .controls {
+  display: flex;
   gap: 10px;
   align-items: center;
+  justify-content: space-between;
 }
-.home form input[type=text], .home form input[type=email] {
-  padding: 10px 12px;
-  border: 1px solid #e0e6eb;
-  border-radius: 6px;
-  background: #fbfdff;
-  flex: 1 1 210px;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+.home-login .login-card form .controls .remember {
+  font-size: 13px;
+  color: #475569;
 }
-.home form input[type=text]:focus, .home form input[type=email]:focus {
-  outline: none;
-  border-color: #4f9cf9;
-  box-shadow: 0 4px 12px rgba(79, 156, 249, 0.12);
-}
-.home form input[type=submit] {
-  background: #1976d2;
-  color: white;
-  padding: 10px 18px;
+.home-login .login-card form .controls button.btn {
+  padding: 10px 16px;
+  border-radius: 10px;
   border: none;
-  border-radius: 6px;
+  background: linear-gradient(90deg, #2563eb, #1e40af);
+  color: #fff;
+  font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 6px 14px rgba(25, 118, 210, 0.12);
-  transition: transform 0.08s ease, box-shadow 0.08s ease;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.12);
+  transition: transform 0.08s ease, box-shadow 0.12s ease;
 }
-.home form input[type=submit]:active {
+.home-login .login-card form .controls button.btn:active {
   transform: translateY(1px);
 }
-.home form .form-meta {
-  width: 100%;
-  margin-top: 6px;
-  color: #546e7a;
-  font-size: 13px;
-}
-.home .message {
+.home-login .login-card .footer {
   margin-top: 12px;
-  padding: 10px 12px;
-  border-radius: 6px;
-  font-size: 14px;
-}
-.home .message.success {
-  background: #e8f5e9;
-  color: #2e7d32;
-  border: 1px solid rgba(46, 125, 50, 0.12);
-}
-.home .message.error {
-  background: #ffebee;
-  color: #c62828;
-  border: 1px solid rgba(198, 40, 40, 0.08);
-}
-.home .table-wrapper {
-  margin-top: 20px;
-  border-radius: 8px;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-  box-shadow: 0 8px 20px rgba(6, 24, 44, 0.04);
-  border: 1px solid rgba(0, 0, 0, 0.03);
-  background: #fff;
-}
-.home table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-  /* keep columns stable when inputs appear */
-  table-layout: fixed;
-  word-break: break-word;
-}
-.home table th, .home table td {
-  border-bottom: 1px solid #f1f5f8;
-  padding: 14px 12px;
-  text-align: left;
-  vertical-align: middle;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.home table th {
-  background: #fafbfd;
-  color: #37474f;
-  font-weight: 600;
-  font-size: 13px;
-  letter-spacing: 0.2px;
-}
-.home table tbody tr {
-  transition: background 0.12s ease, transform 0.06s ease;
-}
-.home table {
-  /* highlight row while editing */
-}
-.home table tbody tr.editing {
-  background: linear-gradient(90deg, rgba(79, 156, 249, 0.03), rgba(79, 156, 249, 0.01));
-}
-.home table {
-  /* inputs inside table while editing — constrained so they don't force table width */
-}
-.home table tbody input[type=text], .home table tbody input[type=email] {
-  padding: 8px 10px;
-  border: 1px solid #d7e6ff;
-  border-radius: 6px;
-  background: #ffffff;
-  width: 100%;
-  max-width: 160px;
-  box-sizing: border-box;
-  white-space: nowrap;
-  overflow: hidden;
-}
-.home table {
-  /* actions column — keep consistent width so buttons don't jump */
-}
-.home table td.actions {
-  width: 190px;
   text-align: center;
-  white-space: nowrap;
+  font-size: 13px;
+  color: #64748b;
 }
-.home .btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  transition: transform 0.08s ease, box-shadow 0.12s ease, opacity 0.08s ease;
-}
-.home .btn:active {
-  transform: translateY(1px);
-}
-.home .btn-edit {
-  background: #fff8e1;
-  color: #8a6d00;
-  border: 1px solid rgba(138, 109, 0, 0.12);
-  box-shadow: 0 6px 14px rgba(255, 193, 7, 0.06);
-  padding: 6px 10px;
-  font-weight: 600;
-}
-.home .btn-delete {
-  background: #ffebee;
-  color: #b71c1c;
-  border: 1px solid rgba(183, 28, 28, 0.12);
-  padding: 6px 10px;
-  font-weight: 700;
-  box-shadow: 0 6px 14px rgba(183, 28, 28, 0.06);
-}
-.home .btn-save {
-  background: #e8f5e9;
-  color: #2e7d32;
-  border: 1px solid rgba(46, 125, 50, 0.08);
-  padding: 6px 10px;
-  font-weight: 700;
-}
-.home .btn-cancel {
-  background: #f5f7fa;
-  color: #37474f;
-  border: 1px solid rgba(55, 71, 79, 0.06);
-  padding: 6px 10px;
-  font-weight: 600;
-}
-.home {
-  /* hover/focus accessibility */
-}
-.home .btn:hover, .home .btn:focus {
-  box-shadow: 0 8px 20px rgba(6, 24, 44, 0.06);
-  opacity: 0.98;
-  outline: none;
-}
-.home {
-  /* container + form tweaks for accessibility */
-}
-.home .container {
-  padding: 26px;
-}
-.home form input[type=text], .home form input[type=email] {
-  min-height: 44px;
-  font-size: 15px;
-}
-.home {
-  /* small helper: visually distinct delete button for screen readers */
-}
-.home .sr-only {
-  position: absolute !important;
-  height: 1px;
-  width: 1px;
-  overflow: hidden;
-  clip: rect(1px, 1px, 1px, 1px);
-}
-.home .btn .icon {
-  font-size: 14px;
-  opacity: 0.9;
-}
-@media (max-width: 720px) {
-  .home .container {
-    padding: 14px;
-  }
-  .home table {
-    font-size: 13px;
-  }
-  .home td.actions {
-    width: auto;
-    display: flex;
-    gap: 6px;
+
+@media (max-width: 480px) {
+  .home-login .login-card {
+    padding: 18px;
+    border-radius: 12px;
   }
 }

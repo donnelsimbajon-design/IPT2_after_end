@@ -9,6 +9,7 @@
 </head>
 <body>
     <div id="root"><div>dsaddasd</div></div>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     
     <script src="{{ mix('js/app.js') }}"></script>
 </body>

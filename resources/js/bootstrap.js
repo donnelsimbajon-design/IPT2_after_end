@@ -11,8 +11,16 @@ try {
  */
 
 window.axios = require('axios');
-
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+// send cookies for session-based auth
+window.axios.defaults.withCredentials = true;
+
+// set CSRF token header from meta tag
+const token = document.head.querySelector('meta[name="csrf-token"]')?.content;
+if (token) {
+  window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
+}
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
