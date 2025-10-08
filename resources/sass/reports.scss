@@ -1,0 +1,96 @@
+@import 'variables';
+
+.reports-page {
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-xl;
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .btn-primary {
+      padding: $spacing-sm $spacing-lg;
+      background: $primary-color;
+      color: white;
+      border: none;
+      border-radius: $radius-md;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: $primary-hover;
+      }
+    }
+  }
+
+  .filters-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: $radius-lg;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-lg;
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: $spacing-md;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: $spacing-md;
+    }
+  }
+
+  .table-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: $radius-lg;
+    overflow: hidden;
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+
+      thead {
+        background: var(--bg-primary);
+        border-bottom: 1px solid var(--border-color);
+
+        th {
+          padding: $spacing-md;
+          text-align: left;
+          font-weight: 600;
+          font-size: 0.85rem;
+          color: var(--text-secondary);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+      }
+
+      tbody {
+        tr {
+          border-bottom: 1px solid var(--border-color);
+          transition: background 0.2s ease;
+
+          &:hover {
+            background: var(--sidebar-active);
+          }
+
+          td {
+            padding: $spacing-md;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+@import 'variables';
+@import 'students'; // reuse base module styles
+
+.account-page {
+  @extend .students-page;
+
+  .avatar-row {
+    display: flex;
+    gap: $spacing-lg;
+    align-items: center;
+  }
+
+  .avatar-box {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--sidebar-active);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: var(--text-primary);
+    overflow: hidden;
+  }
+}

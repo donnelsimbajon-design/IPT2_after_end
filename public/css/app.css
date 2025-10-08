@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Nunito);
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap);
 @charset "UTF-8";
 /*!
  * Bootstrap  v5.3.8 (https://getbootstrap.com/)
@@ -72,7 +72,7 @@
   --bs-dark-border-subtle: #adb5bd;
   --bs-white-rgb: 255, 255, 255;
   --bs-black-rgb: 0, 0, 0;
-  --bs-font-sans-serif: "Nunito", sans-serif;
+  --bs-font-sans-serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
   --bs-body-font-family: var(--bs-font-sans-serif);
@@ -81,8 +81,8 @@
   --bs-body-line-height: 1.6;
   --bs-body-color: #212529;
   --bs-body-color-rgb: 33, 37, 41;
-  --bs-body-bg: #f8fafc;
-  --bs-body-bg-rgb: 248, 250, 252;
+  --bs-body-bg: #fff;
+  --bs-body-bg-rgb: 255, 255, 255;
   --bs-emphasis-color: #000;
   --bs-emphasis-color-rgb: 0, 0, 0;
   --bs-secondary-color: rgba(33, 37, 41, 0.75);
@@ -2476,10 +2476,10 @@ textarea.form-control-lg {
   outline: 0;
 }
 .form-range:focus::-webkit-slider-thumb {
-  box-shadow: 0 0 0 1px #f8fafc, 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  box-shadow: 0 0 0 1px #fff, 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 .form-range:focus::-moz-range-thumb {
-  box-shadow: 0 0 0 1px #f8fafc, 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  box-shadow: 0 0 0 1px #fff, 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 .form-range::-moz-focus-outer {
   border: 0;
@@ -12358,4 +12358,1408 @@ textarea.form-control-lg {
     padding: 18px;
     border-radius: 12px;
   }
+}
+:root {
+  --bg-primary: #f5f7fa;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --text-primary: #1a202c;
+  --text-secondary: #718096;
+  --border-color: #e2e8f0;
+  --sidebar-bg: #ffffff;
+  --sidebar-active: #f0f4f8;
+}
+
+[data-theme=dark] {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-card: #1e293b;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --border-color: #334155;
+  --sidebar-bg: #1e293b;
+  --sidebar-active: #334155;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg-primary);
+}
+
+.sidebar {
+  width: 260px;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  transition: all 0.3s ease;
+  z-index: 100;
+}
+.sidebar .sidebar-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.sidebar .sidebar-header .logo {
+  width: 40px;
+  height: 40px;
+  background: #8B1538;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+.sidebar .sidebar-header .brand-info {
+  flex: 1;
+}
+.sidebar .sidebar-header .brand-info h2, .sidebar .sidebar-header .brand-info .h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+.sidebar .sidebar-header .brand-info p {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+.sidebar .nav-section {
+  padding: 1.5rem 1rem;
+}
+.sidebar .nav-section .section-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  padding: 0 1rem;
+}
+.sidebar .nav-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.sidebar .nav-menu li {
+  margin-bottom: 4px;
+  position: relative;
+}
+.sidebar .nav-menu li a {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+.sidebar .nav-menu li a .icon {
+  font-size: 1.2rem;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sidebar .nav-menu li a .label {
+  flex: 1;
+}
+.sidebar .nav-menu li a:hover {
+  background: var(--sidebar-active);
+  color: var(--text-primary);
+}
+.sidebar .nav-menu li.active a {
+  background: var(--sidebar-active);
+  color: #8B1538;
+  font-weight: 500;
+  position: relative;
+}
+.sidebar .nav-menu li.active a::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 4px;
+  border-radius: 2px;
+  background: #8B1538;
+}
+.sidebar .sidebar-footer {
+  margin-top: auto;
+  padding: 1.5rem;
+  border-top: 1px solid var(--border-color);
+}
+.sidebar .sidebar-footer .user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.sidebar .sidebar-footer .user-info .user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #8B1538;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+.sidebar .sidebar-footer .user-info .user-details {
+  flex: 1;
+}
+.sidebar .sidebar-footer .user-info .user-details .user-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  display: block;
+}
+.sidebar .sidebar-footer .user-info .user-details .user-role {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+.sidebar .sidebar-footer .btn-logout {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+.sidebar .sidebar-footer .btn-logout:hover {
+  background: var(--sidebar-active);
+  color: #ef4444;
+  border-color: #ef4444;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 260px;
+  min-height: 100vh;
+  background: var(--bg-primary);
+}
+.main-content .content-header {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 10px 20px -16px rgba(0, 0, 0, 0.25);
+}
+.main-content .content-header .header-left {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+.main-content .content-header .header-left h1, .main-content .content-header .header-left .h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 4px 0;
+}
+.main-content .content-header .header-left p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+.main-content .content-header .header-right {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.main-content .content-header .header-right .theme-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-size: 1.2rem;
+}
+.main-content .content-header .header-right .theme-toggle:hover {
+  background: var(--sidebar-active);
+}
+.main-content .content-header .header-right .date-display {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+.main-content .content-header .header-right .date-display .icon {
+  font-size: 1rem;
+}
+.main-content .content-header .header-right .user-menu {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.main-content .content-header .header-right .user-menu .user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #8B1538;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+.main-content .content-header .header-right .user-menu .user-info .user-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  display: block;
+  line-height: 1.2;
+}
+.main-content .content-header .header-right .user-menu .user-info .user-role {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+.main-content .content-header .header-right .user-menu:hover {
+  background: var(--sidebar-active);
+}
+.main-content .content-header .header-right .user-dropdown {
+  position: fixed;
+  right: 24px;
+  top: 70px;
+  z-index: 120;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  min-width: 240px;
+  overflow: hidden;
+}
+.main-content .content-header .header-right .user-dropdown .dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+.main-content .content-header .header-right .user-dropdown .dropdown-list {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+}
+.main-content .content-header .header-right .user-dropdown .dropdown-list .dropdown-item a, .main-content .content-header .header-right .user-dropdown .dropdown-list .dropdown-item button {
+  width: 100%;
+  display: block;
+  text-align: left;
+  padding: 10px 16px;
+  background: transparent;
+  border: 0;
+  color: var(--text-primary);
+  text-decoration: none;
+  cursor: pointer;
+}
+.main-content .content-header .header-right .user-dropdown .dropdown-list .dropdown-item a:hover, .main-content .content-header .header-right .user-dropdown .dropdown-list .dropdown-item button:hover {
+  background: var(--sidebar-active);
+}
+.main-content .content-wrapper {
+  padding: 2rem;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  .main-content {
+    margin-left: 0;
+  }
+}
+.dashboard-page .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.dashboard-page .stats-grid .stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.dashboard-page .stats-grid .stat-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, #8B1538, #8B1538);
+}
+.dashboard-page .stats-grid .stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+.dashboard-page .stats-grid .stat-card .stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  background: rgba(139, 21, 56, 0.1);
+  color: #8B1538;
+}
+.dashboard-page .stats-grid .stat-card .stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+.dashboard-page .stats-grid .stat-card .stat-label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+}
+.dashboard-page .stats-grid .stat-card .stat-change {
+  font-size: 0.8rem;
+  color: #10b981;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.dashboard-page .action-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+.dashboard-page .action-cards .action-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+.dashboard-page .action-cards .action-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border-color: #8B1538;
+}
+.dashboard-page .action-cards .action-card .action-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto 1.5rem;
+  background: rgba(139, 21, 56, 0.1);
+  color: #8B1538;
+}
+.dashboard-page .action-cards .action-card h3, .dashboard-page .action-cards .action-card .h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+}
+.dashboard-page .action-cards .action-card p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.students-page .module-page .page-header, .account-page .module-page .page-header, .archives-page .module-page .page-header, .faculty-page .module-page .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+.students-page .module-page .page-header h1, .account-page .module-page .page-header h1, .archives-page .module-page .page-header h1, .faculty-page .module-page .page-header h1, .students-page .module-page .page-header .h1, .account-page .module-page .page-header .h1, .archives-page .module-page .page-header .h1, .faculty-page .module-page .page-header .h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.students-page .module-page .page-header .btn-primary, .account-page .module-page .page-header .btn-primary, .archives-page .module-page .page-header .btn-primary, .faculty-page .module-page .page-header .btn-primary {
+  padding: 0.75rem 1.5rem;
+  background: #8B1538;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.students-page .module-page .page-header .btn-primary:hover, .account-page .module-page .page-header .btn-primary:hover, .archives-page .module-page .page-header .btn-primary:hover, .faculty-page .module-page .page-header .btn-primary:hover {
+  background: #6B0F2A;
+}
+.students-page .module-page .alert, .account-page .module-page .alert, .archives-page .module-page .alert, .faculty-page .module-page .alert {
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  background: rgba(139, 21, 56, 0.1);
+  border-left: 4px solid #8B1538;
+  color: var(--text-primary);
+}
+.students-page .module-page .form-card, .account-page .module-page .form-card, .archives-page .module-page .form-card, .faculty-page .module-page .form-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+.students-page .module-page .form-card h2, .account-page .module-page .form-card h2, .archives-page .module-page .form-card h2, .faculty-page .module-page .form-card h2, .students-page .module-page .form-card .h2, .account-page .module-page .form-card .h2, .archives-page .module-page .form-card .h2, .faculty-page .module-page .form-card .h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+}
+.students-page .module-page .form-card .module-form .form-row, .account-page .module-page .form-card .module-form .form-row, .archives-page .module-page .form-card .module-form .form-row, .faculty-page .module-page .form-card .module-form .form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.students-page .module-page .form-card .module-form .form-row input, .account-page .module-page .form-card .module-form .form-row input, .archives-page .module-page .form-card .module-form .form-row input, .faculty-page .module-page .form-card .module-form .form-row input, .students-page .module-page .form-card .module-form .form-row select, .account-page .module-page .form-card .module-form .form-row select, .archives-page .module-page .form-card .module-form .form-row select, .faculty-page .module-page .form-card .module-form .form-row select, .students-page .module-page .form-card .module-form .form-row textarea, .account-page .module-page .form-card .module-form .form-row textarea, .archives-page .module-page .form-card .module-form .form-row textarea, .faculty-page .module-page .form-card .module-form .form-row textarea {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+.students-page .module-page .form-card .module-form .form-row input:focus, .account-page .module-page .form-card .module-form .form-row input:focus, .archives-page .module-page .form-card .module-form .form-row input:focus, .faculty-page .module-page .form-card .module-form .form-row input:focus, .students-page .module-page .form-card .module-form .form-row select:focus, .account-page .module-page .form-card .module-form .form-row select:focus, .archives-page .module-page .form-card .module-form .form-row select:focus, .faculty-page .module-page .form-card .module-form .form-row select:focus, .students-page .module-page .form-card .module-form .form-row textarea:focus, .account-page .module-page .form-card .module-form .form-row textarea:focus, .archives-page .module-page .form-card .module-form .form-row textarea:focus, .faculty-page .module-page .form-card .module-form .form-row textarea:focus {
+  outline: none;
+  border-color: #8B1538;
+  box-shadow: 0 0 0 3px rgba(139, 21, 56, 0.1);
+}
+.students-page .module-page .form-card .module-form .form-row input::-moz-placeholder, .account-page .module-page .form-card .module-form .form-row input::-moz-placeholder, .archives-page .module-page .form-card .module-form .form-row input::-moz-placeholder, .faculty-page .module-page .form-card .module-form .form-row input::-moz-placeholder, .students-page .module-page .form-card .module-form .form-row select::-moz-placeholder, .account-page .module-page .form-card .module-form .form-row select::-moz-placeholder, .archives-page .module-page .form-card .module-form .form-row select::-moz-placeholder, .faculty-page .module-page .form-card .module-form .form-row select::-moz-placeholder, .students-page .module-page .form-card .module-form .form-row textarea::-moz-placeholder, .account-page .module-page .form-card .module-form .form-row textarea::-moz-placeholder, .archives-page .module-page .form-card .module-form .form-row textarea::-moz-placeholder, .faculty-page .module-page .form-card .module-form .form-row textarea::-moz-placeholder {
+  color: var(--text-secondary);
+}
+.students-page .module-page .form-card .module-form .form-row input::placeholder, .account-page .module-page .form-card .module-form .form-row input::placeholder, .archives-page .module-page .form-card .module-form .form-row input::placeholder, .faculty-page .module-page .form-card .module-form .form-row input::placeholder, .students-page .module-page .form-card .module-form .form-row select::placeholder, .account-page .module-page .form-card .module-form .form-row select::placeholder, .archives-page .module-page .form-card .module-form .form-row select::placeholder, .faculty-page .module-page .form-card .module-form .form-row select::placeholder, .students-page .module-page .form-card .module-form .form-row textarea::placeholder, .account-page .module-page .form-card .module-form .form-row textarea::placeholder, .archives-page .module-page .form-card .module-form .form-row textarea::placeholder, .faculty-page .module-page .form-card .module-form .form-row textarea::placeholder {
+  color: var(--text-secondary);
+}
+.students-page .module-page .form-card .module-form .form-row textarea, .account-page .module-page .form-card .module-form .form-row textarea, .archives-page .module-page .form-card .module-form .form-row textarea, .faculty-page .module-page .form-card .module-form .form-row textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+.students-page .module-page .form-card .module-form .form-actions, .account-page .module-page .form-card .module-form .form-actions, .archives-page .module-page .form-card .module-form .form-actions, .faculty-page .module-page .form-card .module-form .form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.students-page .module-page .form-card .module-form .form-actions button, .account-page .module-page .form-card .module-form .form-actions button, .archives-page .module-page .form-card .module-form .form-actions button, .faculty-page .module-page .form-card .module-form .form-actions button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.students-page .module-page .form-card .module-form .form-actions button.btn-primary, .account-page .module-page .form-card .module-form .form-actions button.btn-primary, .archives-page .module-page .form-card .module-form .form-actions button.btn-primary, .faculty-page .module-page .form-card .module-form .form-actions button.btn-primary {
+  background: #8B1538;
+  color: white;
+}
+.students-page .module-page .form-card .module-form .form-actions button.btn-primary:hover, .account-page .module-page .form-card .module-form .form-actions button.btn-primary:hover, .archives-page .module-page .form-card .module-form .form-actions button.btn-primary:hover, .faculty-page .module-page .form-card .module-form .form-actions button.btn-primary:hover {
+  background: #6B0F2A;
+}
+.students-page .module-page .form-card .module-form .form-actions button.btn-secondary, .account-page .module-page .form-card .module-form .form-actions button.btn-secondary, .archives-page .module-page .form-card .module-form .form-actions button.btn-secondary, .faculty-page .module-page .form-card .module-form .form-actions button.btn-secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+.students-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover, .account-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover, .archives-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover, .faculty-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover {
+  background: var(--sidebar-active);
+}
+.students-page .module-page .table-card, .account-page .module-page .table-card, .archives-page .module-page .table-card, .faculty-page .module-page .table-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.students-page .module-page .table-card .data-table, .account-page .module-page .table-card .data-table, .archives-page .module-page .table-card .data-table, .faculty-page .module-page .table-card .data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.students-page .module-page .table-card .data-table thead, .account-page .module-page .table-card .data-table thead, .archives-page .module-page .table-card .data-table thead, .faculty-page .module-page .table-card .data-table thead {
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+.students-page .module-page .table-card .data-table thead th, .account-page .module-page .table-card .data-table thead th, .archives-page .module-page .table-card .data-table thead th, .faculty-page .module-page .table-card .data-table thead th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.students-page .module-page .table-card .data-table tbody tr, .account-page .module-page .table-card .data-table tbody tr, .archives-page .module-page .table-card .data-table tbody tr, .faculty-page .module-page .table-card .data-table tbody tr {
+  border-bottom: 1px solid var(--border-color);
+  transition: background 0.2s ease;
+}
+.students-page .module-page .table-card .data-table tbody tr:hover, .account-page .module-page .table-card .data-table tbody tr:hover, .archives-page .module-page .table-card .data-table tbody tr:hover, .faculty-page .module-page .table-card .data-table tbody tr:hover {
+  background: var(--sidebar-active);
+}
+.students-page .module-page .table-card .data-table tbody tr td, .account-page .module-page .table-card .data-table tbody tr td, .archives-page .module-page .table-card .data-table tbody tr td, .faculty-page .module-page .table-card .data-table tbody tr td {
+  padding: 1rem;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+.students-page .module-page .table-card .data-table tbody tr td.actions, .account-page .module-page .table-card .data-table tbody tr td.actions, .archives-page .module-page .table-card .data-table tbody tr td.actions, .faculty-page .module-page .table-card .data-table tbody tr td.actions {
+  display: flex;
+  gap: 0.75rem;
+}
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-icon, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-icon, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-icon, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-icon {
+  padding: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: transform 0.2s ease;
+}
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover {
+  transform: scale(1.2);
+}
+.students-page .module-page .badge, .account-page .module-page .badge, .archives-page .module-page .badge, .faculty-page .module-page .badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+.students-page .module-page .badge.badge-active, .account-page .module-page .badge.badge-active, .archives-page .module-page .badge.badge-active, .faculty-page .module-page .badge.badge-active {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+.students-page .module-page .badge.badge-inactive, .account-page .module-page .badge.badge-inactive, .archives-page .module-page .badge.badge-inactive, .faculty-page .module-page .badge.badge-inactive {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+.students-page .module-page .badge.badge-graduated, .account-page .module-page .badge.badge-graduated, .archives-page .module-page .badge.badge-graduated, .faculty-page .module-page .badge.badge-graduated {
+  background: rgba(139, 21, 56, 0.1);
+  color: #8B1538;
+}
+.students-page .module-page .badge.badge-suspended, .account-page .module-page .badge.badge-suspended, .archives-page .module-page .badge.badge-suspended, .faculty-page .module-page .badge.badge-suspended {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+}
+.students-page .module-page .badge.badge-on-leave, .account-page .module-page .badge.badge-on-leave, .archives-page .module-page .badge.badge-on-leave, .faculty-page .module-page .badge.badge-on-leave {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+}
+.students-page .module-page .badge.badge-archived, .account-page .module-page .badge.badge-archived, .archives-page .module-page .badge.badge-archived, .faculty-page .module-page .badge.badge-archived {
+  background: rgba(51, 65, 85, 0.15);
+  color: var(--text-secondary);
+}
+.students-page .module-page .badge.badge-generated, .account-page .module-page .badge.badge-generated, .archives-page .module-page .badge.badge-generated, .faculty-page .module-page .badge.badge-generated {
+  background: rgba(139, 21, 56, 0.12);
+  color: #8B1538;
+}
+
+.students-page .module-page .page-header, .account-page .module-page .page-header, .archives-page .module-page .page-header, .faculty-page .module-page .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+.students-page .module-page .page-header h1, .account-page .module-page .page-header h1, .archives-page .module-page .page-header h1, .faculty-page .module-page .page-header h1, .students-page .module-page .page-header .h1, .account-page .module-page .page-header .h1, .archives-page .module-page .page-header .h1, .faculty-page .module-page .page-header .h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.students-page .module-page .page-header .btn-primary, .account-page .module-page .page-header .btn-primary, .archives-page .module-page .page-header .btn-primary, .faculty-page .module-page .page-header .btn-primary {
+  padding: 0.75rem 1.5rem;
+  background: #8B1538;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.students-page .module-page .page-header .btn-primary:hover, .account-page .module-page .page-header .btn-primary:hover, .archives-page .module-page .page-header .btn-primary:hover, .faculty-page .module-page .page-header .btn-primary:hover {
+  background: #6B0F2A;
+}
+.students-page .module-page .alert, .account-page .module-page .alert, .archives-page .module-page .alert, .faculty-page .module-page .alert {
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  background: rgba(139, 21, 56, 0.1);
+  border-left: 4px solid #8B1538;
+  color: var(--text-primary);
+}
+.students-page .module-page .form-card, .account-page .module-page .form-card, .archives-page .module-page .form-card, .faculty-page .module-page .form-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+.students-page .module-page .form-card h2, .account-page .module-page .form-card h2, .archives-page .module-page .form-card h2, .faculty-page .module-page .form-card h2, .students-page .module-page .form-card .h2, .account-page .module-page .form-card .h2, .archives-page .module-page .form-card .h2, .faculty-page .module-page .form-card .h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+}
+.students-page .module-page .form-card .module-form .form-row, .account-page .module-page .form-card .module-form .form-row, .archives-page .module-page .form-card .module-form .form-row, .faculty-page .module-page .form-card .module-form .form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.students-page .module-page .form-card .module-form .form-row input, .account-page .module-page .form-card .module-form .form-row input, .archives-page .module-page .form-card .module-form .form-row input, .faculty-page .module-page .form-card .module-form .form-row input, .students-page .module-page .form-card .module-form .form-row select, .account-page .module-page .form-card .module-form .form-row select, .archives-page .module-page .form-card .module-form .form-row select, .faculty-page .module-page .form-card .module-form .form-row select, .students-page .module-page .form-card .module-form .form-row textarea, .account-page .module-page .form-card .module-form .form-row textarea, .archives-page .module-page .form-card .module-form .form-row textarea, .faculty-page .module-page .form-card .module-form .form-row textarea {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+.students-page .module-page .form-card .module-form .form-row input:focus, .account-page .module-page .form-card .module-form .form-row input:focus, .archives-page .module-page .form-card .module-form .form-row input:focus, .faculty-page .module-page .form-card .module-form .form-row input:focus, .students-page .module-page .form-card .module-form .form-row select:focus, .account-page .module-page .form-card .module-form .form-row select:focus, .archives-page .module-page .form-card .module-form .form-row select:focus, .faculty-page .module-page .form-card .module-form .form-row select:focus, .students-page .module-page .form-card .module-form .form-row textarea:focus, .account-page .module-page .form-card .module-form .form-row textarea:focus, .archives-page .module-page .form-card .module-form .form-row textarea:focus, .faculty-page .module-page .form-card .module-form .form-row textarea:focus {
+  outline: none;
+  border-color: #8B1538;
+  box-shadow: 0 0 0 3px rgba(139, 21, 56, 0.1);
+}
+.students-page .module-page .form-card .module-form .form-row input::-moz-placeholder, .account-page .module-page .form-card .module-form .form-row input::-moz-placeholder, .archives-page .module-page .form-card .module-form .form-row input::-moz-placeholder, .faculty-page .module-page .form-card .module-form .form-row input::-moz-placeholder, .students-page .module-page .form-card .module-form .form-row select::-moz-placeholder, .account-page .module-page .form-card .module-form .form-row select::-moz-placeholder, .archives-page .module-page .form-card .module-form .form-row select::-moz-placeholder, .faculty-page .module-page .form-card .module-form .form-row select::-moz-placeholder, .students-page .module-page .form-card .module-form .form-row textarea::-moz-placeholder, .account-page .module-page .form-card .module-form .form-row textarea::-moz-placeholder, .archives-page .module-page .form-card .module-form .form-row textarea::-moz-placeholder, .faculty-page .module-page .form-card .module-form .form-row textarea::-moz-placeholder {
+  color: var(--text-secondary);
+}
+.students-page .module-page .form-card .module-form .form-row input::placeholder, .account-page .module-page .form-card .module-form .form-row input::placeholder, .archives-page .module-page .form-card .module-form .form-row input::placeholder, .faculty-page .module-page .form-card .module-form .form-row input::placeholder, .students-page .module-page .form-card .module-form .form-row select::placeholder, .account-page .module-page .form-card .module-form .form-row select::placeholder, .archives-page .module-page .form-card .module-form .form-row select::placeholder, .faculty-page .module-page .form-card .module-form .form-row select::placeholder, .students-page .module-page .form-card .module-form .form-row textarea::placeholder, .account-page .module-page .form-card .module-form .form-row textarea::placeholder, .archives-page .module-page .form-card .module-form .form-row textarea::placeholder, .faculty-page .module-page .form-card .module-form .form-row textarea::placeholder {
+  color: var(--text-secondary);
+}
+.students-page .module-page .form-card .module-form .form-row textarea, .account-page .module-page .form-card .module-form .form-row textarea, .archives-page .module-page .form-card .module-form .form-row textarea, .faculty-page .module-page .form-card .module-form .form-row textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+.students-page .module-page .form-card .module-form .form-actions, .account-page .module-page .form-card .module-form .form-actions, .archives-page .module-page .form-card .module-form .form-actions, .faculty-page .module-page .form-card .module-form .form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.students-page .module-page .form-card .module-form .form-actions button, .account-page .module-page .form-card .module-form .form-actions button, .archives-page .module-page .form-card .module-form .form-actions button, .faculty-page .module-page .form-card .module-form .form-actions button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.students-page .module-page .form-card .module-form .form-actions button.btn-primary, .account-page .module-page .form-card .module-form .form-actions button.btn-primary, .archives-page .module-page .form-card .module-form .form-actions button.btn-primary, .faculty-page .module-page .form-card .module-form .form-actions button.btn-primary {
+  background: #8B1538;
+  color: white;
+}
+.students-page .module-page .form-card .module-form .form-actions button.btn-primary:hover, .account-page .module-page .form-card .module-form .form-actions button.btn-primary:hover, .archives-page .module-page .form-card .module-form .form-actions button.btn-primary:hover, .faculty-page .module-page .form-card .module-form .form-actions button.btn-primary:hover {
+  background: #6B0F2A;
+}
+.students-page .module-page .form-card .module-form .form-actions button.btn-secondary, .account-page .module-page .form-card .module-form .form-actions button.btn-secondary, .archives-page .module-page .form-card .module-form .form-actions button.btn-secondary, .faculty-page .module-page .form-card .module-form .form-actions button.btn-secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+.students-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover, .account-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover, .archives-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover, .faculty-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover {
+  background: var(--sidebar-active);
+}
+.students-page .module-page .table-card, .account-page .module-page .table-card, .archives-page .module-page .table-card, .faculty-page .module-page .table-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.students-page .module-page .table-card .data-table, .account-page .module-page .table-card .data-table, .archives-page .module-page .table-card .data-table, .faculty-page .module-page .table-card .data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.students-page .module-page .table-card .data-table thead, .account-page .module-page .table-card .data-table thead, .archives-page .module-page .table-card .data-table thead, .faculty-page .module-page .table-card .data-table thead {
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+.students-page .module-page .table-card .data-table thead th, .account-page .module-page .table-card .data-table thead th, .archives-page .module-page .table-card .data-table thead th, .faculty-page .module-page .table-card .data-table thead th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.students-page .module-page .table-card .data-table tbody tr, .account-page .module-page .table-card .data-table tbody tr, .archives-page .module-page .table-card .data-table tbody tr, .faculty-page .module-page .table-card .data-table tbody tr {
+  border-bottom: 1px solid var(--border-color);
+  transition: background 0.2s ease;
+}
+.students-page .module-page .table-card .data-table tbody tr:hover, .account-page .module-page .table-card .data-table tbody tr:hover, .archives-page .module-page .table-card .data-table tbody tr:hover, .faculty-page .module-page .table-card .data-table tbody tr:hover {
+  background: var(--sidebar-active);
+}
+.students-page .module-page .table-card .data-table tbody tr td, .account-page .module-page .table-card .data-table tbody tr td, .archives-page .module-page .table-card .data-table tbody tr td, .faculty-page .module-page .table-card .data-table tbody tr td {
+  padding: 1rem;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+.students-page .module-page .table-card .data-table tbody tr td.actions, .account-page .module-page .table-card .data-table tbody tr td.actions, .archives-page .module-page .table-card .data-table tbody tr td.actions, .faculty-page .module-page .table-card .data-table tbody tr td.actions {
+  display: flex;
+  gap: 0.75rem;
+}
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-icon, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-icon, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-icon, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-icon {
+  padding: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: transform 0.2s ease;
+}
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover {
+  transform: scale(1.2);
+}
+.students-page .module-page .badge, .account-page .module-page .badge, .archives-page .module-page .badge, .faculty-page .module-page .badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+.students-page .module-page .badge.badge-active, .account-page .module-page .badge.badge-active, .archives-page .module-page .badge.badge-active, .faculty-page .module-page .badge.badge-active {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+.students-page .module-page .badge.badge-inactive, .account-page .module-page .badge.badge-inactive, .archives-page .module-page .badge.badge-inactive, .faculty-page .module-page .badge.badge-inactive {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+.students-page .module-page .badge.badge-graduated, .account-page .module-page .badge.badge-graduated, .archives-page .module-page .badge.badge-graduated, .faculty-page .module-page .badge.badge-graduated {
+  background: rgba(139, 21, 56, 0.1);
+  color: #8B1538;
+}
+.students-page .module-page .badge.badge-suspended, .account-page .module-page .badge.badge-suspended, .archives-page .module-page .badge.badge-suspended, .faculty-page .module-page .badge.badge-suspended {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+}
+.students-page .module-page .badge.badge-on-leave, .account-page .module-page .badge.badge-on-leave, .archives-page .module-page .badge.badge-on-leave, .faculty-page .module-page .badge.badge-on-leave {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+}
+.students-page .module-page .badge.badge-archived, .account-page .module-page .badge.badge-archived, .archives-page .module-page .badge.badge-archived, .faculty-page .module-page .badge.badge-archived {
+  background: rgba(51, 65, 85, 0.15);
+  color: var(--text-secondary);
+}
+.students-page .module-page .badge.badge-generated, .account-page .module-page .badge.badge-generated, .archives-page .module-page .badge.badge-generated, .faculty-page .module-page .badge.badge-generated {
+  background: rgba(139, 21, 56, 0.12);
+  color: #8B1538;
+}
+
+.faculty-page .filters-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.faculty-page .filters-card h3, .faculty-page .filters-card .h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+.faculty-page .filters-card .form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  align-items: center;
+}
+
+.reports-page .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+.reports-page .page-header h1, .reports-page .page-header .h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.reports-page .page-header .btn-primary {
+  padding: 0.75rem 1.5rem;
+  background: #8B1538;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.reports-page .page-header .btn-primary:hover {
+  background: #6B0F2A;
+}
+.reports-page .filters-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.reports-page .filters-card h3, .reports-page .filters-card .h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+.reports-page .filters-card .form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+.reports-page .table-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.reports-page .table-card .data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.reports-page .table-card .data-table thead {
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+.reports-page .table-card .data-table thead th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.reports-page .table-card .data-table tbody tr {
+  border-bottom: 1px solid var(--border-color);
+  transition: background 0.2s ease;
+}
+.reports-page .table-card .data-table tbody tr:hover {
+  background: var(--sidebar-active);
+}
+.reports-page .table-card .data-table tbody tr td {
+  padding: 1rem;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.students-page .module-page .page-header, .account-page .module-page .page-header, .archives-page .module-page .page-header, .faculty-page .module-page .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+.students-page .module-page .page-header h1, .account-page .module-page .page-header h1, .archives-page .module-page .page-header h1, .faculty-page .module-page .page-header h1, .students-page .module-page .page-header .h1, .account-page .module-page .page-header .h1, .archives-page .module-page .page-header .h1, .faculty-page .module-page .page-header .h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.students-page .module-page .page-header .btn-primary, .account-page .module-page .page-header .btn-primary, .archives-page .module-page .page-header .btn-primary, .faculty-page .module-page .page-header .btn-primary {
+  padding: 0.75rem 1.5rem;
+  background: #8B1538;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.students-page .module-page .page-header .btn-primary:hover, .account-page .module-page .page-header .btn-primary:hover, .archives-page .module-page .page-header .btn-primary:hover, .faculty-page .module-page .page-header .btn-primary:hover {
+  background: #6B0F2A;
+}
+.students-page .module-page .alert, .account-page .module-page .alert, .archives-page .module-page .alert, .faculty-page .module-page .alert {
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  background: rgba(139, 21, 56, 0.1);
+  border-left: 4px solid #8B1538;
+  color: var(--text-primary);
+}
+.students-page .module-page .form-card, .account-page .module-page .form-card, .archives-page .module-page .form-card, .faculty-page .module-page .form-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+.students-page .module-page .form-card h2, .account-page .module-page .form-card h2, .archives-page .module-page .form-card h2, .faculty-page .module-page .form-card h2, .students-page .module-page .form-card .h2, .account-page .module-page .form-card .h2, .archives-page .module-page .form-card .h2, .faculty-page .module-page .form-card .h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+}
+.students-page .module-page .form-card .module-form .form-row, .account-page .module-page .form-card .module-form .form-row, .archives-page .module-page .form-card .module-form .form-row, .faculty-page .module-page .form-card .module-form .form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.students-page .module-page .form-card .module-form .form-row input, .account-page .module-page .form-card .module-form .form-row input, .archives-page .module-page .form-card .module-form .form-row input, .faculty-page .module-page .form-card .module-form .form-row input, .students-page .module-page .form-card .module-form .form-row select, .account-page .module-page .form-card .module-form .form-row select, .archives-page .module-page .form-card .module-form .form-row select, .faculty-page .module-page .form-card .module-form .form-row select, .students-page .module-page .form-card .module-form .form-row textarea, .account-page .module-page .form-card .module-form .form-row textarea, .archives-page .module-page .form-card .module-form .form-row textarea, .faculty-page .module-page .form-card .module-form .form-row textarea {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+.students-page .module-page .form-card .module-form .form-row input:focus, .account-page .module-page .form-card .module-form .form-row input:focus, .archives-page .module-page .form-card .module-form .form-row input:focus, .faculty-page .module-page .form-card .module-form .form-row input:focus, .students-page .module-page .form-card .module-form .form-row select:focus, .account-page .module-page .form-card .module-form .form-row select:focus, .archives-page .module-page .form-card .module-form .form-row select:focus, .faculty-page .module-page .form-card .module-form .form-row select:focus, .students-page .module-page .form-card .module-form .form-row textarea:focus, .account-page .module-page .form-card .module-form .form-row textarea:focus, .archives-page .module-page .form-card .module-form .form-row textarea:focus, .faculty-page .module-page .form-card .module-form .form-row textarea:focus {
+  outline: none;
+  border-color: #8B1538;
+  box-shadow: 0 0 0 3px rgba(139, 21, 56, 0.1);
+}
+.students-page .module-page .form-card .module-form .form-row input::-moz-placeholder, .account-page .module-page .form-card .module-form .form-row input::-moz-placeholder, .archives-page .module-page .form-card .module-form .form-row input::-moz-placeholder, .faculty-page .module-page .form-card .module-form .form-row input::-moz-placeholder, .students-page .module-page .form-card .module-form .form-row select::-moz-placeholder, .account-page .module-page .form-card .module-form .form-row select::-moz-placeholder, .archives-page .module-page .form-card .module-form .form-row select::-moz-placeholder, .faculty-page .module-page .form-card .module-form .form-row select::-moz-placeholder, .students-page .module-page .form-card .module-form .form-row textarea::-moz-placeholder, .account-page .module-page .form-card .module-form .form-row textarea::-moz-placeholder, .archives-page .module-page .form-card .module-form .form-row textarea::-moz-placeholder, .faculty-page .module-page .form-card .module-form .form-row textarea::-moz-placeholder {
+  color: var(--text-secondary);
+}
+.students-page .module-page .form-card .module-form .form-row input::placeholder, .account-page .module-page .form-card .module-form .form-row input::placeholder, .archives-page .module-page .form-card .module-form .form-row input::placeholder, .faculty-page .module-page .form-card .module-form .form-row input::placeholder, .students-page .module-page .form-card .module-form .form-row select::placeholder, .account-page .module-page .form-card .module-form .form-row select::placeholder, .archives-page .module-page .form-card .module-form .form-row select::placeholder, .faculty-page .module-page .form-card .module-form .form-row select::placeholder, .students-page .module-page .form-card .module-form .form-row textarea::placeholder, .account-page .module-page .form-card .module-form .form-row textarea::placeholder, .archives-page .module-page .form-card .module-form .form-row textarea::placeholder, .faculty-page .module-page .form-card .module-form .form-row textarea::placeholder {
+  color: var(--text-secondary);
+}
+.students-page .module-page .form-card .module-form .form-row textarea, .account-page .module-page .form-card .module-form .form-row textarea, .archives-page .module-page .form-card .module-form .form-row textarea, .faculty-page .module-page .form-card .module-form .form-row textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+.students-page .module-page .form-card .module-form .form-actions, .account-page .module-page .form-card .module-form .form-actions, .archives-page .module-page .form-card .module-form .form-actions, .faculty-page .module-page .form-card .module-form .form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.students-page .module-page .form-card .module-form .form-actions button, .account-page .module-page .form-card .module-form .form-actions button, .archives-page .module-page .form-card .module-form .form-actions button, .faculty-page .module-page .form-card .module-form .form-actions button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.students-page .module-page .form-card .module-form .form-actions button.btn-primary, .account-page .module-page .form-card .module-form .form-actions button.btn-primary, .archives-page .module-page .form-card .module-form .form-actions button.btn-primary, .faculty-page .module-page .form-card .module-form .form-actions button.btn-primary {
+  background: #8B1538;
+  color: white;
+}
+.students-page .module-page .form-card .module-form .form-actions button.btn-primary:hover, .account-page .module-page .form-card .module-form .form-actions button.btn-primary:hover, .archives-page .module-page .form-card .module-form .form-actions button.btn-primary:hover, .faculty-page .module-page .form-card .module-form .form-actions button.btn-primary:hover {
+  background: #6B0F2A;
+}
+.students-page .module-page .form-card .module-form .form-actions button.btn-secondary, .account-page .module-page .form-card .module-form .form-actions button.btn-secondary, .archives-page .module-page .form-card .module-form .form-actions button.btn-secondary, .faculty-page .module-page .form-card .module-form .form-actions button.btn-secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+.students-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover, .account-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover, .archives-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover, .faculty-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover {
+  background: var(--sidebar-active);
+}
+.students-page .module-page .table-card, .account-page .module-page .table-card, .archives-page .module-page .table-card, .faculty-page .module-page .table-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.students-page .module-page .table-card .data-table, .account-page .module-page .table-card .data-table, .archives-page .module-page .table-card .data-table, .faculty-page .module-page .table-card .data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.students-page .module-page .table-card .data-table thead, .account-page .module-page .table-card .data-table thead, .archives-page .module-page .table-card .data-table thead, .faculty-page .module-page .table-card .data-table thead {
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+.students-page .module-page .table-card .data-table thead th, .account-page .module-page .table-card .data-table thead th, .archives-page .module-page .table-card .data-table thead th, .faculty-page .module-page .table-card .data-table thead th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.students-page .module-page .table-card .data-table tbody tr, .account-page .module-page .table-card .data-table tbody tr, .archives-page .module-page .table-card .data-table tbody tr, .faculty-page .module-page .table-card .data-table tbody tr {
+  border-bottom: 1px solid var(--border-color);
+  transition: background 0.2s ease;
+}
+.students-page .module-page .table-card .data-table tbody tr:hover, .account-page .module-page .table-card .data-table tbody tr:hover, .archives-page .module-page .table-card .data-table tbody tr:hover, .faculty-page .module-page .table-card .data-table tbody tr:hover {
+  background: var(--sidebar-active);
+}
+.students-page .module-page .table-card .data-table tbody tr td, .account-page .module-page .table-card .data-table tbody tr td, .archives-page .module-page .table-card .data-table tbody tr td, .faculty-page .module-page .table-card .data-table tbody tr td {
+  padding: 1rem;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+.students-page .module-page .table-card .data-table tbody tr td.actions, .account-page .module-page .table-card .data-table tbody tr td.actions, .archives-page .module-page .table-card .data-table tbody tr td.actions, .faculty-page .module-page .table-card .data-table tbody tr td.actions {
+  display: flex;
+  gap: 0.75rem;
+}
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-icon, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-icon, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-icon, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-icon {
+  padding: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: transform 0.2s ease;
+}
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover {
+  transform: scale(1.2);
+}
+.students-page .module-page .badge, .account-page .module-page .badge, .archives-page .module-page .badge, .faculty-page .module-page .badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+.students-page .module-page .badge.badge-active, .account-page .module-page .badge.badge-active, .archives-page .module-page .badge.badge-active, .faculty-page .module-page .badge.badge-active {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+.students-page .module-page .badge.badge-inactive, .account-page .module-page .badge.badge-inactive, .archives-page .module-page .badge.badge-inactive, .faculty-page .module-page .badge.badge-inactive {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+.students-page .module-page .badge.badge-graduated, .account-page .module-page .badge.badge-graduated, .archives-page .module-page .badge.badge-graduated, .faculty-page .module-page .badge.badge-graduated {
+  background: rgba(139, 21, 56, 0.1);
+  color: #8B1538;
+}
+.students-page .module-page .badge.badge-suspended, .account-page .module-page .badge.badge-suspended, .archives-page .module-page .badge.badge-suspended, .faculty-page .module-page .badge.badge-suspended {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+}
+.students-page .module-page .badge.badge-on-leave, .account-page .module-page .badge.badge-on-leave, .archives-page .module-page .badge.badge-on-leave, .faculty-page .module-page .badge.badge-on-leave {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+}
+.students-page .module-page .badge.badge-archived, .account-page .module-page .badge.badge-archived, .archives-page .module-page .badge.badge-archived, .faculty-page .module-page .badge.badge-archived {
+  background: rgba(51, 65, 85, 0.15);
+  color: var(--text-secondary);
+}
+.students-page .module-page .badge.badge-generated, .account-page .module-page .badge.badge-generated, .archives-page .module-page .badge.badge-generated, .faculty-page .module-page .badge.badge-generated {
+  background: rgba(139, 21, 56, 0.12);
+  color: #8B1538;
+}
+
+.archives-page .archive-tabs {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+.archives-page .archive-tabs .tab {
+  padding: 0.75rem 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+.archives-page .archive-tabs .tab:hover {
+  background: var(--sidebar-active);
+  color: var(--text-primary);
+}
+.archives-page .archive-tabs .tab.active {
+  border-color: #8B1538;
+  color: #8B1538;
+  background: var(--sidebar-active);
+  font-weight: 600;
+}
+.archives-page .filters-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.archives-page .filters-card h3, .archives-page .filters-card .h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+.archives-page .filters-card .form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  align-items: center;
+}
+.archives-page .filters-card .form-row input, .archives-page .filters-card .form-row select {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+.archives-page .filters-card .form-row input:focus, .archives-page .filters-card .form-row select:focus {
+  outline: none;
+  border-color: #8B1538;
+}
+.archives-page .filters-card .form-row .btn-secondary {
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.archives-page .filters-card .form-row .btn-secondary:hover {
+  background: var(--sidebar-active);
+}
+
+.students-page .module-page .page-header, .account-page .module-page .page-header, .faculty-page .module-page .page-header, .archives-page .module-page .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+.students-page .module-page .page-header h1, .account-page .module-page .page-header h1, .faculty-page .module-page .page-header h1, .archives-page .module-page .page-header h1, .students-page .module-page .page-header .h1, .account-page .module-page .page-header .h1, .faculty-page .module-page .page-header .h1, .archives-page .module-page .page-header .h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.students-page .module-page .page-header .btn-primary, .account-page .module-page .page-header .btn-primary, .faculty-page .module-page .page-header .btn-primary, .archives-page .module-page .page-header .btn-primary {
+  padding: 0.75rem 1.5rem;
+  background: #8B1538;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.students-page .module-page .page-header .btn-primary:hover, .account-page .module-page .page-header .btn-primary:hover, .faculty-page .module-page .page-header .btn-primary:hover, .archives-page .module-page .page-header .btn-primary:hover {
+  background: #6B0F2A;
+}
+.students-page .module-page .alert, .account-page .module-page .alert, .faculty-page .module-page .alert, .archives-page .module-page .alert {
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  background: rgba(139, 21, 56, 0.1);
+  border-left: 4px solid #8B1538;
+  color: var(--text-primary);
+}
+.students-page .module-page .form-card, .account-page .module-page .form-card, .faculty-page .module-page .form-card, .archives-page .module-page .form-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+.students-page .module-page .form-card h2, .account-page .module-page .form-card h2, .faculty-page .module-page .form-card h2, .archives-page .module-page .form-card h2, .students-page .module-page .form-card .h2, .account-page .module-page .form-card .h2, .faculty-page .module-page .form-card .h2, .archives-page .module-page .form-card .h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+}
+.students-page .module-page .form-card .module-form .form-row, .account-page .module-page .form-card .module-form .form-row, .faculty-page .module-page .form-card .module-form .form-row, .archives-page .module-page .form-card .module-form .form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.students-page .module-page .form-card .module-form .form-row input, .account-page .module-page .form-card .module-form .form-row input, .faculty-page .module-page .form-card .module-form .form-row input, .archives-page .module-page .form-card .module-form .form-row input, .students-page .module-page .form-card .module-form .form-row select, .account-page .module-page .form-card .module-form .form-row select, .faculty-page .module-page .form-card .module-form .form-row select, .archives-page .module-page .form-card .module-form .form-row select, .students-page .module-page .form-card .module-form .form-row textarea, .account-page .module-page .form-card .module-form .form-row textarea, .faculty-page .module-page .form-card .module-form .form-row textarea, .archives-page .module-page .form-card .module-form .form-row textarea {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+.students-page .module-page .form-card .module-form .form-row input:focus, .account-page .module-page .form-card .module-form .form-row input:focus, .faculty-page .module-page .form-card .module-form .form-row input:focus, .archives-page .module-page .form-card .module-form .form-row input:focus, .students-page .module-page .form-card .module-form .form-row select:focus, .account-page .module-page .form-card .module-form .form-row select:focus, .faculty-page .module-page .form-card .module-form .form-row select:focus, .archives-page .module-page .form-card .module-form .form-row select:focus, .students-page .module-page .form-card .module-form .form-row textarea:focus, .account-page .module-page .form-card .module-form .form-row textarea:focus, .faculty-page .module-page .form-card .module-form .form-row textarea:focus, .archives-page .module-page .form-card .module-form .form-row textarea:focus {
+  outline: none;
+  border-color: #8B1538;
+  box-shadow: 0 0 0 3px rgba(139, 21, 56, 0.1);
+}
+.students-page .module-page .form-card .module-form .form-row input::-moz-placeholder, .account-page .module-page .form-card .module-form .form-row input::-moz-placeholder, .faculty-page .module-page .form-card .module-form .form-row input::-moz-placeholder, .archives-page .module-page .form-card .module-form .form-row input::-moz-placeholder, .students-page .module-page .form-card .module-form .form-row select::-moz-placeholder, .account-page .module-page .form-card .module-form .form-row select::-moz-placeholder, .faculty-page .module-page .form-card .module-form .form-row select::-moz-placeholder, .archives-page .module-page .form-card .module-form .form-row select::-moz-placeholder, .students-page .module-page .form-card .module-form .form-row textarea::-moz-placeholder, .account-page .module-page .form-card .module-form .form-row textarea::-moz-placeholder, .faculty-page .module-page .form-card .module-form .form-row textarea::-moz-placeholder, .archives-page .module-page .form-card .module-form .form-row textarea::-moz-placeholder {
+  color: var(--text-secondary);
+}
+.students-page .module-page .form-card .module-form .form-row input::placeholder, .account-page .module-page .form-card .module-form .form-row input::placeholder, .faculty-page .module-page .form-card .module-form .form-row input::placeholder, .archives-page .module-page .form-card .module-form .form-row input::placeholder, .students-page .module-page .form-card .module-form .form-row select::placeholder, .account-page .module-page .form-card .module-form .form-row select::placeholder, .faculty-page .module-page .form-card .module-form .form-row select::placeholder, .archives-page .module-page .form-card .module-form .form-row select::placeholder, .students-page .module-page .form-card .module-form .form-row textarea::placeholder, .account-page .module-page .form-card .module-form .form-row textarea::placeholder, .faculty-page .module-page .form-card .module-form .form-row textarea::placeholder, .archives-page .module-page .form-card .module-form .form-row textarea::placeholder {
+  color: var(--text-secondary);
+}
+.students-page .module-page .form-card .module-form .form-row textarea, .account-page .module-page .form-card .module-form .form-row textarea, .faculty-page .module-page .form-card .module-form .form-row textarea, .archives-page .module-page .form-card .module-form .form-row textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+.students-page .module-page .form-card .module-form .form-actions, .account-page .module-page .form-card .module-form .form-actions, .faculty-page .module-page .form-card .module-form .form-actions, .archives-page .module-page .form-card .module-form .form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.students-page .module-page .form-card .module-form .form-actions button, .account-page .module-page .form-card .module-form .form-actions button, .faculty-page .module-page .form-card .module-form .form-actions button, .archives-page .module-page .form-card .module-form .form-actions button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.students-page .module-page .form-card .module-form .form-actions button.btn-primary, .account-page .module-page .form-card .module-form .form-actions button.btn-primary, .faculty-page .module-page .form-card .module-form .form-actions button.btn-primary, .archives-page .module-page .form-card .module-form .form-actions button.btn-primary {
+  background: #8B1538;
+  color: white;
+}
+.students-page .module-page .form-card .module-form .form-actions button.btn-primary:hover, .account-page .module-page .form-card .module-form .form-actions button.btn-primary:hover, .faculty-page .module-page .form-card .module-form .form-actions button.btn-primary:hover, .archives-page .module-page .form-card .module-form .form-actions button.btn-primary:hover {
+  background: #6B0F2A;
+}
+.students-page .module-page .form-card .module-form .form-actions button.btn-secondary, .account-page .module-page .form-card .module-form .form-actions button.btn-secondary, .faculty-page .module-page .form-card .module-form .form-actions button.btn-secondary, .archives-page .module-page .form-card .module-form .form-actions button.btn-secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+.students-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover, .account-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover, .faculty-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover, .archives-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover {
+  background: var(--sidebar-active);
+}
+.students-page .module-page .table-card, .account-page .module-page .table-card, .faculty-page .module-page .table-card, .archives-page .module-page .table-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.students-page .module-page .table-card .data-table, .account-page .module-page .table-card .data-table, .faculty-page .module-page .table-card .data-table, .archives-page .module-page .table-card .data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.students-page .module-page .table-card .data-table thead, .account-page .module-page .table-card .data-table thead, .faculty-page .module-page .table-card .data-table thead, .archives-page .module-page .table-card .data-table thead {
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+.students-page .module-page .table-card .data-table thead th, .account-page .module-page .table-card .data-table thead th, .faculty-page .module-page .table-card .data-table thead th, .archives-page .module-page .table-card .data-table thead th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.students-page .module-page .table-card .data-table tbody tr, .account-page .module-page .table-card .data-table tbody tr, .faculty-page .module-page .table-card .data-table tbody tr, .archives-page .module-page .table-card .data-table tbody tr {
+  border-bottom: 1px solid var(--border-color);
+  transition: background 0.2s ease;
+}
+.students-page .module-page .table-card .data-table tbody tr:hover, .account-page .module-page .table-card .data-table tbody tr:hover, .faculty-page .module-page .table-card .data-table tbody tr:hover, .archives-page .module-page .table-card .data-table tbody tr:hover {
+  background: var(--sidebar-active);
+}
+.students-page .module-page .table-card .data-table tbody tr td, .account-page .module-page .table-card .data-table tbody tr td, .faculty-page .module-page .table-card .data-table tbody tr td, .archives-page .module-page .table-card .data-table tbody tr td {
+  padding: 1rem;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+.students-page .module-page .table-card .data-table tbody tr td.actions, .account-page .module-page .table-card .data-table tbody tr td.actions, .faculty-page .module-page .table-card .data-table tbody tr td.actions, .archives-page .module-page .table-card .data-table tbody tr td.actions {
+  display: flex;
+  gap: 0.75rem;
+}
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-icon, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-icon, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-icon, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-icon {
+  padding: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: transform 0.2s ease;
+}
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover {
+  transform: scale(1.2);
+}
+.students-page .module-page .badge, .account-page .module-page .badge, .faculty-page .module-page .badge, .archives-page .module-page .badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+.students-page .module-page .badge.badge-active, .account-page .module-page .badge.badge-active, .faculty-page .module-page .badge.badge-active, .archives-page .module-page .badge.badge-active {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+.students-page .module-page .badge.badge-inactive, .account-page .module-page .badge.badge-inactive, .faculty-page .module-page .badge.badge-inactive, .archives-page .module-page .badge.badge-inactive {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+.students-page .module-page .badge.badge-graduated, .account-page .module-page .badge.badge-graduated, .faculty-page .module-page .badge.badge-graduated, .archives-page .module-page .badge.badge-graduated {
+  background: rgba(139, 21, 56, 0.1);
+  color: #8B1538;
+}
+.students-page .module-page .badge.badge-suspended, .account-page .module-page .badge.badge-suspended, .faculty-page .module-page .badge.badge-suspended, .archives-page .module-page .badge.badge-suspended {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+}
+.students-page .module-page .badge.badge-on-leave, .account-page .module-page .badge.badge-on-leave, .faculty-page .module-page .badge.badge-on-leave, .archives-page .module-page .badge.badge-on-leave {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+}
+.students-page .module-page .badge.badge-archived, .account-page .module-page .badge.badge-archived, .faculty-page .module-page .badge.badge-archived, .archives-page .module-page .badge.badge-archived {
+  background: rgba(51, 65, 85, 0.15);
+  color: var(--text-secondary);
+}
+.students-page .module-page .badge.badge-generated, .account-page .module-page .badge.badge-generated, .faculty-page .module-page .badge.badge-generated, .archives-page .module-page .badge.badge-generated {
+  background: rgba(139, 21, 56, 0.12);
+  color: #8B1538;
+}
+
+.account-page .avatar-row {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+.account-page .avatar-box {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--sidebar-active);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
 }

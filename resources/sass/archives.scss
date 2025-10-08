@@ -1,0 +1,84 @@
+@import 'variables';
+@import 'students'; // Archives uses same styles as students
+
+.archives-page {
+  @extend .students-page;
+
+  .archive-tabs {
+    display: flex;
+    gap: $spacing-sm;
+    margin-bottom: $spacing-lg;
+
+    .tab {
+      padding: $spacing-sm $spacing-md;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: $radius-md;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: var(--sidebar-active);
+        color: var(--text-primary);
+      }
+
+      &.active {
+        border-color: $primary-color;
+        color: $primary-color;
+        background: var(--sidebar-active);
+        font-weight: 600;
+      }
+    }
+  }
+
+  .filters-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: $radius-lg;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-lg;
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: $spacing-md;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: $spacing-md;
+      align-items: center;
+
+      input, select {
+        padding: $spacing-sm $spacing-md;
+        border: 1px solid var(--border-color);
+        border-radius: $radius-md;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        font-size: 0.9rem;
+
+        &:focus {
+          outline: none;
+          border-color: $primary-color;
+        }
+      }
+
+      .btn-secondary {
+        padding: $spacing-sm $spacing-md;
+        background: transparent;
+        border: 1px solid var(--border-color);
+        border-radius: $radius-md;
+        color: var(--text-secondary);
+        cursor: pointer;
+
+        &:hover {
+          background: var(--sidebar-active);
+        }
+      }
+    }
+  }
+}

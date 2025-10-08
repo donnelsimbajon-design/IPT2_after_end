@@ -1,0 +1,28 @@
+@import 'variables';
+@import 'students'; // Faculty uses same styles as students
+
+.faculty-page {
+  @extend .students-page;
+
+  .filters-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: $radius-lg;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-lg;
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: $spacing-md;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: $spacing-md;
+      align-items: center;
+    }
+  }
+}

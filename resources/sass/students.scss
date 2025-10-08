@@ -1,0 +1,229 @@
+@import 'variables';
+
+.students-page {
+  .module-page {
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: $spacing-xl;
+
+      h1 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .btn-primary {
+        padding: $spacing-sm $spacing-lg;
+        background: $primary-color;
+        color: white;
+        border: none;
+        border-radius: $radius-md;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: $primary-hover;
+        }
+      }
+    }
+
+    .alert {
+      padding: $spacing-md $spacing-lg;
+      border-radius: $radius-md;
+      margin-bottom: $spacing-lg;
+      background: rgba($info-color, 0.1);
+      border-left: 4px solid $info-color;
+      color: var(--text-primary);
+    }
+
+    .form-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: $radius-lg;
+      padding: $spacing-xl;
+      margin-bottom: $spacing-lg;
+
+      h2 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: $spacing-lg;
+      }
+
+      .module-form {
+        .form-row {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: $spacing-md;
+          margin-bottom: $spacing-md;
+
+          input, select, textarea {
+            padding: $spacing-sm $spacing-md;
+            border: 1px solid var(--border-color);
+            border-radius: $radius-md;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+
+            &:focus {
+              outline: none;
+              border-color: $primary-color;
+              box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+            }
+
+            &::placeholder {
+              color: var(--text-secondary);
+            }
+          }
+
+          textarea {
+            resize: vertical;
+            min-height: 100px;
+          }
+        }
+
+        .form-actions {
+          display: flex;
+          gap: $spacing-md;
+          margin-top: $spacing-lg;
+
+          button {
+            padding: $spacing-sm $spacing-lg;
+            border: none;
+            border-radius: $radius-md;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+
+            &.btn-primary {
+              background: $primary-color;
+              color: white;
+
+              &:hover {
+                background: $primary-hover;
+              }
+            }
+
+            &.btn-secondary {
+              background: transparent;
+              color: var(--text-secondary);
+              border: 1px solid var(--border-color);
+
+              &:hover {
+                background: var(--sidebar-active);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .table-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: $radius-lg;
+      overflow: hidden;
+
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+
+        thead {
+          background: var(--bg-primary);
+          border-bottom: 1px solid var(--border-color);
+
+          th {
+            padding: $spacing-md;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+        }
+
+        tbody {
+          tr {
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.2s ease;
+
+            &:hover {
+              background: var(--sidebar-active);
+            }
+
+            td {
+              padding: $spacing-md;
+              color: var(--text-primary);
+              font-size: 0.9rem;
+
+              &.actions {
+                display: flex;
+                gap: $spacing-sm;
+
+                .btn-icon {
+                  padding: $spacing-xs;
+                  background: transparent;
+                  border: none;
+                  cursor: pointer;
+                  font-size: 1.2rem;
+                  transition: transform 0.2s ease;
+
+                  &:hover {
+                    transform: scale(1.2);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .badge {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 500;
+
+      &.badge-active {
+        background: rgba($success-color, 0.1);
+        color: $success-color;
+      }
+
+      &.badge-inactive {
+        background: rgba($danger-color, 0.1);
+        color: $danger-color;
+      }
+
+      &.badge-graduated {
+        background: rgba($info-color, 0.1);
+        color: $info-color;
+      }
+
+      &.badge-suspended {
+        background: rgba($warning-color, 0.12);
+        color: $warning-color;
+      }
+
+      &.badge-on-leave {
+        background: rgba($warning-color, 0.12);
+        color: $warning-color;
+      }
+
+      &.badge-archived {
+        background: rgba($dark-border, 0.15);
+        color: var(--text-secondary);
+      }
+
+      &.badge-generated {
+        background: rgba($info-color, 0.12);
+        color: $info-color;
+      }
+    }
+  }
+}
