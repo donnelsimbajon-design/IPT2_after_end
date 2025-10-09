@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Student;
 use App\Models\Faculty;
 use App\Models\SystemSetting;
+use App\Models\Report;
 
 class SampleDataSeeder extends Seeder
 {
@@ -137,6 +138,49 @@ class SampleDataSeeder extends Seeder
             'category' => 'Academic',
             'description' => 'Current academic year',
             'is_public' => true,
+        ]);
+
+        // Sample Reports
+        Report::create([
+            'report_name' => 'Academic Report',
+            'report_type' => 'students',
+            'description' => 'Summary of academic performance',
+            'parameters' => [
+                'file_type' => 'PDF',
+                'file_ext' => 'pdf',
+                'file_size_mb' => 2.4,
+            ],
+            'generated_by' => null,
+            'generated_at' => '2024-01-15 00:00:00',
+            'status' => 'Generated',
+        ]);
+
+        Report::create([
+            'report_name' => 'Student Report',
+            'report_type' => 'students',
+            'description' => 'Detailed student statistics',
+            'parameters' => [
+                'file_type' => 'PDF',
+                'file_ext' => 'pdf',
+                'file_size_mb' => 5.1,
+            ],
+            'generated_by' => null,
+            'generated_at' => '2024-01-10 00:00:00',
+            'status' => 'Generated',
+        ]);
+
+        Report::create([
+            'report_name' => 'Faculty Report',
+            'report_type' => 'faculty',
+            'description' => 'Faculty employment and load overview',
+            'parameters' => [
+                'file_type' => 'DOCX',
+                'file_ext' => 'docx',
+                'file_size_mb' => 1.8,
+            ],
+            'generated_by' => null,
+            'generated_at' => '2024-01-08 00:00:00',
+            'status' => 'Generated',
         ]);
     }
 }

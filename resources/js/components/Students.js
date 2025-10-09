@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 
 export default function Students() {
@@ -27,9 +27,26 @@ export default function Students() {
         status: 'Active'
     });
 
+    // UI state for search/filters and avatar upload
+    const [query, setQuery] = useState('');
+    const [filters, setFilters] = useState({ program: '', year_level: '', school_year: '', status: '' });
+    const [avatarFile, setAvatarFile] = useState(null);
+    const [avatarPreview, setAvatarPreview] = useState(null);
+
+    // Options derived from current data
+    const programs = useMemo(() => Array.from(new Set(students.map(s => s.program).filter(Boolean))).sort(), [students]);
+    const yearLevels = useMemo(() => Array.from(new Set(students.map(s => s.year_level).filter(Boolean))).sort(), [students]);
+    const schoolYears = useMemo(() => Array.from(new Set(students.map(s => s.enrollment_date ? new Date(s.enrollment_date).getFullYear() : null).filter(Boolean))).sort(), [students]);
+
     useEffect(() => {
         fetchStudents();
     }, []);
+
+    // Refetch when filters or search query changes
+    useEffect(() => {
+        fetchStudents();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [query, filters]);
 
     useEffect(() => {
         if (message) {
@@ -40,7 +57,15 @@ export default function Students() {
 
     const fetchStudents = async () => {
         try {
-            const response = await axios.get('/api/students');
+            const response = await axios.get('/api/students', {
+                params: {
+                    q: query || undefined,
+                    program: filters.program || undefined,
+                    year_level: filters.year_level || undefined,
+                    school_year: filters.school_year || undefined,
+                    status: filters.status || undefined,
+                }
+            });
             setStudents(response.data);
         } catch (error) {
             console.error('Error fetching students:', error);
@@ -53,14 +78,25 @@ export default function Students() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            let saved;
             if (editingId) {
-                await axios.put(`/api/students/${editingId}`, formData);
+                const res = await axios.put(`/api/students/${editingId}`, formData);
+                saved = res.data.student ?? res.data;
                 setMessage('Student updated successfully');
             } else {
-                await axios.post('/api/students', formData);
+                const res = await axios.post('/api/students', formData);
+                saved = res.data.student ?? res.data;
                 setMessage('Student created successfully');
             }
-            fetchStudents();
+
+            // Upload avatar if selected
+            if (avatarFile && saved?.id) {
+                const fd = new FormData();
+                fd.append('avatar', avatarFile);
+                await axios.post(`/api/students/${saved.id}/avatar`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+            }
+
+            await fetchStudents();
             resetForm();
         } catch (error) {
             console.error('Error saving student:', error);
@@ -68,10 +104,24 @@ export default function Students() {
         }
     };
 
+    const handleAvatarChange = (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (file) {
+            setAvatarFile(file);
+            try { setAvatarPreview(URL.createObjectURL(file)); } catch { setAvatarPreview(null); }
+        }
+    };
+
     const handleEdit = (student) => {
         setFormData(student);
         setEditingId(student.id);
         setShowForm(true);
+        setAvatarFile(null);
+        if (student.avatar_path) {
+            setAvatarPreview(student.avatar_path.startsWith('http') ? student.avatar_path : `/${student.avatar_path}`);
+        } else {
+            setAvatarPreview(null);
+        }
     };
 
     const handleDelete = async (id) => {
@@ -108,6 +158,8 @@ export default function Students() {
         });
         setEditingId(null);
         setShowForm(false);
+        setAvatarFile(null);
+        setAvatarPreview(null);
     };
 
     const handleChange = (e) => {
@@ -136,7 +188,8 @@ export default function Students() {
     const handleArchive = async (student) => {
         if (!confirm('Archive this student?')) return;
         try {
-            await axios.put(`/api/students/${student.id}`, { status: 'Archived' });
+            // Use 'Inactive' to keep within current DB enum while still archiving record separately
+            await axios.put(`/api/students/${student.id}`, { status: 'Inactive' });
             try { await createArchiveFromStudent(student); } catch (e) { console.error('Archive create failed', e); }
             setMessage('Student archived successfully');
             fetchStudents();
@@ -160,12 +213,66 @@ export default function Students() {
 
             {message && <div className="alert alert-info">{message}</div>}
 
+            {/* Filters and search */}
+            <div className="students-panel">
+                <div className="panel-header">
+                    <h2>Student Management</h2>
+                    <div className="panel-controls">
+                        <input
+                            className="search-input"
+                            placeholder="Search"
+                            value={query}
+                            onChange={(e)=>setQuery(e.target.value)}
+                        />
+                        <div className="filters">
+                            <select className="filter" value={filters.program} onChange={(e)=>setFilters({...filters, program: e.target.value})}>
+                                <option value="">All Departments</option>
+                                {programs.map(p => (<option key={p} value={p}>{p}</option>))}
+                            </select>
+                            <select className="filter" value={filters.year_level} onChange={(e)=>setFilters({...filters, year_level: e.target.value})}>
+                                <option value="">All Year Levels</option>
+                                {yearLevels.map(y => (<option key={y} value={y}>{y}</option>))}
+                            </select>
+                            <select className="filter" value={filters.school_year} onChange={(e)=>setFilters({...filters, school_year: e.target.value})}>
+                                <option value="">All School Years</option>
+                                {schoolYears.map(y => (<option key={y} value={y}>{y}</option>))}
+                            </select>
+                            <select className="filter" value={filters.status} onChange={(e)=>setFilters({...filters, status: e.target.value})}>
+                                <option value="">Any Status</option>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                                <option value="Graduated">Graduated</option>
+                                <option value="Suspended">Suspended</option>
+                                <option value="Archived">Archived</option>
+                            </select>
+                            <label className="active-only">
+                                <input type="checkbox" checked={filters.status === 'Active'} onChange={(e)=> setFilters({...filters, status: e.target.checked ? 'Active' : ''})} />
+                                <span>Active only</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {showForm && (
                 <div className="form-card">
                     <h2>{editingId ? 'Edit Student' : 'Add New Student'}</h2>
                     <form onSubmit={handleSubmit} className="module-form">
                         <div className="form-row">
-                            <input name="student_id" placeholder="Student ID *" value={formData.student_id} onChange={handleChange} required />
+                            <div className="avatar-input">
+                                <div className="avatar-preview">
+                                    {avatarPreview ? (
+                                        <img src={avatarPreview} alt="Student avatar preview" />
+                                    ) : (
+                                        <div className="placeholder">{(formData.first_name || formData.last_name || 'S').toString().charAt(0).toUpperCase()}</div>
+                                    )}
+                                </div>
+                                <label className="btn btn-secondary" style={{marginTop: '8px'}}>
+                                    Upload Photo
+                                    <input type="file" accept="image/*" onChange={handleAvatarChange} style={{display:'none'}} />
+                                </label>
+                                <small style={{display:'block', color:'var(--text-secondary)'}}>Square image recommended. Displayed as 40x40 circle.</small>
+                            </div>
                             <input name="first_name" placeholder="First Name *" value={formData.first_name} onChange={handleChange} required />
                             <input name="last_name" placeholder="Last Name *" value={formData.last_name} onChange={handleChange} required />
                         </div>
@@ -185,14 +292,13 @@ export default function Students() {
                             <input name="enrollment_date" type="date" placeholder="Enrollment Date" value={formData.enrollment_date} onChange={handleChange} />
                         </div>
                         <div className="form-row">
-                            <input name="program" placeholder="Program" value={formData.program} onChange={handleChange} />
+                            <input name="program" placeholder="Program (Department)" value={formData.program} onChange={handleChange} />
                             <input name="year_level" placeholder="Year Level" value={formData.year_level} onChange={handleChange} />
                             <select name="status" value={formData.status} onChange={handleChange}>
                                 <option value="Active">Active</option>
                                 <option value="Inactive">Inactive</option>
                                 <option value="Graduated">Graduated</option>
                                 <option value="Suspended">Suspended</option>
-                                <option value="Archived">Archived</option>
                             </select>
                         </div>
                         <div className="form-row">
@@ -218,29 +324,43 @@ export default function Students() {
                 <table className="data-table">
                     <thead>
                         <tr>
+                            <th>Student</th>
                             <th>Student ID</th>
-                            <th>Name</th>
                             <th>Email</th>
-                            <th>Program</th>
+                            <th>Department</th>
                             <th>Year Level</th>
-                            <th>Status</th>
+                            <th>Enrollment Date</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {students.map(student => (
                             <tr key={student.id}>
+                                <td>
+                                    <div className="student-cell">
+                                        <div className="avatar">
+                                            {student.avatar_path ? (
+                                                <img src={student.avatar_path.startsWith('http') ? student.avatar_path : `/${student.avatar_path}`} alt="Avatar" />
+                                            ) : (
+                                                <span>{(student.first_name || student.last_name || 'S').toString().charAt(0).toUpperCase()}</span>
+                                            )}
+                                        </div>
+                                        <div className="info">
+                                            <div className="name">{student.first_name} {student.last_name}</div>
+                                            <div className="sub">{student.email}</div>
+                                        </div>
+                                    </div>
+                                </td>
                                 <td>{student.student_id}</td>
-                                <td>{student.first_name} {student.last_name}</td>
                                 <td>{student.email}</td>
                                 <td>{student.program}</td>
                                 <td>{student.year_level}</td>
-                                <td><span className={`badge badge-${student.status.toLowerCase()}`}>{student.status}</span></td>
+                                <td>{student.enrollment_date ? new Date(student.enrollment_date).toISOString().slice(0,10) : ''}</td>
                                 <td className="actions">
-                                    <button className="btn-icon btn-edit" onClick={() => handleEdit(student)}>Edit</button>
-                                    <button className="btn-icon btn-delete" onClick={() => handleDelete(student.id)}>Delete</button>
+                                    <button className="btn-chip btn-edit" onClick={() => handleEdit(student)}>Edit</button>
+                                    <button className="btn-chip btn-delete" onClick={() => handleDelete(student.id)}>Delete</button>
                                     {student.status !== 'Archived' && (
-                                        <button className="btn-icon" onClick={() => handleArchive(student)}>Archive</button>
+                                        <button className="btn-chip btn-archive" onClick={() => handleArchive(student)}>Archive</button>
                                     )}
                                 </td>
                             </tr>

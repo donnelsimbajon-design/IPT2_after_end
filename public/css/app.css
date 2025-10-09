@@ -12368,6 +12368,21 @@ textarea.form-control-lg {
   --border-color: #e2e8f0;
   --sidebar-bg: #ffffff;
   --sidebar-active: #f0f4f8;
+  --brand: #8B1538;
+  --app-bg-image: url("/images/image.png");
+  --app-bg-opacity: 0.2;
+}
+
+.admin-layout.nav-collapsed .sidebar {
+  transform: translateX(-100%);
+}
+.admin-layout.nav-collapsed .main-content {
+  margin-left: 0;
+}
+.admin-layout.nav-collapsed .content-header {
+  margin-left: 0;
+  width: 100%;
+  padding-left: 1rem;
 }
 
 [data-theme=dark] {
@@ -12412,6 +12427,7 @@ body {
   top: 0;
   transition: all 0.3s ease;
   z-index: 100;
+  overflow-y: auto;
 }
 .sidebar .sidebar-header {
   padding: 1.5rem;
@@ -12446,8 +12462,80 @@ body {
   color: var(--text-secondary);
   margin: 0;
 }
+.sidebar .sidebar-header li.has-sub .menu-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.sidebar .sidebar-header li.has-sub .menu-row a.label {
+  flex: 1;
+  padding-right: 0.75rem;
+}
+.sidebar .sidebar-header li.has-sub .menu-row .submenu-toggle {
+  background: transparent;
+  border: 0;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  min-width: 28px;
+  text-align: center;
+}
+.sidebar .sidebar-header li.has-sub .menu-row .submenu-toggle:hover {
+  background: var(--sidebar-active);
+  color: var(--text-primary);
+}
+.sidebar .sidebar-header li.has-sub .submenu {
+  list-style: none;
+  margin: 6px 0 10px 20px;
+  padding: 4px 0;
+  border-left: 2px solid var(--border-color);
+  max-height: 320px;
+  overflow-y: auto;
+}
+.sidebar .sidebar-header li.has-sub .submenu li {
+  margin: 4px 0;
+}
+.sidebar .sidebar-header li.has-sub .submenu li a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 36px;
+  padding: 8px 1rem 8px -1rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  border-radius: 8px;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+.sidebar .sidebar-header li.has-sub .submenu li a:hover {
+  background: var(--sidebar-active);
+  color: var(--text-primary);
+}
+.sidebar .sidebar-header li.has-sub .submenu li a:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.08);
+}
+.sidebar .sidebar-header li.has-sub .submenu li a .icon {
+  width: 18px;
+  display: inline-flex;
+  justify-content: center;
+  opacity: 0.9;
+}
+.sidebar .sidebar-header li.has-sub .submenu li a .text {
+  flex: 1;
+}
+.sidebar .sidebar-header li.has-sub .submenu li.active a {
+  background: var(--sidebar-active);
+  color: var(--brand);
+  font-weight: 600;
+  box-shadow: inset 3px 0 0 var(--brand);
+}
+.sidebar .sidebar-header li.has-sub .submenu li.active a .icon {
+  opacity: 1;
+}
 .sidebar .nav-section {
   padding: 1.5rem 1rem;
+  margin-bottom: 1.5rem;
 }
 .sidebar .nav-section .section-title {
   font-size: 0.7rem;
@@ -12494,7 +12582,7 @@ body {
 }
 .sidebar .nav-menu li.active a {
   background: var(--sidebar-active);
-  color: #8B1538;
+  color: var(--brand);
   font-weight: 500;
   position: relative;
 }
@@ -12506,7 +12594,7 @@ body {
   bottom: 6px;
   width: 4px;
   border-radius: 2px;
-  background: #8B1538;
+  background: var(--brand);
 }
 .sidebar .sidebar-footer {
   margin-top: auto;
@@ -12524,7 +12612,7 @@ body {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: #8B1538;
+  background: var(--brand);
   color: white;
   display: flex;
   align-items: center;
@@ -12570,6 +12658,23 @@ body {
   margin-left: 260px;
   min-height: 100vh;
   background: var(--bg-primary);
+  position: relative;
+}
+.main-content::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-image: var(--app-bg-image);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  opacity: var(--app-bg-opacity, 0.2);
+  pointer-events: none;
+  z-index: 0;
 }
 .main-content .content-header {
   background: var(--bg-secondary);
@@ -12580,8 +12685,30 @@ body {
   justify-content: space-between;
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 90;
   box-shadow: 0 10px 20px -16px rgba(0, 0, 0, 0.25);
+  padding-left: 1rem;
+  margin-left: -260px;
+  width: calc(100% + 260px);
+  padding-left: calc(260px + 1rem);
+}
+.main-content .content-header .nav-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+}
+.main-content .content-header .nav-toggle:hover {
+  background: var(--sidebar-active);
 }
 .main-content .content-header .header-left {
   flex: 1;
@@ -12651,13 +12778,21 @@ body {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #8B1538;
+  background: var(--brand);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
   font-size: 0.85rem;
+}
+.main-content .content-header .header-right .user-menu .user-avatar img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border-radius: 50%;
+  display: block;
 }
 .main-content .content-header .header-right .user-menu .user-info .user-name {
   font-size: 0.85rem;
@@ -12677,13 +12812,14 @@ body {
   position: fixed;
   right: 24px;
   top: 70px;
-  z-index: 120;
+  z-index: 4000;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
   min-width: 240px;
-  overflow: hidden;
+  max-height: 70vh;
+  overflow: auto;
 }
 .main-content .content-header .header-right .user-dropdown .dropdown-header {
   display: flex;
@@ -12714,6 +12850,25 @@ body {
 }
 .main-content .content-wrapper {
   padding: 2rem;
+  position: relative;
+}
+
+.sidebar-header .logo img {
+  width: 40px;
+  height: 40px;
+  -o-object-fit: contain;
+     object-fit: contain;
+  border-radius: 8px;
+  display: block;
+}
+
+.content-header .brand .logo-small {
+  width: 32px;
+  height: 32px;
+  -o-object-fit: contain;
+     object-fit: contain;
+  border-radius: 8px;
+  display: block;
 }
 
 @media (max-width: 768px) {
@@ -12725,6 +12880,16 @@ body {
   }
   .main-content {
     margin-left: 0;
+  }
+  .main-content::before {
+    left: 0;
+    width: 100%;
+  }
+  .content-header {
+    margin-left: 0;
+    width: 100%;
+    padding-left: 1rem;
+    z-index: 300;
   }
 }
 .dashboard-page .stats-grid {
@@ -12828,6 +12993,47 @@ body {
   line-height: 1.5;
 }
 
+.settings-landing .lead {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+.settings-landing .settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+.settings-landing .settings-card {
+  display: block;
+  text-decoration: none;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+  transition: all 0.25s ease;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+.settings-landing .settings-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border-color: #8B1538;
+}
+.settings-landing .settings-card .card-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+}
+.settings-landing .settings-card .card-label {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .settings-landing .settings-grid {
+    grid-template-columns: 1fr;
+  }
+}
 .students-page .module-page .page-header, .account-page .module-page .page-header, .archives-page .module-page .page-header, .faculty-page .module-page .page-header {
   display: flex;
   justify-content: space-between;
@@ -12851,6 +13057,73 @@ body {
 }
 .students-page .module-page .page-header .btn-primary:hover, .account-page .module-page .page-header .btn-primary:hover, .archives-page .module-page .page-header .btn-primary:hover, .faculty-page .module-page .page-header .btn-primary:hover {
   background: #6B0F2A;
+}
+.students-page .module-page .students-panel, .account-page .module-page .students-panel, .archives-page .module-page .students-panel, .faculty-page .module-page .students-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+.students-page .module-page .students-panel .panel-header, .account-page .module-page .students-panel .panel-header, .archives-page .module-page .students-panel .panel-header, .faculty-page .module-page .students-panel .panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+.students-page .module-page .students-panel .panel-header h2, .account-page .module-page .students-panel .panel-header h2, .archives-page .module-page .students-panel .panel-header h2, .faculty-page .module-page .students-panel .panel-header h2, .students-page .module-page .students-panel .panel-header .h2, .account-page .module-page .students-panel .panel-header .h2, .archives-page .module-page .students-panel .panel-header .h2, .faculty-page .module-page .students-panel .panel-header .h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+.students-page .module-page .students-panel .panel-header .panel-controls, .account-page .module-page .students-panel .panel-header .panel-controls, .archives-page .module-page .students-panel .panel-header .panel-controls, .faculty-page .module-page .students-panel .panel-header .panel-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.students-page .module-page .students-panel .panel-header .search-input, .account-page .module-page .students-panel .panel-header .search-input, .archives-page .module-page .students-panel .panel-header .search-input, .faculty-page .module-page .students-panel .panel-header .search-input {
+  flex: 0 0 300px;
+  max-width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+.students-page .module-page .students-panel .panel-header .search-input::-moz-placeholder, .account-page .module-page .students-panel .panel-header .search-input::-moz-placeholder, .archives-page .module-page .students-panel .panel-header .search-input::-moz-placeholder, .faculty-page .module-page .students-panel .panel-header .search-input::-moz-placeholder {
+  color: var(--text-secondary);
+}
+.students-page .module-page .students-panel .panel-header .search-input::placeholder, .account-page .module-page .students-panel .panel-header .search-input::placeholder, .archives-page .module-page .students-panel .panel-header .search-input::placeholder, .faculty-page .module-page .students-panel .panel-header .search-input::placeholder {
+  color: var(--text-secondary);
+}
+.students-page .module-page .students-panel .panel-header .search-input:focus, .account-page .module-page .students-panel .panel-header .search-input:focus, .archives-page .module-page .students-panel .panel-header .search-input:focus, .faculty-page .module-page .students-panel .panel-header .search-input:focus {
+  border-color: #8B1538;
+  box-shadow: 0 0 0 3px rgba(139, 21, 56, 0.1);
+  outline: none;
+}
+.students-page .module-page .students-panel .panel-header .filters, .account-page .module-page .students-panel .panel-header .filters, .archives-page .module-page .students-panel .panel-header .filters, .faculty-page .module-page .students-panel .panel-header .filters {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.students-page .module-page .students-panel .panel-header .filters .filter, .account-page .module-page .students-panel .panel-header .filters .filter, .archives-page .module-page .students-panel .panel-header .filters .filter, .faculty-page .module-page .students-panel .panel-header .filters .filter {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+.students-page .module-page .students-panel .panel-header .filters .active-only, .account-page .module-page .students-panel .panel-header .filters .active-only, .archives-page .module-page .students-panel .panel-header .filters .active-only, .faculty-page .module-page .students-panel .panel-header .filters .active-only {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+}
+.students-page .module-page .students-panel .panel-header .filters .active-only input, .account-page .module-page .students-panel .panel-header .filters .active-only input, .archives-page .module-page .students-panel .panel-header .filters .active-only input, .faculty-page .module-page .students-panel .panel-header .filters .active-only input {
+  width: auto;
 }
 .students-page .module-page .alert, .account-page .module-page .alert, .archives-page .module-page .alert, .faculty-page .module-page .alert {
   padding: 1rem 1.5rem;
@@ -12950,7 +13223,6 @@ body {
   text-align: left;
   font-weight: 600;
   font-size: 0.85rem;
-  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -12966,20 +13238,64 @@ body {
   color: var(--text-primary);
   font-size: 0.9rem;
 }
+.students-page .module-page .table-card .data-table tbody tr td .student-cell, .account-page .module-page .table-card .data-table tbody tr td .student-cell, .archives-page .module-page .table-card .data-table tbody tr td .student-cell, .faculty-page .module-page .table-card .data-table tbody tr td .student-cell {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.students-page .module-page .table-card .data-table tbody tr td .student-cell .avatar, .account-page .module-page .table-card .data-table tbody tr td .student-cell .avatar, .archives-page .module-page .table-card .data-table tbody tr td .student-cell .avatar, .faculty-page .module-page .table-card .data-table tbody tr td .student-cell .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--sidebar-active);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  overflow: hidden;
+}
+.students-page .module-page .table-card .data-table tbody tr td .student-cell .avatar img, .account-page .module-page .table-card .data-table tbody tr td .student-cell .avatar img, .archives-page .module-page .table-card .data-table tbody tr td .student-cell .avatar img, .faculty-page .module-page .table-card .data-table tbody tr td .student-cell .avatar img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  display: block;
+}
+.students-page .module-page .table-card .data-table tbody tr td .student-cell .info .name, .account-page .module-page .table-card .data-table tbody tr td .student-cell .info .name, .archives-page .module-page .table-card .data-table tbody tr td .student-cell .info .name, .faculty-page .module-page .table-card .data-table tbody tr td .student-cell .info .name {
+  font-weight: 600;
+}
+.students-page .module-page .table-card .data-table tbody tr td .student-cell .info .sub, .account-page .module-page .table-card .data-table tbody tr td .student-cell .info .sub, .archives-page .module-page .table-card .data-table tbody tr td .student-cell .info .sub, .faculty-page .module-page .table-card .data-table tbody tr td .student-cell .info .sub {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
 .students-page .module-page .table-card .data-table tbody tr td.actions, .account-page .module-page .table-card .data-table tbody tr td.actions, .archives-page .module-page .table-card .data-table tbody tr td.actions, .faculty-page .module-page .table-card .data-table tbody tr td.actions {
   display: flex;
   gap: 0.75rem;
 }
-.students-page .module-page .table-card .data-table tbody tr td.actions .btn-icon, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-icon, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-icon, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-icon {
-  padding: 0.5rem;
-  background: transparent;
-  border: none;
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-chip, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-chip, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-chip, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-chip {
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-radius: 9999px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 1.2rem;
-  transition: transform 0.2s ease;
 }
-.students-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover {
-  transform: scale(1.2);
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-chip + .btn-chip, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-chip + .btn-chip, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-chip + .btn-chip, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-chip + .btn-chip {
+  margin-left: 6px;
+}
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-edit, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-edit, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-edit, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-edit {
+  border-color: rgba(139, 21, 56, 0.4);
+}
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-delete, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-delete, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-delete, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-delete {
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.06);
+}
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-archive, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-archive, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-archive, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-archive {
+  border-color: rgba(212, 175, 55, 0.4);
 }
 .students-page .module-page .badge, .account-page .module-page .badge, .archives-page .module-page .badge, .faculty-page .module-page .badge {
   padding: 4px 12px;
@@ -13016,6 +13332,37 @@ body {
   color: #8B1538;
 }
 
+.students-page .avatar-input, .account-page .avatar-input, .archives-page .avatar-input, .faculty-page .avatar-input {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+.students-page .avatar-input .avatar-preview, .account-page .avatar-input .avatar-preview, .archives-page .avatar-input .avatar-preview, .faculty-page .avatar-input .avatar-preview {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  background: var(--sidebar-active);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+.students-page .avatar-input .avatar-preview img, .account-page .avatar-input .avatar-preview img, .archives-page .avatar-input .avatar-preview img, .faculty-page .avatar-input .avatar-preview img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  display: block;
+}
+.students-page .avatar-input .avatar-preview .placeholder, .account-page .avatar-input .avatar-preview .placeholder, .archives-page .avatar-input .avatar-preview .placeholder, .faculty-page .avatar-input .avatar-preview .placeholder {
+  display: inline-block;
+}
+
 .students-page .module-page .page-header, .account-page .module-page .page-header, .archives-page .module-page .page-header, .faculty-page .module-page .page-header {
   display: flex;
   justify-content: space-between;
@@ -13039,6 +13386,73 @@ body {
 }
 .students-page .module-page .page-header .btn-primary:hover, .account-page .module-page .page-header .btn-primary:hover, .archives-page .module-page .page-header .btn-primary:hover, .faculty-page .module-page .page-header .btn-primary:hover {
   background: #6B0F2A;
+}
+.students-page .module-page .students-panel, .account-page .module-page .students-panel, .archives-page .module-page .students-panel, .faculty-page .module-page .students-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+.students-page .module-page .students-panel .panel-header, .account-page .module-page .students-panel .panel-header, .archives-page .module-page .students-panel .panel-header, .faculty-page .module-page .students-panel .panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+.students-page .module-page .students-panel .panel-header h2, .account-page .module-page .students-panel .panel-header h2, .archives-page .module-page .students-panel .panel-header h2, .faculty-page .module-page .students-panel .panel-header h2, .students-page .module-page .students-panel .panel-header .h2, .account-page .module-page .students-panel .panel-header .h2, .archives-page .module-page .students-panel .panel-header .h2, .faculty-page .module-page .students-panel .panel-header .h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+.students-page .module-page .students-panel .panel-header .panel-controls, .account-page .module-page .students-panel .panel-header .panel-controls, .archives-page .module-page .students-panel .panel-header .panel-controls, .faculty-page .module-page .students-panel .panel-header .panel-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.students-page .module-page .students-panel .panel-header .search-input, .account-page .module-page .students-panel .panel-header .search-input, .archives-page .module-page .students-panel .panel-header .search-input, .faculty-page .module-page .students-panel .panel-header .search-input {
+  flex: 0 0 300px;
+  max-width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+.students-page .module-page .students-panel .panel-header .search-input::-moz-placeholder, .account-page .module-page .students-panel .panel-header .search-input::-moz-placeholder, .archives-page .module-page .students-panel .panel-header .search-input::-moz-placeholder, .faculty-page .module-page .students-panel .panel-header .search-input::-moz-placeholder {
+  color: var(--text-secondary);
+}
+.students-page .module-page .students-panel .panel-header .search-input::placeholder, .account-page .module-page .students-panel .panel-header .search-input::placeholder, .archives-page .module-page .students-panel .panel-header .search-input::placeholder, .faculty-page .module-page .students-panel .panel-header .search-input::placeholder {
+  color: var(--text-secondary);
+}
+.students-page .module-page .students-panel .panel-header .search-input:focus, .account-page .module-page .students-panel .panel-header .search-input:focus, .archives-page .module-page .students-panel .panel-header .search-input:focus, .faculty-page .module-page .students-panel .panel-header .search-input:focus {
+  border-color: #8B1538;
+  box-shadow: 0 0 0 3px rgba(139, 21, 56, 0.1);
+  outline: none;
+}
+.students-page .module-page .students-panel .panel-header .filters, .account-page .module-page .students-panel .panel-header .filters, .archives-page .module-page .students-panel .panel-header .filters, .faculty-page .module-page .students-panel .panel-header .filters {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.students-page .module-page .students-panel .panel-header .filters .filter, .account-page .module-page .students-panel .panel-header .filters .filter, .archives-page .module-page .students-panel .panel-header .filters .filter, .faculty-page .module-page .students-panel .panel-header .filters .filter {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+.students-page .module-page .students-panel .panel-header .filters .active-only, .account-page .module-page .students-panel .panel-header .filters .active-only, .archives-page .module-page .students-panel .panel-header .filters .active-only, .faculty-page .module-page .students-panel .panel-header .filters .active-only {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+}
+.students-page .module-page .students-panel .panel-header .filters .active-only input, .account-page .module-page .students-panel .panel-header .filters .active-only input, .archives-page .module-page .students-panel .panel-header .filters .active-only input, .faculty-page .module-page .students-panel .panel-header .filters .active-only input {
+  width: auto;
 }
 .students-page .module-page .alert, .account-page .module-page .alert, .archives-page .module-page .alert, .faculty-page .module-page .alert {
   padding: 1rem 1.5rem;
@@ -13138,7 +13552,6 @@ body {
   text-align: left;
   font-weight: 600;
   font-size: 0.85rem;
-  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -13154,20 +13567,64 @@ body {
   color: var(--text-primary);
   font-size: 0.9rem;
 }
+.students-page .module-page .table-card .data-table tbody tr td .student-cell, .account-page .module-page .table-card .data-table tbody tr td .student-cell, .archives-page .module-page .table-card .data-table tbody tr td .student-cell, .faculty-page .module-page .table-card .data-table tbody tr td .student-cell {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.students-page .module-page .table-card .data-table tbody tr td .student-cell .avatar, .account-page .module-page .table-card .data-table tbody tr td .student-cell .avatar, .archives-page .module-page .table-card .data-table tbody tr td .student-cell .avatar, .faculty-page .module-page .table-card .data-table tbody tr td .student-cell .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--sidebar-active);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  overflow: hidden;
+}
+.students-page .module-page .table-card .data-table tbody tr td .student-cell .avatar img, .account-page .module-page .table-card .data-table tbody tr td .student-cell .avatar img, .archives-page .module-page .table-card .data-table tbody tr td .student-cell .avatar img, .faculty-page .module-page .table-card .data-table tbody tr td .student-cell .avatar img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  display: block;
+}
+.students-page .module-page .table-card .data-table tbody tr td .student-cell .info .name, .account-page .module-page .table-card .data-table tbody tr td .student-cell .info .name, .archives-page .module-page .table-card .data-table tbody tr td .student-cell .info .name, .faculty-page .module-page .table-card .data-table tbody tr td .student-cell .info .name {
+  font-weight: 600;
+}
+.students-page .module-page .table-card .data-table tbody tr td .student-cell .info .sub, .account-page .module-page .table-card .data-table tbody tr td .student-cell .info .sub, .archives-page .module-page .table-card .data-table tbody tr td .student-cell .info .sub, .faculty-page .module-page .table-card .data-table tbody tr td .student-cell .info .sub {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
 .students-page .module-page .table-card .data-table tbody tr td.actions, .account-page .module-page .table-card .data-table tbody tr td.actions, .archives-page .module-page .table-card .data-table tbody tr td.actions, .faculty-page .module-page .table-card .data-table tbody tr td.actions {
   display: flex;
   gap: 0.75rem;
 }
-.students-page .module-page .table-card .data-table tbody tr td.actions .btn-icon, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-icon, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-icon, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-icon {
-  padding: 0.5rem;
-  background: transparent;
-  border: none;
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-chip, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-chip, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-chip, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-chip {
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-radius: 9999px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 1.2rem;
-  transition: transform 0.2s ease;
 }
-.students-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover {
-  transform: scale(1.2);
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-chip + .btn-chip, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-chip + .btn-chip, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-chip + .btn-chip, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-chip + .btn-chip {
+  margin-left: 6px;
+}
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-edit, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-edit, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-edit, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-edit {
+  border-color: rgba(139, 21, 56, 0.4);
+}
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-delete, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-delete, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-delete, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-delete {
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.06);
+}
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-archive, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-archive, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-archive, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-archive {
+  border-color: rgba(212, 175, 55, 0.4);
 }
 .students-page .module-page .badge, .account-page .module-page .badge, .archives-page .module-page .badge, .faculty-page .module-page .badge {
   padding: 4px 12px;
@@ -13202,6 +13659,37 @@ body {
 .students-page .module-page .badge.badge-generated, .account-page .module-page .badge.badge-generated, .archives-page .module-page .badge.badge-generated, .faculty-page .module-page .badge.badge-generated {
   background: rgba(139, 21, 56, 0.12);
   color: #8B1538;
+}
+
+.students-page .avatar-input, .account-page .avatar-input, .archives-page .avatar-input, .faculty-page .avatar-input {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+.students-page .avatar-input .avatar-preview, .account-page .avatar-input .avatar-preview, .archives-page .avatar-input .avatar-preview, .faculty-page .avatar-input .avatar-preview {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  background: var(--sidebar-active);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+.students-page .avatar-input .avatar-preview img, .account-page .avatar-input .avatar-preview img, .archives-page .avatar-input .avatar-preview img, .faculty-page .avatar-input .avatar-preview img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  display: block;
+}
+.students-page .avatar-input .avatar-preview .placeholder, .account-page .avatar-input .avatar-preview .placeholder, .archives-page .avatar-input .avatar-preview .placeholder, .faculty-page .avatar-input .avatar-preview .placeholder {
+  display: inline-block;
 }
 
 .faculty-page .filters-card {
@@ -13247,6 +13735,99 @@ body {
 }
 .reports-page .page-header .btn-primary:hover {
   background: #6B0F2A;
+}
+.reports-page .reports-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+.reports-page .panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.reports-page .panel-header h2, .reports-page .panel-header .h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+.reports-page .panel-header .search-input {
+  flex: 0 0 360px;
+  max-width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  outline: none;
+}
+.reports-page .panel-header .search-input::-moz-placeholder {
+  color: var(--text-secondary);
+}
+.reports-page .panel-header .search-input::placeholder {
+  color: var(--text-secondary);
+}
+.reports-page .panel-header .search-input:focus {
+  border-color: #8B1538;
+  box-shadow: 0 0 0 3px rgba(139, 21, 56, 0.1);
+}
+.reports-page .reports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+.reports-page .report-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.reports-page .report-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border-color: #8B1538;
+}
+.reports-page .report-card .file-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: rgba(139, 21, 56, 0.1);
+  border: 1px solid rgba(139, 21, 56, 0.3);
+  margin-bottom: 1rem;
+}
+.reports-page .report-card .card-title {
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+.reports-page .report-card .card-meta {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+.reports-page .report-card .card-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+.reports-page .report-card .card-actions .btn {
+  border-radius: 9999px;
+  padding: 8px 14px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.reports-page .report-card .card-actions .btn-danger {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+.reports-page .report-card .card-actions .btn-danger:hover {
+  background: rgba(239, 68, 68, 0.18);
 }
 .reports-page .filters-card {
   background: var(--bg-card);
@@ -13326,6 +13907,73 @@ body {
 .students-page .module-page .page-header .btn-primary:hover, .account-page .module-page .page-header .btn-primary:hover, .archives-page .module-page .page-header .btn-primary:hover, .faculty-page .module-page .page-header .btn-primary:hover {
   background: #6B0F2A;
 }
+.students-page .module-page .students-panel, .account-page .module-page .students-panel, .archives-page .module-page .students-panel, .faculty-page .module-page .students-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+.students-page .module-page .students-panel .panel-header, .account-page .module-page .students-panel .panel-header, .archives-page .module-page .students-panel .panel-header, .faculty-page .module-page .students-panel .panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+.students-page .module-page .students-panel .panel-header h2, .account-page .module-page .students-panel .panel-header h2, .archives-page .module-page .students-panel .panel-header h2, .faculty-page .module-page .students-panel .panel-header h2, .students-page .module-page .students-panel .panel-header .h2, .account-page .module-page .students-panel .panel-header .h2, .archives-page .module-page .students-panel .panel-header .h2, .faculty-page .module-page .students-panel .panel-header .h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+.students-page .module-page .students-panel .panel-header .panel-controls, .account-page .module-page .students-panel .panel-header .panel-controls, .archives-page .module-page .students-panel .panel-header .panel-controls, .faculty-page .module-page .students-panel .panel-header .panel-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.students-page .module-page .students-panel .panel-header .search-input, .account-page .module-page .students-panel .panel-header .search-input, .archives-page .module-page .students-panel .panel-header .search-input, .faculty-page .module-page .students-panel .panel-header .search-input {
+  flex: 0 0 300px;
+  max-width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+.students-page .module-page .students-panel .panel-header .search-input::-moz-placeholder, .account-page .module-page .students-panel .panel-header .search-input::-moz-placeholder, .archives-page .module-page .students-panel .panel-header .search-input::-moz-placeholder, .faculty-page .module-page .students-panel .panel-header .search-input::-moz-placeholder {
+  color: var(--text-secondary);
+}
+.students-page .module-page .students-panel .panel-header .search-input::placeholder, .account-page .module-page .students-panel .panel-header .search-input::placeholder, .archives-page .module-page .students-panel .panel-header .search-input::placeholder, .faculty-page .module-page .students-panel .panel-header .search-input::placeholder {
+  color: var(--text-secondary);
+}
+.students-page .module-page .students-panel .panel-header .search-input:focus, .account-page .module-page .students-panel .panel-header .search-input:focus, .archives-page .module-page .students-panel .panel-header .search-input:focus, .faculty-page .module-page .students-panel .panel-header .search-input:focus {
+  border-color: #8B1538;
+  box-shadow: 0 0 0 3px rgba(139, 21, 56, 0.1);
+  outline: none;
+}
+.students-page .module-page .students-panel .panel-header .filters, .account-page .module-page .students-panel .panel-header .filters, .archives-page .module-page .students-panel .panel-header .filters, .faculty-page .module-page .students-panel .panel-header .filters {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.students-page .module-page .students-panel .panel-header .filters .filter, .account-page .module-page .students-panel .panel-header .filters .filter, .archives-page .module-page .students-panel .panel-header .filters .filter, .faculty-page .module-page .students-panel .panel-header .filters .filter {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+.students-page .module-page .students-panel .panel-header .filters .active-only, .account-page .module-page .students-panel .panel-header .filters .active-only, .archives-page .module-page .students-panel .panel-header .filters .active-only, .faculty-page .module-page .students-panel .panel-header .filters .active-only {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+}
+.students-page .module-page .students-panel .panel-header .filters .active-only input, .account-page .module-page .students-panel .panel-header .filters .active-only input, .archives-page .module-page .students-panel .panel-header .filters .active-only input, .faculty-page .module-page .students-panel .panel-header .filters .active-only input {
+  width: auto;
+}
 .students-page .module-page .alert, .account-page .module-page .alert, .archives-page .module-page .alert, .faculty-page .module-page .alert {
   padding: 1rem 1.5rem;
   border-radius: 8px;
@@ -13424,7 +14072,6 @@ body {
   text-align: left;
   font-weight: 600;
   font-size: 0.85rem;
-  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -13440,20 +14087,64 @@ body {
   color: var(--text-primary);
   font-size: 0.9rem;
 }
+.students-page .module-page .table-card .data-table tbody tr td .student-cell, .account-page .module-page .table-card .data-table tbody tr td .student-cell, .archives-page .module-page .table-card .data-table tbody tr td .student-cell, .faculty-page .module-page .table-card .data-table tbody tr td .student-cell {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.students-page .module-page .table-card .data-table tbody tr td .student-cell .avatar, .account-page .module-page .table-card .data-table tbody tr td .student-cell .avatar, .archives-page .module-page .table-card .data-table tbody tr td .student-cell .avatar, .faculty-page .module-page .table-card .data-table tbody tr td .student-cell .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--sidebar-active);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  overflow: hidden;
+}
+.students-page .module-page .table-card .data-table tbody tr td .student-cell .avatar img, .account-page .module-page .table-card .data-table tbody tr td .student-cell .avatar img, .archives-page .module-page .table-card .data-table tbody tr td .student-cell .avatar img, .faculty-page .module-page .table-card .data-table tbody tr td .student-cell .avatar img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  display: block;
+}
+.students-page .module-page .table-card .data-table tbody tr td .student-cell .info .name, .account-page .module-page .table-card .data-table tbody tr td .student-cell .info .name, .archives-page .module-page .table-card .data-table tbody tr td .student-cell .info .name, .faculty-page .module-page .table-card .data-table tbody tr td .student-cell .info .name {
+  font-weight: 600;
+}
+.students-page .module-page .table-card .data-table tbody tr td .student-cell .info .sub, .account-page .module-page .table-card .data-table tbody tr td .student-cell .info .sub, .archives-page .module-page .table-card .data-table tbody tr td .student-cell .info .sub, .faculty-page .module-page .table-card .data-table tbody tr td .student-cell .info .sub {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
 .students-page .module-page .table-card .data-table tbody tr td.actions, .account-page .module-page .table-card .data-table tbody tr td.actions, .archives-page .module-page .table-card .data-table tbody tr td.actions, .faculty-page .module-page .table-card .data-table tbody tr td.actions {
   display: flex;
   gap: 0.75rem;
 }
-.students-page .module-page .table-card .data-table tbody tr td.actions .btn-icon, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-icon, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-icon, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-icon {
-  padding: 0.5rem;
-  background: transparent;
-  border: none;
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-chip, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-chip, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-chip, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-chip {
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-radius: 9999px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 1.2rem;
-  transition: transform 0.2s ease;
 }
-.students-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover {
-  transform: scale(1.2);
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-chip + .btn-chip, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-chip + .btn-chip, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-chip + .btn-chip, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-chip + .btn-chip {
+  margin-left: 6px;
+}
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-edit, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-edit, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-edit, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-edit {
+  border-color: rgba(139, 21, 56, 0.4);
+}
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-delete, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-delete, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-delete, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-delete {
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.06);
+}
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-archive, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-archive, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-archive, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-archive {
+  border-color: rgba(212, 175, 55, 0.4);
 }
 .students-page .module-page .badge, .account-page .module-page .badge, .archives-page .module-page .badge, .faculty-page .module-page .badge {
   padding: 4px 12px;
@@ -13488,6 +14179,37 @@ body {
 .students-page .module-page .badge.badge-generated, .account-page .module-page .badge.badge-generated, .archives-page .module-page .badge.badge-generated, .faculty-page .module-page .badge.badge-generated {
   background: rgba(139, 21, 56, 0.12);
   color: #8B1538;
+}
+
+.students-page .avatar-input, .account-page .avatar-input, .archives-page .avatar-input, .faculty-page .avatar-input {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+.students-page .avatar-input .avatar-preview, .account-page .avatar-input .avatar-preview, .archives-page .avatar-input .avatar-preview, .faculty-page .avatar-input .avatar-preview {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  background: var(--sidebar-active);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+.students-page .avatar-input .avatar-preview img, .account-page .avatar-input .avatar-preview img, .archives-page .avatar-input .avatar-preview img, .faculty-page .avatar-input .avatar-preview img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  display: block;
+}
+.students-page .avatar-input .avatar-preview .placeholder, .account-page .avatar-input .avatar-preview .placeholder, .archives-page .avatar-input .avatar-preview .placeholder, .faculty-page .avatar-input .avatar-preview .placeholder {
+  display: inline-block;
 }
 
 .archives-page .archive-tabs {
@@ -13581,6 +14303,73 @@ body {
 }
 .students-page .module-page .page-header .btn-primary:hover, .account-page .module-page .page-header .btn-primary:hover, .faculty-page .module-page .page-header .btn-primary:hover, .archives-page .module-page .page-header .btn-primary:hover {
   background: #6B0F2A;
+}
+.students-page .module-page .students-panel, .account-page .module-page .students-panel, .faculty-page .module-page .students-panel, .archives-page .module-page .students-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+.students-page .module-page .students-panel .panel-header, .account-page .module-page .students-panel .panel-header, .faculty-page .module-page .students-panel .panel-header, .archives-page .module-page .students-panel .panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+.students-page .module-page .students-panel .panel-header h2, .account-page .module-page .students-panel .panel-header h2, .faculty-page .module-page .students-panel .panel-header h2, .archives-page .module-page .students-panel .panel-header h2, .students-page .module-page .students-panel .panel-header .h2, .account-page .module-page .students-panel .panel-header .h2, .faculty-page .module-page .students-panel .panel-header .h2, .archives-page .module-page .students-panel .panel-header .h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+.students-page .module-page .students-panel .panel-header .panel-controls, .account-page .module-page .students-panel .panel-header .panel-controls, .faculty-page .module-page .students-panel .panel-header .panel-controls, .archives-page .module-page .students-panel .panel-header .panel-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.students-page .module-page .students-panel .panel-header .search-input, .account-page .module-page .students-panel .panel-header .search-input, .faculty-page .module-page .students-panel .panel-header .search-input, .archives-page .module-page .students-panel .panel-header .search-input {
+  flex: 0 0 300px;
+  max-width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+.students-page .module-page .students-panel .panel-header .search-input::-moz-placeholder, .account-page .module-page .students-panel .panel-header .search-input::-moz-placeholder, .faculty-page .module-page .students-panel .panel-header .search-input::-moz-placeholder, .archives-page .module-page .students-panel .panel-header .search-input::-moz-placeholder {
+  color: var(--text-secondary);
+}
+.students-page .module-page .students-panel .panel-header .search-input::placeholder, .account-page .module-page .students-panel .panel-header .search-input::placeholder, .faculty-page .module-page .students-panel .panel-header .search-input::placeholder, .archives-page .module-page .students-panel .panel-header .search-input::placeholder {
+  color: var(--text-secondary);
+}
+.students-page .module-page .students-panel .panel-header .search-input:focus, .account-page .module-page .students-panel .panel-header .search-input:focus, .faculty-page .module-page .students-panel .panel-header .search-input:focus, .archives-page .module-page .students-panel .panel-header .search-input:focus {
+  border-color: #8B1538;
+  box-shadow: 0 0 0 3px rgba(139, 21, 56, 0.1);
+  outline: none;
+}
+.students-page .module-page .students-panel .panel-header .filters, .account-page .module-page .students-panel .panel-header .filters, .faculty-page .module-page .students-panel .panel-header .filters, .archives-page .module-page .students-panel .panel-header .filters {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.students-page .module-page .students-panel .panel-header .filters .filter, .account-page .module-page .students-panel .panel-header .filters .filter, .faculty-page .module-page .students-panel .panel-header .filters .filter, .archives-page .module-page .students-panel .panel-header .filters .filter {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+.students-page .module-page .students-panel .panel-header .filters .active-only, .account-page .module-page .students-panel .panel-header .filters .active-only, .faculty-page .module-page .students-panel .panel-header .filters .active-only, .archives-page .module-page .students-panel .panel-header .filters .active-only {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+}
+.students-page .module-page .students-panel .panel-header .filters .active-only input, .account-page .module-page .students-panel .panel-header .filters .active-only input, .faculty-page .module-page .students-panel .panel-header .filters .active-only input, .archives-page .module-page .students-panel .panel-header .filters .active-only input {
+  width: auto;
 }
 .students-page .module-page .alert, .account-page .module-page .alert, .faculty-page .module-page .alert, .archives-page .module-page .alert {
   padding: 1rem 1.5rem;
@@ -13680,7 +14469,6 @@ body {
   text-align: left;
   font-weight: 600;
   font-size: 0.85rem;
-  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -13696,20 +14484,64 @@ body {
   color: var(--text-primary);
   font-size: 0.9rem;
 }
+.students-page .module-page .table-card .data-table tbody tr td .student-cell, .account-page .module-page .table-card .data-table tbody tr td .student-cell, .faculty-page .module-page .table-card .data-table tbody tr td .student-cell, .archives-page .module-page .table-card .data-table tbody tr td .student-cell {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.students-page .module-page .table-card .data-table tbody tr td .student-cell .avatar, .account-page .module-page .table-card .data-table tbody tr td .student-cell .avatar, .faculty-page .module-page .table-card .data-table tbody tr td .student-cell .avatar, .archives-page .module-page .table-card .data-table tbody tr td .student-cell .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--sidebar-active);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  overflow: hidden;
+}
+.students-page .module-page .table-card .data-table tbody tr td .student-cell .avatar img, .account-page .module-page .table-card .data-table tbody tr td .student-cell .avatar img, .faculty-page .module-page .table-card .data-table tbody tr td .student-cell .avatar img, .archives-page .module-page .table-card .data-table tbody tr td .student-cell .avatar img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  display: block;
+}
+.students-page .module-page .table-card .data-table tbody tr td .student-cell .info .name, .account-page .module-page .table-card .data-table tbody tr td .student-cell .info .name, .faculty-page .module-page .table-card .data-table tbody tr td .student-cell .info .name, .archives-page .module-page .table-card .data-table tbody tr td .student-cell .info .name {
+  font-weight: 600;
+}
+.students-page .module-page .table-card .data-table tbody tr td .student-cell .info .sub, .account-page .module-page .table-card .data-table tbody tr td .student-cell .info .sub, .faculty-page .module-page .table-card .data-table tbody tr td .student-cell .info .sub, .archives-page .module-page .table-card .data-table tbody tr td .student-cell .info .sub {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
 .students-page .module-page .table-card .data-table tbody tr td.actions, .account-page .module-page .table-card .data-table tbody tr td.actions, .faculty-page .module-page .table-card .data-table tbody tr td.actions, .archives-page .module-page .table-card .data-table tbody tr td.actions {
   display: flex;
   gap: 0.75rem;
 }
-.students-page .module-page .table-card .data-table tbody tr td.actions .btn-icon, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-icon, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-icon, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-icon {
-  padding: 0.5rem;
-  background: transparent;
-  border: none;
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-chip, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-chip, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-chip, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-chip {
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-radius: 9999px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 1.2rem;
-  transition: transform 0.2s ease;
 }
-.students-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-icon:hover {
-  transform: scale(1.2);
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-chip + .btn-chip, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-chip + .btn-chip, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-chip + .btn-chip, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-chip + .btn-chip {
+  margin-left: 6px;
+}
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-edit, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-edit, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-edit, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-edit {
+  border-color: rgba(139, 21, 56, 0.4);
+}
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-delete, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-delete, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-delete, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-delete {
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.06);
+}
+.students-page .module-page .table-card .data-table tbody tr td.actions .btn-archive, .account-page .module-page .table-card .data-table tbody tr td.actions .btn-archive, .faculty-page .module-page .table-card .data-table tbody tr td.actions .btn-archive, .archives-page .module-page .table-card .data-table tbody tr td.actions .btn-archive {
+  border-color: rgba(212, 175, 55, 0.4);
 }
 .students-page .module-page .badge, .account-page .module-page .badge, .faculty-page .module-page .badge, .archives-page .module-page .badge {
   padding: 4px 12px;
@@ -13744,6 +14576,37 @@ body {
 .students-page .module-page .badge.badge-generated, .account-page .module-page .badge.badge-generated, .faculty-page .module-page .badge.badge-generated, .archives-page .module-page .badge.badge-generated {
   background: rgba(139, 21, 56, 0.12);
   color: #8B1538;
+}
+
+.students-page .avatar-input, .account-page .avatar-input, .faculty-page .avatar-input, .archives-page .avatar-input {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+.students-page .avatar-input .avatar-preview, .account-page .avatar-input .avatar-preview, .faculty-page .avatar-input .avatar-preview, .archives-page .avatar-input .avatar-preview {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  background: var(--sidebar-active);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+.students-page .avatar-input .avatar-preview img, .account-page .avatar-input .avatar-preview img, .faculty-page .avatar-input .avatar-preview img, .archives-page .avatar-input .avatar-preview img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  display: block;
+}
+.students-page .avatar-input .avatar-preview .placeholder, .account-page .avatar-input .avatar-preview .placeholder, .faculty-page .avatar-input .avatar-preview .placeholder, .archives-page .avatar-input .avatar-preview .placeholder {
+  display: inline-block;
 }
 
 .account-page .avatar-row {

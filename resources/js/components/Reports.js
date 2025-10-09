@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 
 export default function Reports() {
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [showGenerator, setShowGenerator] = useState(false);
     const [message, setMessage] = useState(null);
-    const [generatedData, setGeneratedData] = useState(null);
-    const [formData, setFormData] = useState({
-        report_name: '',
-        report_type: 'students',
-        description: '',
-        parameters: {}
-    });
+    const [query, setQuery] = useState('');
+
+    const exampleReports = [
+        { id: 'ex-1', report_name: 'Academic Report', report_type: 'pdf', file_type: 'PDF', file_size_mb: 2.4, generated_at: '2024-01-15T00:00:00Z', status: 'Generated' },
+        { id: 'ex-2', report_name: 'Student Report', report_type: 'pdf', file_type: 'PDF', file_size_mb: 5.1, generated_at: '2024-01-10T00:00:00Z', status: 'Generated' },
+        { id: 'ex-3', report_name: 'Faculty Report', report_type: 'docx', file_type: 'DOCX', file_size_mb: 1.8, generated_at: '2024-01-08T00:00:00Z', status: 'Generated' },
+    ];
 
     useEffect(() => {
         fetchReports();
@@ -20,7 +19,7 @@ export default function Reports() {
 
     useEffect(() => {
         if (message) {
-            const timer = setTimeout(() => setMessage(null), 3500);
+            const timer = setTimeout(() => setMessage(null), 3000);
             return () => clearTimeout(timer);
         }
     }, [message]);
@@ -28,30 +27,70 @@ export default function Reports() {
     const fetchReports = async () => {
         try {
             const response = await axios.get('/api/reports');
-            setReports(response.data);
+            const data = Array.isArray(response.data) ? response.data : [];
+            setReports(data.length ? data : exampleReports);
         } catch (error) {
             console.error('Error fetching reports:', error);
-            setMessage('Error loading reports');
+            // Fallback to example data
+            setReports(exampleReports);
         } finally {
             setLoading(false);
         }
     };
 
-    const handleGenerate = async (e) => {
-        e.preventDefault();
+    const formatDate = (value) => {
+        if (!value) return 'N/A';
+        try { return new Date(value).toISOString().slice(0,10); } catch { return String(value).slice(0,10); }
+    };
+
+    const typeOf = (r) => {
+        const p = r.parameters || {};
+        if (p.file_type) return String(p.file_type).toUpperCase();
+        if (r.file_type) return r.file_type.toString().toUpperCase();
+        if (p.file_ext) return String(p.file_ext).toUpperCase();
+        if (r.file_path) {
+            const m = r.file_path.match(/\.([a-zA-Z0-9]+)$/);
+            if (m) return m[1].toUpperCase();
+        }
+        if (r.report_type) return String(r.report_type).toUpperCase();
+        return 'FILE';
+    };
+
+    const sizeLabel = (r) => {
+        const p = r.parameters || {};
+        if (typeof p.file_size_mb === 'number') return `${p.file_size_mb} MB`;
+        if (typeof r.file_size_mb === 'number') return `${r.file_size_mb} MB`;
+        const bytes = typeof p.file_size_bytes === 'number' ? p.file_size_bytes : (typeof r.file_size_bytes === 'number' ? r.file_size_bytes : null);
+        if (bytes !== null) return `${(bytes/1024/1024).toFixed(1)} MB`;
+        return '—';
+    };
+
+    const filtered = useMemo(() => {
+        const q = query.trim().toLowerCase();
+        if (!q) return reports;
+        return reports.filter(r => (r.report_name||'').toLowerCase().includes(q));
+    }, [query, reports]);
+
+    const handleView = async (report) => {
+        if (report.file_path) {
+            window.open(report.file_path.startsWith('/') ? report.file_path : `/${report.file_path}`, '_blank');
+            return;
+        }
         try {
-            const response = await axios.post('/api/reports/generate', formData);
-            setMessage('Report generated successfully');
-            setGeneratedData(response.data.data);
-            fetchReports();
-        } catch (error) {
-            console.error('Error generating report:', error);
-            setMessage(error.response?.data?.message || 'Error generating report');
+            const res = await axios.get(`/api/reports/${report.id}`);
+            alert(`Report: ${res.data.report_name || report.report_name}`);
+        } catch {
+            alert(`Report: ${report.report_name}`);
         }
     };
 
     const handleDelete = async (id) => {
-        if (!confirm('Are you sure you want to delete this report?')) return;
+        if (String(id).startsWith('ex-')) {
+            // Local example item
+            setReports(prev => prev.filter(r => r.id !== id));
+            return;
+        }
+        if (!confirm('Delete this report?')) return;
         try {
             await axios.delete(`/api/reports/${id}`);
             setMessage('Report deleted successfully');
@@ -62,143 +101,43 @@ export default function Reports() {
         }
     };
 
-    const createArchiveFromReport = async (report) => {
-        const archiveId = `REP-${report.id}-${Date.now()}`;
-        const today = new Date();
-        const ymd = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-        const payload = {
-            archive_id: archiveId,
-            title: report.report_name || 'Report',
-            description: `Archived Report (${report.report_type})`,
-            document_type: 'Report',
-            category: 'Record',
-            department: '',
-            reference_number: String(report.id),
-            archived_date: ymd,
-            status: 'Archived',
-            tags: 'report',
-        };
-        await axios.post('/api/archives', payload);
-    };
-
-    const handleArchive = async (report) => {
-        if (!confirm('Archive this report?')) return;
-        try {
-            await axios.put(`/api/reports/${report.id}`, { status: 'Archived' });
-            try { await createArchiveFromReport(report); } catch (e) { console.error('Archive create failed', e); }
-            setMessage('Report archived successfully');
-            fetchReports();
-        } catch (error) {
-            console.error('Error archiving report:', error);
-            setMessage('Error archiving report');
-        }
-    };
-
-    const resetForm = () => {
-        setFormData({
-            report_name: '',
-            report_type: 'students',
-            description: '',
-            parameters: {}
-        });
-        setShowGenerator(false);
-        setGeneratedData(null);
-    };
-
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
     if (loading) return <div className="loading">Loading reports...</div>;
 
     return (
         <div className="reports-page">
-        <div className="module-page">
+          <div className="module-page">
             <div className="page-header">
-                <h1>Reports Management</h1>
-                <button className="btn btn-primary" onClick={() => setShowGenerator(!showGenerator)}>
-                    {showGenerator ? 'Cancel' : '+ Generate Report'}
-                </button>
+              <h1>Report</h1>
             </div>
+            <p className="lead" style={{marginTop:-12, marginBottom:20, color:'var(--text-secondary)'}}>Manage archived files and documents</p>
 
             {message && <div className="alert alert-info">{message}</div>}
 
-            {showGenerator && (
-                <div className="form-card">
-                    <h2>Generate New Report</h2>
-                    <form onSubmit={handleGenerate} className="module-form">
-                        <div className="form-row">
-                            <input 
-                                name="report_name" 
-                                placeholder="Report Name *" 
-                                value={formData.report_name} 
-                                onChange={handleChange} 
-                                required 
-                            />
-                            <select name="report_type" value={formData.report_type} onChange={handleChange}>
-                                <option value="students">Students Report</option>
-                                <option value="faculty">Faculty Report</option>
-                                <option value="enrollment">Enrollment Report</option>
-                            </select>
-                        </div>
-                        <div className="form-row">
-                            <textarea 
-                                name="description" 
-                                placeholder="Description" 
-                                value={formData.description} 
-                                onChange={handleChange}
-                                rows="3"
-                            />
-                        </div>
-                        <div className="form-actions">
-                            <button type="submit" className="btn btn-primary">Generate Report</button>
-                            <button type="button" className="btn btn-secondary" onClick={resetForm}>Cancel</button>
-                        </div>
-                    </form>
-
-                    {generatedData && (
-                        <div className="report-preview">
-                            <h3>Report Preview</h3>
-                            <pre>{JSON.stringify(generatedData, null, 2)}</pre>
-                        </div>
-                    )}
-                </div>
-            )}
-
-            <div className="table-card">
-                <table className="data-table">
-                    <thead>
-                        <tr>
-                            <th>Report Name</th>
-                            <th>Type</th>
-                            <th>Description</th>
-                            <th>Generated By</th>
-                            <th>Generated At</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {reports.map(report => (
-                            <tr key={report.id}>
-                                <td>{report.report_name}</td>
-                                <td>{report.report_type}</td>
-                                <td>{report.description}</td>
-                                <td>{report.generated_by?.name || 'N/A'}</td>
-                                <td>{report.generated_at ? new Date(report.generated_at).toLocaleString() : 'N/A'}</td>
-                                <td><span className={`badge badge-${report.status.toLowerCase()}`}>{report.status}</span></td>
-                                <td className="actions">
-                                    <button className="btn-icon btn-delete" onClick={() => handleDelete(report.id)}>Delete</button>
-                                    {report.status !== 'Archived' && (
-                                        <button className="btn-icon" onClick={() => handleArchive(report)}>Archive</button>
-                                    )}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+            <div className="reports-panel">
+              <div className="panel-header">
+                <h2>Report</h2>
+                <input
+                  className="search-input"
+                  placeholder="Search"
+                  value={query}
+                  onChange={(e)=>setQuery(e.target.value)}
+                />
+              </div>
+              <div className="reports-grid">
+                {filtered.map((r) => (
+                  <div key={r.id} className="report-card">
+                    <div className="file-icon" aria-hidden></div>
+                    <div className="card-title">{r.report_name}</div>
+                    <div className="card-meta">{typeOf(r)} • {sizeLabel(r)} • {formatDate(r.generated_at)}</div>
+                    <div className="card-actions">
+                      <button className="btn btn-primary" onClick={()=>handleView(r)}>View</button>
+                      <button className="btn btn-danger" onClick={()=>handleDelete(r.id)}>Delete</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-        </div>
+          </div>
         </div>
     );
 }

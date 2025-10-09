@@ -29,6 +29,8 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('/account/profile', [AccountController::class, 'profile']);
     Route::put('/account/profile', [AccountController::class, 'update']);
     Route::post('/account/avatar', [AccountController::class, 'uploadAvatar']);
+    Route::put('/account/appearance', [AccountController::class, 'updateAppearance']);
+    Route::post('/account/background', [AccountController::class, 'uploadBackground']);
 
     // Dashboard routes
     Route::get('/dashboard', [DashboardController::class, 'index']);
@@ -41,6 +43,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::put('/students/{id}', [StudentController::class, 'update']);
     Route::patch('/students/{id}', [StudentController::class, 'update']);
     Route::delete('/students/{id}', [StudentController::class, 'destroy']);
+    Route::post('/students/{id}/avatar', [StudentController::class, 'uploadAvatar']);
 
     // Faculty routes
     Route::get('/faculties', [FacultyController::class, 'index']);

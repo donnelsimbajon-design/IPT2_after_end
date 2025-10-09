@@ -5,7 +5,6 @@ import { AuthProvider } from './AuthContext';
 import ProtectedRoute from './ProtectedRoute';
 import Layout from './Layout';
 import { ThemeProvider } from './ThemeContext';
-
 import Login from './login';
 import Dashboard from './Dashboard';
 import Students from './Students';
@@ -14,6 +13,11 @@ import Reports from './Reports';
 import Settings from './Settings';
 import Archive from './Archive';
 import AccountSettings from './AccountSettings';
+import SchoolYear from './settings/SchoolYear';
+import Departments from './settings/Departments';
+import Courses from './settings/Courses';
+import Subjects from './settings/Subjects';
+import ActiveCourse from './settings/ActiveCourse';
 
 export default function Routers() {
   return (
@@ -21,50 +25,74 @@ export default function Routers() {
       <AuthProvider>
         <Router>
           <Routes>
-          <Route path="/" element={<Login />} />
-          
-          {/* Protected Routes with Layout */}
-          <Route path="/dashboard" element={
-            <ProtectedRoute>
-              <Layout><Dashboard /></Layout>
-            </ProtectedRoute>
-          } />
-          
-          <Route path="/students" element={
-            <ProtectedRoute>
-              <Layout><Students /></Layout>
-            </ProtectedRoute>
-          } />
-          
-          <Route path="/faculty" element={
-            <ProtectedRoute>
-              <Layout><Faculty /></Layout>
-            </ProtectedRoute>
-          } />
-          
-          <Route path="/reports" element={
-            <ProtectedRoute>
-              <Layout><Reports /></Layout>
-            </ProtectedRoute>
-          } />
-          
-          <Route path="/settings" element={
-            <ProtectedRoute>
-              <Layout><Settings /></Layout>
-            </ProtectedRoute>
-          } />
-          
-          <Route path="/archives" element={
-            <ProtectedRoute>
-              <Layout><Archive /></Layout>
-            </ProtectedRoute>
-          } />
+            <Route path="/" element={<Login />} />
 
-          <Route path="/account" element={
-            <ProtectedRoute>
-              <Layout><AccountSettings /></Layout>
-            </ProtectedRoute>
-          } />
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <Layout><Dashboard /></Layout>
+              </ProtectedRoute>
+            } />
+
+            <Route path="/students" element={
+              <ProtectedRoute>
+                <Layout><Students /></Layout>
+              </ProtectedRoute>
+            } />
+
+            <Route path="/faculty" element={
+              <ProtectedRoute>
+                <Layout><Faculty /></Layout>
+              </ProtectedRoute>
+            } />
+
+            <Route path="/reports" element={
+              <ProtectedRoute>
+                <Layout><Reports /></Layout>
+              </ProtectedRoute>
+            } />
+
+            <Route path="/settings" element={
+              <ProtectedRoute>
+                <Layout><Settings /></Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/settings/school-year" element={
+              <ProtectedRoute>
+                <Layout><SchoolYear /></Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/settings/departments" element={
+              <ProtectedRoute>
+                <Layout><Departments /></Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/settings/courses" element={
+              <ProtectedRoute>
+                <Layout><Courses /></Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/settings/subjects" element={
+              <ProtectedRoute>
+                <Layout><Subjects /></Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/settings/active-course" element={
+              <ProtectedRoute>
+                <Layout><ActiveCourse /></Layout>
+              </ProtectedRoute>
+            } />
+
+            <Route path="/archives" element={
+              <ProtectedRoute>
+                <Layout><Archive /></Layout>
+              </ProtectedRoute>
+            } />
+
+            <Route path="/account" element={
+              <ProtectedRoute>
+                <Layout><AccountSettings /></Layout>
+              </ProtectedRoute>
+            } />
           </Routes>
         </Router>
       </AuthProvider>

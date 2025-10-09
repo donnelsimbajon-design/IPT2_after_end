@@ -8,8 +8,9 @@ export default function Layout({ children }) {
     const navigate = useNavigate();
     const location = useLocation();
     const [menuOpen, setMenuOpen] = useState(false);
+    const [navCollapsed, setNavCollapsed] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
-    const { theme, toggleTheme } = useTheme();
+    const { theme, toggleTheme, setTheme } = useTheme();
 
     const today = useMemo(() => {
         try {
@@ -25,20 +26,28 @@ export default function Layout({ children }) {
     };
 
     const isActive = (path) => location.pathname === path;
+    const isSettingsSection = location.pathname.startsWith('/settings');
+
+
+    // Apply user appearance (theme, brand color, background image)
+    React.useEffect(() => {
+        if (!user) return;
+        if (user.theme_mode) {
+            try { setTheme(user.theme_mode); } catch (_) {}
+        }
+        if (user.theme_color) {
+            document.documentElement.style.setProperty('--brand', user.theme_color);
+        }
+        if (user.bg_image_path) {
+            document.documentElement.style.setProperty('--app-bg-image', `url('/${user.bg_image_path}')`);
+        } else {
+            document.documentElement.style.setProperty('--app-bg-image', `url('/images/image.png')`);
+        }
+    }, [user]);
 
     return (
-        <div className="admin-layout">
+        <div className={`admin-layout ${navCollapsed ? 'nav-collapsed' : ''}`}>
             <nav className={`sidebar${menuOpen ? ' open' : ''}`}>
-                <div className="sidebar-header">
-                    <div className="logo"><img src="/images/hcc-logo.png" alt="Holy Child College" style={{width: 40, height: 40, borderRadius: 8}}
-                        onError={(e)=>{ if(!e.currentTarget.dataset.fallback){ e.currentTarget.dataset.fallback='1'; e.currentTarget.src='/images/hcc-logo.png.png'; } }}
-                    /></div>
-                    <div className="brand-info">
-                        <h2>Holy Child College</h2>
-                        <p>Admin Portal</p>
-                    </div>
-                    <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle Menu">≡</button>
-                </div>
                 <div className="nav-section">
                     <div className="section-title">ADMIN NAVIGATION</div>
                 </div>
@@ -58,7 +67,7 @@ export default function Layout({ children }) {
                     <li className={isActive('/archives') ? 'active' : ''}>
                         <Link to="/archives"><span className="label">Archives</span></Link>
                     </li>
-                    <li className={isActive('/settings') ? 'active' : ''}>
+                    <li className={isSettingsSection ? 'active' : ''}>
                         <Link to="/settings"><span className="label">System Settings</span></Link>
                     </li>
                 </ul>
@@ -88,6 +97,15 @@ export default function Layout({ children }) {
             <main className="main-content">
                 <div className="content-header">
                     <div className="header-left">
+                        <button
+                            type="button"
+                            className="nav-toggle"
+                            onClick={() => setNavCollapsed(v => !v)}
+                            aria-label={navCollapsed ? 'Open navigation' : 'Close navigation'}
+                            title={navCollapsed ? 'Open navigation' : 'Close navigation'}
+                        >
+                            ☰
+                        </button>
                         <div className="brand" style={{display:'flex', alignItems:'center', gap:'12px'}}>
                             <img className="logo-small" src="/images/hcc-logo.png" alt="HCC" style={{width:32, height:32, borderRadius:8}}
                                 onError={(e)=>{ if(!e.currentTarget.dataset.fallback){ e.currentTarget.dataset.fallback='1'; e.currentTarget.src='/images/hcc-logo.png.png'; } }}

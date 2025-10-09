@@ -10,6 +10,20 @@
   --border-color: #{$light-border};
   --sidebar-bg: #{$light-sidebar-bg};
   --sidebar-active: #{$light-sidebar-active};
+  --brand: #{$primary-color};
+  --app-bg-image: url('/images/image.png');
+  --app-bg-opacity: 0.2;
+}
+
+// Collapsed navigation state
+.admin-layout.nav-collapsed {
+  .sidebar { transform: translateX(-100%); }
+  .main-content { margin-left: 0; }
+  .content-header {
+    margin-left: 0;
+    width: 100%;
+    padding-left: $spacing-md;
+  }
 }
 
 [data-theme="dark"] {
@@ -55,6 +69,7 @@ body {
   top: 0;
   transition: all 0.3s ease;
   z-index: 100;
+  overflow-y: auto; // allow vertical scrolling when content overflows
 
   .sidebar-header {
     padding: $spacing-lg;
@@ -92,10 +107,65 @@ body {
         margin: 0;
       }
     }
+    
+
+    // Submenu at nav level
+    li.has-sub {
+      .menu-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        a.label { flex: 1; padding-right: $spacing-sm; }
+        .submenu-toggle {
+          background: transparent;
+          border: 0;
+          color: var(--text-secondary);
+          cursor: pointer;
+          padding: 6px;
+          border-radius: $radius-sm;
+          min-width: 28px;
+          text-align: center;
+          &:hover { background: var(--sidebar-active); color: var(--text-primary); }
+        }
+      }
+
+      .submenu {
+        list-style: none;
+        margin: 6px 0 10px 20px;
+        padding: 4px 0;
+        border-left: 2px solid var(--border-color);
+        max-height: 320px;
+        overflow-y: auto;
+        li { margin: 4px 0; }
+        li a {
+          display: flex;
+          align-items: center;
+          gap: $spacing-sm;
+          min-height: 36px;
+          padding: 8px $spacing-md 8px ($spacing-md - 2);
+          font-size: 0.9rem;
+          color: var(--text-secondary);
+          border-radius: $radius-md;
+          transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+          &:hover { background: var(--sidebar-active); color: var(--text-primary); }
+          &:focus-visible { outline: none; box-shadow: 0 0 0 2px rgba(0,0,0,0.08); }
+          .icon { width: 18px; display: inline-flex; justify-content: center; opacity: 0.9; }
+          .text { flex: 1; }
+        }
+        li.active a {
+          background: var(--sidebar-active);
+          color: var(--brand);
+          font-weight: 600;
+          box-shadow: inset 3px 0 0 var(--brand);
+          .icon { opacity: 1; }
+        }
+      }
+    }
   }
 
   .nav-section {
     padding: $spacing-lg $spacing-md;
+    margin-bottom: $spacing-lg;
 
     .section-title {
       font-size: 0.7rem;
@@ -148,7 +218,7 @@ body {
 
       &.active a {
         background: var(--sidebar-active);
-        color: $primary-color;
+        color: var(--brand);
         font-weight: 500;
         position: relative;
       }
@@ -161,7 +231,7 @@ body {
         bottom: 6px;
         width: 4px;
         border-radius: 2px;
-        background: $primary-color;
+        background: var(--brand);
       }
     }
   }
@@ -182,7 +252,7 @@ body {
         width: 36px;
         height: 36px;
         border-radius: 50%;
-        background: $primary-color;
+        background: var(--brand);
         color: white;
         display: flex;
         align-items: center;
@@ -237,6 +307,24 @@ body {
   margin-left: 260px;
   min-height: 100vh;
   background: var(--bg-primary);
+  // Background image via overlay for configurable opacity
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-image: var(--app-bg-image);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    opacity: var(--app-bg-opacity, 0.2);
+    pointer-events: none;
+    z-index: 0;
+  }
 
   .content-header {
     background: var(--bg-secondary);
@@ -247,9 +335,33 @@ body {
     justify-content: space-between;
     position: sticky;
     top: 0;
-    z-index: 50;
+    z-index: 90; // keep below sidebar (z-index:100) while dropdown uses 4000
     box-shadow: 0 10px 20px -16px rgba(0,0,0,0.25);
+    // tighten left padding so brand block sits closer to the left edge
+    padding-left: $spacing-md;
+    // visually extend header background under the sidebar to the very left
+    margin-left: -260px;
+    width: calc(100% + 260px);
+    padding-left: calc(260px + $spacing-md);
 
+    // toggle button for collapsing navigation
+    .nav-toggle {
+      width: 40px;
+      height: 40px;
+      border-radius: $radius-md;
+      border: 1px solid var(--border-color);
+      background: transparent;
+      color: var(--text-primary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: $spacing-md;
+      font-size: 1.1rem;
+      transition: all 0.2s ease;
+      &:hover { background: var(--sidebar-active); }
+    }
+  
     .header-left {
       flex: 1; // expand left side
       display: flex;
@@ -324,13 +436,14 @@ body {
           width: 32px;
           height: 32px;
           border-radius: 50%;
-          background: $primary-color;
+          background: var(--brand);
           color: white;
           display: flex;
           align-items: center;
           justify-content: center;
           font-weight: 600;
           font-size: 0.85rem;
+          img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
         }
 
         .user-info {
@@ -357,13 +470,14 @@ body {
         position: fixed;
         right: 24px;
         top: 70px;
-        z-index: 120;
+        z-index: 4000;
         background: var(--bg-card);
         border: 1px solid var(--border-color);
         border-radius: $radius-lg;
         box-shadow: 0 10px 30px rgba(0,0,0,0.12);
         min-width: 240px;
-        overflow: hidden;
+        max-height: 70vh;
+        overflow: auto;
 
         .dropdown-header {
           display: flex;
@@ -403,8 +517,13 @@ body {
 
   .content-wrapper {
     padding: $spacing-xl;
+    position: relative;
   }
 }
+
+// Consistent image sizing
+.sidebar-header .logo img { width: 40px; height: 40px; object-fit: contain; border-radius: $radius-md; display: block; }
+.content-header .brand .logo-small { width: 32px; height: 32px; object-fit: contain; border-radius: $radius-md; display: block; }
 
 // Responsive
 @media (max-width: 768px) {
@@ -418,5 +537,13 @@ body {
 
   .main-content {
     margin-left: 0;
+    &::before { left: 0; width: 100%; }
+  }
+
+  .content-header {
+    margin-left: 0;
+    width: 100%;
+    padding-left: $spacing-md;
+    z-index: 300; // ensure header is above content on mobile
   }
 }

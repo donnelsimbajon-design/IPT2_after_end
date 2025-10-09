@@ -12,7 +12,27 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $students = Student::orderBy('created_at', 'desc')->get();
+        $q = request()->query('q');
+        $program = request()->query('program');
+        $yearLevel = request()->query('year_level');
+        $status = request()->query('status');
+        $schoolYear = request()->query('school_year'); // filter by enrollment year
+
+        $query = Student::query();
+        if ($q) {
+            $query->where(function($sub) use ($q) {
+                $sub->where('first_name', 'like', "%$q%")
+                    ->orWhere('last_name', 'like', "%$q%")
+                    ->orWhere('student_id', 'like', "%$q%")
+                    ->orWhere('email', 'like', "%$q%");
+            });
+        }
+        if ($program) { $query->where('program', $program); }
+        if ($yearLevel) { $query->where('year_level', $yearLevel); }
+        if ($status) { $query->where('status', $status); }
+        if ($schoolYear) { $query->whereYear('enrollment_date', $schoolYear); }
+
+        $students = $query->orderBy('created_at', 'desc')->get();
         return response()->json($students);
     }
 
@@ -22,7 +42,7 @@ class StudentController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'student_id' => 'required|string|unique:students,student_id',
+            'student_id' => 'nullable|string|unique:students,student_id',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
@@ -38,8 +58,23 @@ class StudentController extends Controller
             'enrollment_date' => 'nullable|date',
             'program' => 'nullable|string|max:255',
             'year_level' => 'nullable|string|max:50',
-            'status' => 'nullable|in:Active,Inactive,Graduated,Suspended,Archived',
+            'status' => 'nullable|in:Active,Inactive,Graduated,Suspended',
         ]);
+
+        // Auto-generate student_id if missing (format: STU-YYYY-XXX)
+        if (empty($data['student_id'])) {
+            $year = date('Y');
+            $prefix = 'STU-' . $year . '-';
+            $last = Student::where('student_id', 'like', $prefix . '%')
+                ->orderBy('student_id', 'desc')
+                ->value('student_id');
+            $seq = 1;
+            if ($last) {
+                $n = (int)preg_replace('/^'.preg_quote($prefix, '/').'/', '', $last);
+                $seq = $n + 1;
+            }
+            $data['student_id'] = $prefix . str_pad((string)$seq, 3, '0', STR_PAD_LEFT);
+        }
 
         try {
             $student = Student::create($data);
@@ -86,7 +121,7 @@ class StudentController extends Controller
             'enrollment_date' => 'sometimes|nullable|date',
             'program' => 'sometimes|nullable|string|max:255',
             'year_level' => 'sometimes|nullable|string|max:50',
-            'status' => 'sometimes|nullable|in:Active,Inactive,Graduated,Suspended,Archived',
+            'status' => 'sometimes|nullable|in:Active,Inactive,Graduated,Suspended',
         ]);
 
         $student->update($data);
@@ -101,5 +136,37 @@ class StudentController extends Controller
         $student = Student::findOrFail($id);
         $student->delete();
         return response()->json(['message' => 'Student deleted successfully'], 200);
+    }
+
+    /**
+     * Upload student avatar
+     */
+    public function uploadAvatar(Request $request, $id)
+    {
+        $request->validate([
+            'avatar' => 'required|image|max:5120',
+        ]);
+
+        $student = Student::findOrFail($id);
+        $file = $request->file('avatar');
+        $filename = time() . '_' . preg_replace('/[^A-Za-z0-9._-]/', '_', $file->getClientOriginalName());
+        $targetDir = public_path('uploads/students');
+        if (!is_dir($targetDir)) {
+            @mkdir($targetDir, 0775, true);
+        }
+        $file->move($targetDir, $filename);
+
+        // delete old avatar if under our uploads dir
+        if ($student->avatar_path && str_starts_with($student->avatar_path, 'uploads/students/') && file_exists(public_path($student->avatar_path))) {
+            @unlink(public_path($student->avatar_path));
+        }
+        $student->avatar_path = 'uploads/students/' . $filename;
+        $student->save();
+
+        return response()->json([
+            'student' => $student,
+            'avatar_url' => asset($student->avatar_path),
+            'message' => 'Avatar uploaded successfully'
+        ]);
     }
 }

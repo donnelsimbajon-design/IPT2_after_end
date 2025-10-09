@@ -29,6 +29,72 @@
     }
   }
 
+  // Card-based panel (matches the provided design)
+  .reports-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: $radius-lg;
+    padding: $spacing-lg;
+    box-shadow: $shadow-sm;
+  }
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-lg;
+    margin-bottom: $spacing-lg;
+
+    h2 { margin: 0; font-size: 1.1rem; color: var(--text-primary); }
+
+    .search-input {
+      flex: 0 0 360px;
+      max-width: 100%;
+      padding: $spacing-sm $spacing-md;
+      border-radius: $radius-md;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      outline: none;
+      &::placeholder { color: var(--text-secondary); }
+      &:focus { border-color: $primary-color; box-shadow: 0 0 0 3px rgba($primary-color, 0.1); }
+    }
+  }
+
+  .reports-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: $spacing-lg;
+  }
+
+  .report-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: $radius-lg;
+    padding: $spacing-lg;
+    box-shadow: $shadow-sm;
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+
+    &:hover { transform: translateY(-3px); box-shadow: $shadow-lg; border-color: $primary-color; }
+
+    .file-icon {
+      width: 48px; height: 48px; border-radius: $radius-md;
+      background: rgba($primary-color, .1);
+      border: 1px solid rgba($primary-color, .3);
+      margin-bottom: $spacing-md;
+    }
+
+    .card-title { font-weight: 700; color: var(--text-primary); margin-bottom: $spacing-xs; }
+    .card-meta { color: var(--text-secondary); font-size: .9rem; margin-bottom: $spacing-md; }
+
+    .card-actions {
+      display: flex; gap: $spacing-sm;
+      .btn { border-radius: 9999px; padding: 8px 14px; font-weight: 600; font-size: .9rem; }
+      .btn-danger { background: rgba($danger-color,.12); color: $danger-color; border: 1px solid rgba($danger-color,.35); }
+      .btn-danger:hover { background: rgba($danger-color,.18); }
+    }
+  }
+
   .filters-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);

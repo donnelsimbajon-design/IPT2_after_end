@@ -21,6 +21,9 @@ class User extends Authenticatable
         'avatar_path',
         'last_login_ip',
         'last_login_at',
+        'theme_color',
+        'theme_mode',
+        'bg_image_path',
     ];
 
     /**

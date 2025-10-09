@@ -26,6 +26,7 @@ class Student extends Model
         'program',
         'year_level',
         'status',
+        'avatar_path',
     ];
 
     protected $casts = [
