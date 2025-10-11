@@ -12,7 +12,28 @@ class FacultyController extends Controller
      */
     public function index()
     {
-        $faculties = Faculty::orderBy('created_at', 'desc')->get();
+        $q = request()->query('q');
+        $department = request()->query('department');
+        $status = request()->query('status');
+
+        $query = Faculty::query();
+        if ($q) {
+            $query->where(function($sub) use ($q) {
+                $sub->where('first_name', 'like', "%$q%")
+                    ->orWhere('last_name', 'like', "%$q%")
+                    ->orWhere('faculty_id', 'like', "%$q%")
+                    ->orWhere('email', 'like', "%$q%");
+            });
+        }
+        if ($department) { $query->where('department', $department); }
+        if ($status) { $query->where('status', $status); }
+
+        // Exclude archived by default unless explicitly requested
+        if (!$status && !request()->boolean('include_archived')) {
+            $query->where('status', '!=', 'Archived');
+        }
+
+        $faculties = $query->orderBy('created_at', 'desc')->get();
         return response()->json($faculties);
     }
 
@@ -105,5 +126,55 @@ class FacultyController extends Controller
         $faculty = Faculty::findOrFail($id);
         $faculty->delete();
         return response()->json(['message' => 'Faculty deleted successfully'], 200);
+    }
+
+    public function archived()
+    {
+        $faculties = Faculty::where('status', 'Archived')->orderBy('created_at', 'desc')->get();
+        return response()->json($faculties);
+    }
+
+    public function archive($id)
+    {
+        $faculty = Faculty::findOrFail($id);
+        $faculty->status = 'Archived';
+        $faculty->save();
+        return response()->json(['faculty' => $faculty, 'message' => 'Faculty archived successfully']);
+    }
+
+    public function unarchive($id)
+    {
+        $faculty = Faculty::findOrFail($id);
+        $faculty->status = 'Active';
+        $faculty->save();
+        return response()->json(['faculty' => $faculty, 'message' => 'Faculty unarchived successfully']);
+    }
+
+    public function uploadAvatar(Request $request, $id)
+    {
+        $request->validate([
+            'avatar' => 'required|image|max:5120',
+        ]);
+
+        $faculty = Faculty::findOrFail($id);
+        $file = $request->file('avatar');
+        $filename = time() . '_' . preg_replace('/[^A-Za-z0-9._-]/', '_', $file->getClientOriginalName());
+        $targetDir = public_path('uploads/faculties');
+        if (!is_dir($targetDir)) {
+            @mkdir($targetDir, 0775, true);
+        }
+        $file->move($targetDir, $filename);
+
+        if ($faculty->avatar_path && strpos($faculty->avatar_path, 'uploads/faculties/') === 0 && file_exists(public_path($faculty->avatar_path))) {
+            @unlink(public_path($faculty->avatar_path));
+        }
+        $faculty->avatar_path = 'uploads/faculties/' . $filename;
+        $faculty->save();
+
+        return response()->json([
+            'faculty' => $faculty,
+            'avatar_url' => asset($faculty->avatar_path),
+            'message' => 'Avatar uploaded successfully'
+        ]);
     }
 }

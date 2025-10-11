@@ -24,6 +24,7 @@ class AuthController extends Controller
             if ($user) {
                 $user->last_login_ip = $request->ip();
                 $user->last_login_at = now();
+                $user->last_login_user_agent = $request->header('User-Agent');
                 $user->save();
             }
             return response()->json(['message' => 'ok', 'user' => $user], 200);

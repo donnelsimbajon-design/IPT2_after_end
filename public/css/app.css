@@ -12262,6 +12262,42 @@ textarea.form-control-lg {
   justify-content: center;
   background: linear-gradient(180deg, #f4f7ff 0%, #eef9ff 100%);
   font-family: "Poppins", sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+.home-login .bg-slideshow {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+.home-login .bg-slideshow .slide {
+  position: fixed;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  animation: fadeCycle 18s infinite;
+}
+.home-login .bg-slideshow .s1 {
+  background-image: url("/images/1.png");
+  animation-delay: 0s;
+}
+.home-login .bg-slideshow .s2 {
+  background-image: url("/images/2.png");
+  animation-delay: 6s;
+}
+.home-login .bg-slideshow .s3 {
+  background-image: url("/images/3.png");
+  animation-delay: 12s;
+}
+.home-login::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 1;
+  pointer-events: none;
 }
 .home-login .login-card {
   width: 100%;
@@ -12271,10 +12307,20 @@ textarea.form-control-lg {
   padding: 28px;
   box-shadow: 0 12px 40px rgba(14, 30, 37, 0.06);
   border: 1px solid rgba(18, 38, 63, 0.04);
+  position: relative;
+  z-index: 2;
 }
 .home-login .login-card .brand {
   text-align: center;
   margin-bottom: 18px;
+}
+.home-login .login-card .brand .brand-logo {
+  width: 96px;
+  height: 96px;
+  -o-object-fit: contain;
+     object-fit: contain;
+  display: block;
+  margin: 0 auto 10px;
 }
 .home-login .login-card .brand h1, .home-login .login-card .brand .h1 {
   font-size: 1.4rem;
@@ -12319,8 +12365,8 @@ textarea.form-control-lg {
 }
 .home-login .login-card form input:focus {
   outline: none;
-  border-color: #7aa2ff;
-  box-shadow: 0 8px 30px rgba(38, 99, 255, 0.06);
+  border-color: #ef4444;
+  box-shadow: 0 8px 30px rgba(239, 68, 68, 0.12);
 }
 .home-login .login-card form .controls {
   display: flex;
@@ -12336,12 +12382,16 @@ textarea.form-control-lg {
   padding: 10px 16px;
   border-radius: 10px;
   border: none;
-  background: linear-gradient(90deg, #2563eb, #1e40af);
+  background: linear-gradient(90deg, #ef4444, #b91c1c);
   color: #fff;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.12);
-  transition: transform 0.08s ease, box-shadow 0.12s ease;
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.18);
+  transition: transform 0.08s ease, box-shadow 0.12s ease, filter 0.1s ease;
+}
+.home-login .login-card form .controls button.btn:hover {
+  filter: brightness(1.02);
+  box-shadow: 0 10px 24px rgba(239, 68, 68, 0.22);
 }
 .home-login .login-card form .controls button.btn:active {
   transform: translateY(1px);
@@ -12357,6 +12407,23 @@ textarea.form-control-lg {
   .home-login .login-card {
     padding: 18px;
     border-radius: 12px;
+  }
+}
+@keyframes fadeCycle {
+  0% {
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  28% {
+    opacity: 1;
+  }
+  33% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
   }
 }
 :root {
@@ -12817,7 +12884,8 @@ body {
   border: 1px solid var(--border-color);
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-  min-width: 240px;
+  min-width: 260px;
+  width: clamp(260px, 32vw, 320px);
   max-height: 70vh;
   overflow: auto;
 }
@@ -12828,6 +12896,22 @@ body {
   padding: 1rem;
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--border-color);
+}
+.main-content .content-header .header-right .user-dropdown .dropdown-header .user-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex: 0 0 48px;
+}
+.main-content .content-header .header-right .user-dropdown .dropdown-header .user-details {
+  min-width: 0;
+}
+.main-content .content-header .header-right .user-dropdown .dropdown-header .user-details .user-name, .main-content .content-header .header-right .user-dropdown .dropdown-header .user-details .user-role {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
 }
 .main-content .content-header .header-right .user-dropdown .dropdown-list {
   list-style: none;
@@ -13029,6 +13113,173 @@ body {
   font-weight: 500;
 }
 
+.school-year-page .page-subtitle {
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+.school-year-page .sy-card, .school-year-page .sy-year-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.5rem;
+}
+.school-year-page .sy-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.school-year-page .sy-card-header h2, .school-year-page .sy-card-header .h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+.school-year-page .status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  border: 1px solid var(--border-color);
+}
+.school-year-page .status-badge.active {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.35);
+}
+.school-year-page .status-badge.completed {
+  background: rgba(51, 65, 85, 0.15);
+  color: var(--text-secondary);
+  border-color: rgba(51, 65, 85, 0.35);
+}
+.school-year-page .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+.school-year-page .sy-stat {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+}
+.school-year-page .sy-stat .value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+.school-year-page .sy-stat .label {
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+.school-year-page .sy-section {
+  margin-top: 2rem;
+}
+.school-year-page .sy-section h3, .school-year-page .sy-section .h3 {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+.school-year-page .sy-year-header .title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.school-year-page .sy-year-header .title-row h4, .school-year-page .sy-year-header .title-row .h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+.school-year-page .sy-year-header .meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.school-year-page .sy-year-header .meta-grid .meta-label {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.school-year-page .sy-year-header .meta-grid .meta-value {
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-top: 2px;
+}
+.school-year-page .sy-semesters {
+  margin-top: 1.5rem;
+}
+.school-year-page .sy-semesters .section-title {
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+.school-year-page .sy-semesters .semester-list {
+  display: grid;
+  gap: 0.75rem;
+}
+.school-year-page .sy-semesters .semester-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+}
+.school-year-page .sy-semesters .semester-item .sem-name {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.school-year-page .sy-semesters .semester-item .sem-range {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+.school-year-page .sy-semesters .semester-item:hover {
+  background: var(--sidebar-active);
+}
+.school-year-page .sy-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.school-year-page .sy-actions .btn {
+  border-radius: 9999px;
+  padding: 8px 14px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+.school-year-page .sy-actions .btn:hover {
+  background: var(--sidebar-active);
+}
+.school-year-page .sy-actions .btn-danger {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.35);
+}
+.school-year-page .sy-actions .btn-danger:hover {
+  background: rgba(239, 68, 68, 0.18);
+}
+
+@media (max-width: 768px) {
+  .school-year-page .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .school-year-page .sy-actions {
+    flex-wrap: wrap;
+  }
+}
 @media (max-width: 768px) {
   .settings-landing .settings-grid {
     grid-template-columns: 1fr;
@@ -13204,6 +13455,9 @@ body {
 .students-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover, .account-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover, .archives-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover, .faculty-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover {
   background: var(--sidebar-active);
 }
+.students-page .module-page .form-card .module-form [data-uppercase=true], .account-page .module-page .form-card .module-form [data-uppercase=true], .archives-page .module-page .form-card .module-form [data-uppercase=true], .faculty-page .module-page .form-card .module-form [data-uppercase=true] {
+  text-transform: uppercase;
+}
 .students-page .module-page .table-card, .account-page .module-page .table-card, .archives-page .module-page .table-card, .faculty-page .module-page .table-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -13331,6 +13585,13 @@ body {
   background: rgba(139, 21, 56, 0.12);
   color: #8B1538;
 }
+.students-page .student-edit-card, .account-page .student-edit-card, .archives-page .student-edit-card, .faculty-page .student-edit-card {
+  width: clamp(720px, 90vw, 1024px);
+  max-width: 95%;
+  max-height: 90vh;
+  overflow: auto;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
 
 .students-page .avatar-input, .account-page .avatar-input, .archives-page .avatar-input, .faculty-page .avatar-input {
   display: flex;
@@ -13361,6 +13622,128 @@ body {
 }
 .students-page .avatar-input .avatar-preview .placeholder, .account-page .avatar-input .avatar-preview .placeholder, .archives-page .avatar-input .avatar-preview .placeholder, .faculty-page .avatar-input .avatar-preview .placeholder {
   display: inline-block;
+}
+
+.students-page .student-view-modal, .account-page .student-view-modal, .archives-page .student-view-modal, .faculty-page .student-view-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1.5rem;
+}
+.students-page .student-view-card, .account-page .student-view-card, .archives-page .student-view-card, .faculty-page .student-view-card {
+  width: clamp(560px, 80vw, 720px);
+  max-width: 95%;
+  max-height: 85vh;
+  overflow: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+.students-page .student-view-card .page-header, .account-page .student-view-card .page-header, .archives-page .student-view-card .page-header, .faculty-page .student-view-card .page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+.students-page .student-view-card .page-header h2, .account-page .student-view-card .page-header h2, .archives-page .student-view-card .page-header h2, .faculty-page .student-view-card .page-header h2, .students-page .student-view-card .page-header .h2, .account-page .student-view-card .page-header .h2, .archives-page .student-view-card .page-header .h2, .faculty-page .student-view-card .page-header .h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+.students-page .student-view-card .student-cell, .account-page .student-view-card .student-cell, .archives-page .student-view-card .student-cell, .faculty-page .student-view-card .student-cell {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.students-page .student-view-card .student-cell .avatar, .account-page .student-view-card .student-cell .avatar, .archives-page .student-view-card .student-cell .avatar, .faculty-page .student-view-card .student-cell .avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--sidebar-active);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  overflow: hidden;
+}
+.students-page .student-view-card .student-cell .avatar img, .account-page .student-view-card .student-cell .avatar img, .archives-page .student-view-card .student-cell .avatar img, .faculty-page .student-view-card .student-cell .avatar img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  display: block;
+}
+.students-page .student-view-card .student-cell .info .name, .account-page .student-view-card .student-cell .info .name, .archives-page .student-view-card .student-cell .info .name, .faculty-page .student-view-card .student-cell .info .name {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.students-page .student-view-card .student-cell .info .sub, .account-page .student-view-card .student-cell .info .sub, .archives-page .student-view-card .student-cell .info .sub, .faculty-page .student-view-card .student-cell .info .sub {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+.students-page .student-view-card .details, .account-page .student-view-card .details, .archives-page .student-view-card .details, .faculty-page .student-view-card .details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+.students-page .student-view-card .form-actions, .account-page .student-view-card .form-actions, .archives-page .student-view-card .form-actions, .faculty-page .student-view-card .form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+.students-page .student-view-card .form-actions button, .account-page .student-view-card .form-actions button, .archives-page .student-view-card .form-actions button, .faculty-page .student-view-card .form-actions button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.students-page .student-view-card .form-actions .btn-primary, .account-page .student-view-card .form-actions .btn-primary, .archives-page .student-view-card .form-actions .btn-primary, .faculty-page .student-view-card .form-actions .btn-primary {
+  background: #8B1538;
+  color: white;
+}
+.students-page .student-view-card .form-actions .btn-primary:hover, .account-page .student-view-card .form-actions .btn-primary:hover, .archives-page .student-view-card .form-actions .btn-primary:hover, .faculty-page .student-view-card .form-actions .btn-primary:hover {
+  background: #6B0F2A;
+}
+.students-page .student-view-card .form-actions .btn-secondary, .account-page .student-view-card .form-actions .btn-secondary, .archives-page .student-view-card .form-actions .btn-secondary, .faculty-page .student-view-card .form-actions .btn-secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+.students-page .student-view-card .form-actions .btn-secondary:hover, .account-page .student-view-card .form-actions .btn-secondary:hover, .archives-page .student-view-card .form-actions .btn-secondary:hover, .faculty-page .student-view-card .form-actions .btn-secondary:hover {
+  background: var(--sidebar-active);
+}
+.students-page .student-view-card .page-header .btn, .account-page .student-view-card .page-header .btn, .archives-page .student-view-card .page-header .btn, .faculty-page .student-view-card .page-header .btn {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border-radius: 8px;
+}
+.students-page .student-view-card .page-header .btn:hover, .account-page .student-view-card .page-header .btn:hover, .archives-page .student-view-card .page-header .btn:hover, .faculty-page .student-view-card .page-header .btn:hover {
+  background: var(--sidebar-active);
+}
+.students-page .student-view-card .details, .account-page .student-view-card .details, .archives-page .student-view-card .details, .faculty-page .student-view-card .details {
+  color: var(--text-primary);
+}
+.students-page .student-view-card .details strong, .account-page .student-view-card .details strong, .archives-page .student-view-card .details strong, .faculty-page .student-view-card .details strong {
+  color: var(--text-primary);
+}
+.students-page .student-view-card .details div, .account-page .student-view-card .details div, .archives-page .student-view-card .details div, .faculty-page .student-view-card .details div {
+  line-height: 1.6;
 }
 
 .students-page .module-page .page-header, .account-page .module-page .page-header, .archives-page .module-page .page-header, .faculty-page .module-page .page-header {
@@ -13533,6 +13916,9 @@ body {
 .students-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover, .account-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover, .archives-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover, .faculty-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover {
   background: var(--sidebar-active);
 }
+.students-page .module-page .form-card .module-form [data-uppercase=true], .account-page .module-page .form-card .module-form [data-uppercase=true], .archives-page .module-page .form-card .module-form [data-uppercase=true], .faculty-page .module-page .form-card .module-form [data-uppercase=true] {
+  text-transform: uppercase;
+}
 .students-page .module-page .table-card, .account-page .module-page .table-card, .archives-page .module-page .table-card, .faculty-page .module-page .table-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -13660,6 +14046,13 @@ body {
   background: rgba(139, 21, 56, 0.12);
   color: #8B1538;
 }
+.students-page .student-edit-card, .account-page .student-edit-card, .archives-page .student-edit-card, .faculty-page .student-edit-card {
+  width: clamp(720px, 90vw, 1024px);
+  max-width: 95%;
+  max-height: 90vh;
+  overflow: auto;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
 
 .students-page .avatar-input, .account-page .avatar-input, .archives-page .avatar-input, .faculty-page .avatar-input {
   display: flex;
@@ -13690,6 +14083,128 @@ body {
 }
 .students-page .avatar-input .avatar-preview .placeholder, .account-page .avatar-input .avatar-preview .placeholder, .archives-page .avatar-input .avatar-preview .placeholder, .faculty-page .avatar-input .avatar-preview .placeholder {
   display: inline-block;
+}
+
+.students-page .student-view-modal, .account-page .student-view-modal, .archives-page .student-view-modal, .faculty-page .student-view-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1.5rem;
+}
+.students-page .student-view-card, .account-page .student-view-card, .archives-page .student-view-card, .faculty-page .student-view-card {
+  width: clamp(560px, 80vw, 720px);
+  max-width: 95%;
+  max-height: 85vh;
+  overflow: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+.students-page .student-view-card .page-header, .account-page .student-view-card .page-header, .archives-page .student-view-card .page-header, .faculty-page .student-view-card .page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+.students-page .student-view-card .page-header h2, .account-page .student-view-card .page-header h2, .archives-page .student-view-card .page-header h2, .faculty-page .student-view-card .page-header h2, .students-page .student-view-card .page-header .h2, .account-page .student-view-card .page-header .h2, .archives-page .student-view-card .page-header .h2, .faculty-page .student-view-card .page-header .h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+.students-page .student-view-card .student-cell, .account-page .student-view-card .student-cell, .archives-page .student-view-card .student-cell, .faculty-page .student-view-card .student-cell {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.students-page .student-view-card .student-cell .avatar, .account-page .student-view-card .student-cell .avatar, .archives-page .student-view-card .student-cell .avatar, .faculty-page .student-view-card .student-cell .avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--sidebar-active);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  overflow: hidden;
+}
+.students-page .student-view-card .student-cell .avatar img, .account-page .student-view-card .student-cell .avatar img, .archives-page .student-view-card .student-cell .avatar img, .faculty-page .student-view-card .student-cell .avatar img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  display: block;
+}
+.students-page .student-view-card .student-cell .info .name, .account-page .student-view-card .student-cell .info .name, .archives-page .student-view-card .student-cell .info .name, .faculty-page .student-view-card .student-cell .info .name {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.students-page .student-view-card .student-cell .info .sub, .account-page .student-view-card .student-cell .info .sub, .archives-page .student-view-card .student-cell .info .sub, .faculty-page .student-view-card .student-cell .info .sub {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+.students-page .student-view-card .details, .account-page .student-view-card .details, .archives-page .student-view-card .details, .faculty-page .student-view-card .details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+.students-page .student-view-card .form-actions, .account-page .student-view-card .form-actions, .archives-page .student-view-card .form-actions, .faculty-page .student-view-card .form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+.students-page .student-view-card .form-actions button, .account-page .student-view-card .form-actions button, .archives-page .student-view-card .form-actions button, .faculty-page .student-view-card .form-actions button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.students-page .student-view-card .form-actions .btn-primary, .account-page .student-view-card .form-actions .btn-primary, .archives-page .student-view-card .form-actions .btn-primary, .faculty-page .student-view-card .form-actions .btn-primary {
+  background: #8B1538;
+  color: white;
+}
+.students-page .student-view-card .form-actions .btn-primary:hover, .account-page .student-view-card .form-actions .btn-primary:hover, .archives-page .student-view-card .form-actions .btn-primary:hover, .faculty-page .student-view-card .form-actions .btn-primary:hover {
+  background: #6B0F2A;
+}
+.students-page .student-view-card .form-actions .btn-secondary, .account-page .student-view-card .form-actions .btn-secondary, .archives-page .student-view-card .form-actions .btn-secondary, .faculty-page .student-view-card .form-actions .btn-secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+.students-page .student-view-card .form-actions .btn-secondary:hover, .account-page .student-view-card .form-actions .btn-secondary:hover, .archives-page .student-view-card .form-actions .btn-secondary:hover, .faculty-page .student-view-card .form-actions .btn-secondary:hover {
+  background: var(--sidebar-active);
+}
+.students-page .student-view-card .page-header .btn, .account-page .student-view-card .page-header .btn, .archives-page .student-view-card .page-header .btn, .faculty-page .student-view-card .page-header .btn {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border-radius: 8px;
+}
+.students-page .student-view-card .page-header .btn:hover, .account-page .student-view-card .page-header .btn:hover, .archives-page .student-view-card .page-header .btn:hover, .faculty-page .student-view-card .page-header .btn:hover {
+  background: var(--sidebar-active);
+}
+.students-page .student-view-card .details, .account-page .student-view-card .details, .archives-page .student-view-card .details, .faculty-page .student-view-card .details {
+  color: var(--text-primary);
+}
+.students-page .student-view-card .details strong, .account-page .student-view-card .details strong, .archives-page .student-view-card .details strong, .faculty-page .student-view-card .details strong {
+  color: var(--text-primary);
+}
+.students-page .student-view-card .details div, .account-page .student-view-card .details div, .archives-page .student-view-card .details div, .faculty-page .student-view-card .details div {
+  line-height: 1.6;
 }
 
 .faculty-page .filters-card {
@@ -14053,6 +14568,9 @@ body {
 .students-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover, .account-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover, .archives-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover, .faculty-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover {
   background: var(--sidebar-active);
 }
+.students-page .module-page .form-card .module-form [data-uppercase=true], .account-page .module-page .form-card .module-form [data-uppercase=true], .archives-page .module-page .form-card .module-form [data-uppercase=true], .faculty-page .module-page .form-card .module-form [data-uppercase=true] {
+  text-transform: uppercase;
+}
 .students-page .module-page .table-card, .account-page .module-page .table-card, .archives-page .module-page .table-card, .faculty-page .module-page .table-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -14180,6 +14698,13 @@ body {
   background: rgba(139, 21, 56, 0.12);
   color: #8B1538;
 }
+.students-page .student-edit-card, .account-page .student-edit-card, .archives-page .student-edit-card, .faculty-page .student-edit-card {
+  width: clamp(720px, 90vw, 1024px);
+  max-width: 95%;
+  max-height: 90vh;
+  overflow: auto;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
 
 .students-page .avatar-input, .account-page .avatar-input, .archives-page .avatar-input, .faculty-page .avatar-input {
   display: flex;
@@ -14210,6 +14735,128 @@ body {
 }
 .students-page .avatar-input .avatar-preview .placeholder, .account-page .avatar-input .avatar-preview .placeholder, .archives-page .avatar-input .avatar-preview .placeholder, .faculty-page .avatar-input .avatar-preview .placeholder {
   display: inline-block;
+}
+
+.students-page .student-view-modal, .account-page .student-view-modal, .archives-page .student-view-modal, .faculty-page .student-view-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1.5rem;
+}
+.students-page .student-view-card, .account-page .student-view-card, .archives-page .student-view-card, .faculty-page .student-view-card {
+  width: clamp(560px, 80vw, 720px);
+  max-width: 95%;
+  max-height: 85vh;
+  overflow: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+.students-page .student-view-card .page-header, .account-page .student-view-card .page-header, .archives-page .student-view-card .page-header, .faculty-page .student-view-card .page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+.students-page .student-view-card .page-header h2, .account-page .student-view-card .page-header h2, .archives-page .student-view-card .page-header h2, .faculty-page .student-view-card .page-header h2, .students-page .student-view-card .page-header .h2, .account-page .student-view-card .page-header .h2, .archives-page .student-view-card .page-header .h2, .faculty-page .student-view-card .page-header .h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+.students-page .student-view-card .student-cell, .account-page .student-view-card .student-cell, .archives-page .student-view-card .student-cell, .faculty-page .student-view-card .student-cell {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.students-page .student-view-card .student-cell .avatar, .account-page .student-view-card .student-cell .avatar, .archives-page .student-view-card .student-cell .avatar, .faculty-page .student-view-card .student-cell .avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--sidebar-active);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  overflow: hidden;
+}
+.students-page .student-view-card .student-cell .avatar img, .account-page .student-view-card .student-cell .avatar img, .archives-page .student-view-card .student-cell .avatar img, .faculty-page .student-view-card .student-cell .avatar img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  display: block;
+}
+.students-page .student-view-card .student-cell .info .name, .account-page .student-view-card .student-cell .info .name, .archives-page .student-view-card .student-cell .info .name, .faculty-page .student-view-card .student-cell .info .name {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.students-page .student-view-card .student-cell .info .sub, .account-page .student-view-card .student-cell .info .sub, .archives-page .student-view-card .student-cell .info .sub, .faculty-page .student-view-card .student-cell .info .sub {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+.students-page .student-view-card .details, .account-page .student-view-card .details, .archives-page .student-view-card .details, .faculty-page .student-view-card .details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+.students-page .student-view-card .form-actions, .account-page .student-view-card .form-actions, .archives-page .student-view-card .form-actions, .faculty-page .student-view-card .form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+.students-page .student-view-card .form-actions button, .account-page .student-view-card .form-actions button, .archives-page .student-view-card .form-actions button, .faculty-page .student-view-card .form-actions button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.students-page .student-view-card .form-actions .btn-primary, .account-page .student-view-card .form-actions .btn-primary, .archives-page .student-view-card .form-actions .btn-primary, .faculty-page .student-view-card .form-actions .btn-primary {
+  background: #8B1538;
+  color: white;
+}
+.students-page .student-view-card .form-actions .btn-primary:hover, .account-page .student-view-card .form-actions .btn-primary:hover, .archives-page .student-view-card .form-actions .btn-primary:hover, .faculty-page .student-view-card .form-actions .btn-primary:hover {
+  background: #6B0F2A;
+}
+.students-page .student-view-card .form-actions .btn-secondary, .account-page .student-view-card .form-actions .btn-secondary, .archives-page .student-view-card .form-actions .btn-secondary, .faculty-page .student-view-card .form-actions .btn-secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+.students-page .student-view-card .form-actions .btn-secondary:hover, .account-page .student-view-card .form-actions .btn-secondary:hover, .archives-page .student-view-card .form-actions .btn-secondary:hover, .faculty-page .student-view-card .form-actions .btn-secondary:hover {
+  background: var(--sidebar-active);
+}
+.students-page .student-view-card .page-header .btn, .account-page .student-view-card .page-header .btn, .archives-page .student-view-card .page-header .btn, .faculty-page .student-view-card .page-header .btn {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border-radius: 8px;
+}
+.students-page .student-view-card .page-header .btn:hover, .account-page .student-view-card .page-header .btn:hover, .archives-page .student-view-card .page-header .btn:hover, .faculty-page .student-view-card .page-header .btn:hover {
+  background: var(--sidebar-active);
+}
+.students-page .student-view-card .details, .account-page .student-view-card .details, .archives-page .student-view-card .details, .faculty-page .student-view-card .details {
+  color: var(--text-primary);
+}
+.students-page .student-view-card .details strong, .account-page .student-view-card .details strong, .archives-page .student-view-card .details strong, .faculty-page .student-view-card .details strong {
+  color: var(--text-primary);
+}
+.students-page .student-view-card .details div, .account-page .student-view-card .details div, .archives-page .student-view-card .details div, .faculty-page .student-view-card .details div {
+  line-height: 1.6;
 }
 
 .archives-page .archive-tabs {
@@ -14450,6 +15097,9 @@ body {
 .students-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover, .account-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover, .faculty-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover, .archives-page .module-page .form-card .module-form .form-actions button.btn-secondary:hover {
   background: var(--sidebar-active);
 }
+.students-page .module-page .form-card .module-form [data-uppercase=true], .account-page .module-page .form-card .module-form [data-uppercase=true], .faculty-page .module-page .form-card .module-form [data-uppercase=true], .archives-page .module-page .form-card .module-form [data-uppercase=true] {
+  text-transform: uppercase;
+}
 .students-page .module-page .table-card, .account-page .module-page .table-card, .faculty-page .module-page .table-card, .archives-page .module-page .table-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -14577,6 +15227,13 @@ body {
   background: rgba(139, 21, 56, 0.12);
   color: #8B1538;
 }
+.students-page .student-edit-card, .account-page .student-edit-card, .faculty-page .student-edit-card, .archives-page .student-edit-card {
+  width: clamp(720px, 90vw, 1024px);
+  max-width: 95%;
+  max-height: 90vh;
+  overflow: auto;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
 
 .students-page .avatar-input, .account-page .avatar-input, .faculty-page .avatar-input, .archives-page .avatar-input {
   display: flex;
@@ -14609,6 +15266,128 @@ body {
   display: inline-block;
 }
 
+.students-page .student-view-modal, .account-page .student-view-modal, .faculty-page .student-view-modal, .archives-page .student-view-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1.5rem;
+}
+.students-page .student-view-card, .account-page .student-view-card, .faculty-page .student-view-card, .archives-page .student-view-card {
+  width: clamp(560px, 80vw, 720px);
+  max-width: 95%;
+  max-height: 85vh;
+  overflow: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+.students-page .student-view-card .page-header, .account-page .student-view-card .page-header, .faculty-page .student-view-card .page-header, .archives-page .student-view-card .page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+.students-page .student-view-card .page-header h2, .account-page .student-view-card .page-header h2, .faculty-page .student-view-card .page-header h2, .archives-page .student-view-card .page-header h2, .students-page .student-view-card .page-header .h2, .account-page .student-view-card .page-header .h2, .faculty-page .student-view-card .page-header .h2, .archives-page .student-view-card .page-header .h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+.students-page .student-view-card .student-cell, .account-page .student-view-card .student-cell, .faculty-page .student-view-card .student-cell, .archives-page .student-view-card .student-cell {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.students-page .student-view-card .student-cell .avatar, .account-page .student-view-card .student-cell .avatar, .faculty-page .student-view-card .student-cell .avatar, .archives-page .student-view-card .student-cell .avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--sidebar-active);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  overflow: hidden;
+}
+.students-page .student-view-card .student-cell .avatar img, .account-page .student-view-card .student-cell .avatar img, .faculty-page .student-view-card .student-cell .avatar img, .archives-page .student-view-card .student-cell .avatar img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  display: block;
+}
+.students-page .student-view-card .student-cell .info .name, .account-page .student-view-card .student-cell .info .name, .faculty-page .student-view-card .student-cell .info .name, .archives-page .student-view-card .student-cell .info .name {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.students-page .student-view-card .student-cell .info .sub, .account-page .student-view-card .student-cell .info .sub, .faculty-page .student-view-card .student-cell .info .sub, .archives-page .student-view-card .student-cell .info .sub {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+.students-page .student-view-card .details, .account-page .student-view-card .details, .faculty-page .student-view-card .details, .archives-page .student-view-card .details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+.students-page .student-view-card .form-actions, .account-page .student-view-card .form-actions, .faculty-page .student-view-card .form-actions, .archives-page .student-view-card .form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+.students-page .student-view-card .form-actions button, .account-page .student-view-card .form-actions button, .faculty-page .student-view-card .form-actions button, .archives-page .student-view-card .form-actions button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.students-page .student-view-card .form-actions .btn-primary, .account-page .student-view-card .form-actions .btn-primary, .faculty-page .student-view-card .form-actions .btn-primary, .archives-page .student-view-card .form-actions .btn-primary {
+  background: #8B1538;
+  color: white;
+}
+.students-page .student-view-card .form-actions .btn-primary:hover, .account-page .student-view-card .form-actions .btn-primary:hover, .faculty-page .student-view-card .form-actions .btn-primary:hover, .archives-page .student-view-card .form-actions .btn-primary:hover {
+  background: #6B0F2A;
+}
+.students-page .student-view-card .form-actions .btn-secondary, .account-page .student-view-card .form-actions .btn-secondary, .faculty-page .student-view-card .form-actions .btn-secondary, .archives-page .student-view-card .form-actions .btn-secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+.students-page .student-view-card .form-actions .btn-secondary:hover, .account-page .student-view-card .form-actions .btn-secondary:hover, .faculty-page .student-view-card .form-actions .btn-secondary:hover, .archives-page .student-view-card .form-actions .btn-secondary:hover {
+  background: var(--sidebar-active);
+}
+.students-page .student-view-card .page-header .btn, .account-page .student-view-card .page-header .btn, .faculty-page .student-view-card .page-header .btn, .archives-page .student-view-card .page-header .btn {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border-radius: 8px;
+}
+.students-page .student-view-card .page-header .btn:hover, .account-page .student-view-card .page-header .btn:hover, .faculty-page .student-view-card .page-header .btn:hover, .archives-page .student-view-card .page-header .btn:hover {
+  background: var(--sidebar-active);
+}
+.students-page .student-view-card .details, .account-page .student-view-card .details, .faculty-page .student-view-card .details, .archives-page .student-view-card .details {
+  color: var(--text-primary);
+}
+.students-page .student-view-card .details strong, .account-page .student-view-card .details strong, .faculty-page .student-view-card .details strong, .archives-page .student-view-card .details strong {
+  color: var(--text-primary);
+}
+.students-page .student-view-card .details div, .account-page .student-view-card .details div, .faculty-page .student-view-card .details div, .archives-page .student-view-card .details div {
+  line-height: 1.6;
+}
+
 .account-page .avatar-row {
   display: flex;
   gap: 1.5rem;
@@ -14625,4 +15404,24 @@ body {
   font-weight: 600;
   color: var(--text-primary);
   overflow: hidden;
+}
+.account-page .security-map-wrap {
+  margin-top: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+  overflow: hidden;
+}
+.account-page .security-map-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.account-page .security-map {
+  width: 100%;
+  height: clamp(220px, 35vh, 360px);
 }

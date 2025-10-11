@@ -22,4 +22,27 @@
     color: var(--text-primary);
     overflow: hidden;
   }
+
+  .security-map-wrap {
+    margin-top: $spacing-md;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--bg-secondary);
+    overflow: hidden;
+  }
+
+  .security-map-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .security-map {
+    width: 100%;
+    height: clamp(220px, 35vh, 360px);
+  }
 }

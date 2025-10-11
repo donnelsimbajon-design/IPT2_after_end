@@ -39,6 +39,8 @@ export default function Faculty() {
         employment_type: 'Full-time',
         status: 'Active'
     });
+    const [avatarFile, setAvatarFile] = useState(null);
+    const [avatarPreview, setAvatarPreview] = useState(null);
 
     useEffect(() => {
         fetchFaculties();
@@ -66,14 +68,24 @@ export default function Faculty() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            let saved;
             if (editingId) {
-                await axios.put(`/api/faculties/${editingId}`, formData);
+                const res = await axios.put(`/api/faculties/${editingId}`, formData);
+                saved = res.data.faculty ?? res.data;
                 setMessage('Faculty updated successfully');
             } else {
-                await axios.post('/api/faculties', formData);
+                const res = await axios.post('/api/faculties', formData);
+                saved = res.data.faculty ?? res.data;
                 setMessage('Faculty created successfully');
             }
-            fetchFaculties();
+
+            if (avatarFile && saved?.id) {
+                const fd = new FormData();
+                fd.append('avatar', avatarFile);
+                await axios.post(`/api/faculties/${saved.id}/avatar`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+            }
+
+            await fetchFaculties();
             resetForm();
         } catch (error) {
             console.error('Error saving faculty:', error);
@@ -85,6 +97,12 @@ export default function Faculty() {
         setFormData(faculty);
         setEditingId(faculty.id);
         setShowForm(true);
+        setAvatarFile(null);
+        if (faculty.avatar_path) {
+            setAvatarPreview(faculty.avatar_path.startsWith('http') ? faculty.avatar_path : `/${faculty.avatar_path}`);
+        } else {
+            setAvatarPreview(null);
+        }
     };
 
     const handleDelete = async (id) => {
@@ -123,10 +141,20 @@ export default function Faculty() {
         });
         setEditingId(null);
         setShowForm(false);
+        setAvatarFile(null);
+        setAvatarPreview(null);
     };
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleAvatarChange = (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (file) {
+            setAvatarFile(file);
+            try { setAvatarPreview(URL.createObjectURL(file)); } catch { setAvatarPreview(null); }
+        }
     };
 
     const handleFilterChange = (e) => {
@@ -134,7 +162,7 @@ export default function Faculty() {
     };
 
     const createArchiveFromFaculty = async (faculty) => {
-        const archiveId = `FAC-${faculty.faculty_id || faculty.id}-${Date.now()}`;
+        const archiveId = `FAC-${faculty.id}-${Date.now()}`;
         const today = new Date();
         const ymd = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
         const payload = {
@@ -144,7 +172,7 @@ export default function Faculty() {
             document_type: 'Faculty',
             category: 'Record',
             department: faculty.department || '',
-            reference_number: faculty.faculty_id || String(faculty.id),
+            reference_number: String(faculty.id),
             archived_date: ymd,
             status: 'Archived',
             tags: 'faculty',
@@ -155,13 +183,25 @@ export default function Faculty() {
     const handleArchive = async (faculty) => {
         if (!confirm('Archive this faculty member?')) return;
         try {
-            await axios.put(`/api/faculties/${faculty.id}`, { status: 'Archived' });
+            await axios.post(`/api/faculties/${faculty.id}/archive`);
             try { await createArchiveFromFaculty(faculty); } catch (e) { console.error('Archive create failed', e); }
             setMessage('Faculty archived successfully');
             fetchFaculties();
         } catch (error) {
             console.error('Error archiving faculty:', error);
             setMessage('Error archiving faculty');
+        }
+    };
+
+    const handleUnarchive = async (faculty) => {
+        if (!confirm('Unarchive this faculty member?')) return;
+        try {
+            await axios.post(`/api/faculties/${faculty.id}/unarchive`);
+            setMessage('Faculty unarchived successfully');
+            fetchFaculties();
+        } catch (error) {
+            console.error('Error unarchiving faculty:', error);
+            setMessage('Error unarchiving faculty');
         }
     };
 
@@ -213,6 +253,19 @@ export default function Faculty() {
                     <h2>{editingId ? 'Edit Faculty' : 'Add New Faculty'}</h2>
                     <form onSubmit={handleSubmit} className="module-form">
                         <div className="form-row">
+                            <div className="avatar-input">
+                                <div className="avatar-preview">
+                                    {avatarPreview ? (
+                                        <img src={avatarPreview} alt="Faculty avatar preview" />
+                                    ) : (
+                                        <div className="placeholder">{(formData.first_name || formData.last_name || 'F').toString().charAt(0).toUpperCase()}</div>
+                                    )}
+                                </div>
+                                <label className="btn btn-secondary" style={{marginTop: '8px'}}>
+                                    Upload Photo
+                                    <input type="file" accept="image/*" onChange={handleAvatarChange} style={{display:'none'}} />
+                                </label>
+                            </div>
                             <input name="faculty_id" placeholder="Faculty ID *" value={formData.faculty_id} onChange={handleChange} required />
                             <input name="first_name" placeholder="First Name *" value={formData.first_name} onChange={handleChange} required />
                             <input name="last_name" placeholder="Last Name *" value={formData.last_name} onChange={handleChange} required />
@@ -278,8 +331,8 @@ export default function Faculty() {
                 <table className="data-table">
                     <thead>
                         <tr>
+                            <th>Faculty</th>
                             <th>Faculty ID</th>
-                            <th>Name</th>
                             <th>Email</th>
                             <th>Department</th>
                             <th>Position</th>
@@ -291,8 +344,22 @@ export default function Faculty() {
                     <tbody>
                         {filteredFaculties.map(faculty => (
                             <tr key={faculty.id}>
+                                <td>
+                                    <div className="student-cell">
+                                        <div className="avatar">
+                                            {faculty.avatar_path ? (
+                                                <img src={faculty.avatar_path.startsWith('http') ? faculty.avatar_path : `/${faculty.avatar_path}`} alt="Avatar" />
+                                            ) : (
+                                                <span>{(faculty.first_name || faculty.last_name || 'F').toString().charAt(0).toUpperCase()}</span>
+                                            )}
+                                        </div>
+                                        <div className="info">
+                                            <div className="name">{faculty.first_name} {faculty.last_name}</div>
+                                            <div className="sub">{faculty.email}</div>
+                                        </div>
+                                    </div>
+                                </td>
                                 <td>{faculty.faculty_id}</td>
-                                <td>{faculty.first_name} {faculty.last_name}</td>
                                 <td>{faculty.email}</td>
                                 <td>{faculty.department}</td>
                                 <td>{faculty.position}</td>
@@ -301,8 +368,10 @@ export default function Faculty() {
                                 <td className="actions">
                                     <button className="btn-icon btn-edit" onClick={() => handleEdit(faculty)}>Edit</button>
                                     <button className="btn-icon btn-delete" onClick={() => handleDelete(faculty.id)}>Delete</button>
-                                    {faculty.status !== 'Archived' && (
+                                    {faculty.status !== 'Archived' ? (
                                         <button className="btn-icon" onClick={() => handleArchive(faculty)}>Archive</button>
+                                    ) : (
+                                        <button className="btn-icon" onClick={() => handleUnarchive(faculty)}>Unarchive</button>
                                     )}
                                 </td>
                             </tr>

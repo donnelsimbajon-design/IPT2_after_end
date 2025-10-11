@@ -11,6 +11,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SystemSettingController;
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\SchoolYearController;
 
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
@@ -39,19 +40,26 @@ Route::middleware(['auth:web'])->group(function () {
     // Student routes
     Route::get('/students', [StudentController::class, 'index']);
     Route::post('/students', [StudentController::class, 'store']);
+    Route::get('/students/archived', [StudentController::class, 'archived']);
     Route::get('/students/{id}', [StudentController::class, 'show']);
     Route::put('/students/{id}', [StudentController::class, 'update']);
     Route::patch('/students/{id}', [StudentController::class, 'update']);
     Route::delete('/students/{id}', [StudentController::class, 'destroy']);
     Route::post('/students/{id}/avatar', [StudentController::class, 'uploadAvatar']);
+    Route::post('/students/{id}/archive', [StudentController::class, 'archive']);
+    Route::post('/students/{id}/unarchive', [StudentController::class, 'unarchive']);
 
     // Faculty routes
     Route::get('/faculties', [FacultyController::class, 'index']);
     Route::post('/faculties', [FacultyController::class, 'store']);
+    Route::get('/faculties/archived', [FacultyController::class, 'archived']);
     Route::get('/faculties/{id}', [FacultyController::class, 'show']);
     Route::put('/faculties/{id}', [FacultyController::class, 'update']);
     Route::patch('/faculties/{id}', [FacultyController::class, 'update']);
     Route::delete('/faculties/{id}', [FacultyController::class, 'destroy']);
+    Route::post('/faculties/{id}/avatar', [FacultyController::class, 'uploadAvatar']);
+    Route::post('/faculties/{id}/archive', [FacultyController::class, 'archive']);
+    Route::post('/faculties/{id}/unarchive', [FacultyController::class, 'unarchive']);
 
     // Report routes
     Route::get('/reports', [ReportController::class, 'index']);
@@ -87,4 +95,24 @@ Route::middleware(['auth:web'])->group(function () {
     Route::patch('/archives/{id}', [ArchiveController::class, 'update']);
     Route::delete('/archives/{id}', [ArchiveController::class, 'destroy']);
     Route::post('/archives/{id}/upload', [ArchiveController::class, 'uploadFile']);
+
+    // School Year routes
+    Route::get('/school-years', [SchoolYearController::class, 'index']);
+    Route::post('/school-years', [SchoolYearController::class, 'store']);
+    Route::get('/school-years/{id}', [SchoolYearController::class, 'show']);
+    Route::put('/school-years/{id}', [SchoolYearController::class, 'update']);
+    Route::patch('/school-years/{id}', [SchoolYearController::class, 'update']);
+    Route::delete('/school-years/{id}', [SchoolYearController::class, 'destroy']);
+    Route::post('/school-years/{id}/archive', [SchoolYearController::class, 'archive']);
+    Route::post('/school-years/{id}/unarchive', [SchoolYearController::class, 'unarchive']);
+
+    // Semesters under a school year
+    Route::post('/school-years/{id}/semesters', [SchoolYearController::class, 'addSemester']);
+    Route::put('/school-years/{id}/semesters/{semesterId}', [SchoolYearController::class, 'updateSemester']);
+    Route::patch('/school-years/{id}/semesters/{semesterId}', [SchoolYearController::class, 'updateSemester']);
+    Route::delete('/school-years/{id}/semesters/{semesterId}', [SchoolYearController::class, 'deleteSemester']);
+
+    // Attach/detach students to a school year
+    Route::post('/school-years/{id}/students', [SchoolYearController::class, 'attachStudent']);
+    Route::delete('/school-years/{id}/students', [SchoolYearController::class, 'detachStudent']);
 });

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Student extends Model
 {
@@ -18,12 +19,15 @@ class Student extends Model
         'date_of_birth',
         'gender',
         'address',
+        'region',
+        'province',
         'city',
         'state',
         'zip_code',
         'country',
         'enrollment_date',
         'program',
+        'department',
         'year_level',
         'status',
         'avatar_path',
@@ -33,4 +37,12 @@ class Student extends Model
         'date_of_birth' => 'date',
         'enrollment_date' => 'date',
     ];
+
+    /**
+     * School years this student is enrolled in.
+     */
+    public function schoolYears(): BelongsToMany
+    {
+        return $this->belongsToMany(SchoolYear::class, 'student_school_years')->withTimestamps();
+    }
 }

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 export default function Archive() {
@@ -7,6 +8,7 @@ export default function Archive() {
     const [showForm, setShowForm] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [message, setMessage] = useState(null);
+    const navigate = useNavigate();
     const [activeType, setActiveType] = useState(''); // '', 'Student', 'Faculty', 'Report'
     const [filters, setFilters] = useState({
         status: '',
@@ -94,6 +96,54 @@ export default function Archive() {
         } catch (error) {
             console.error('Error deleting archive:', error);
             setMessage('Error deleting archive');
+        }
+    };
+
+    const handleUnarchive = async (archive) => {
+        try {
+            if (archive.document_type === 'SchoolYear' && archive.reference_number) {
+                await axios.post(`/api/school-years/${archive.reference_number}/unarchive`);
+                setMessage('School year unarchived');
+                fetchArchives();
+                return;
+            }
+            if (archive.document_type === 'Student' && archive.reference_number) {
+                const id = parseInt(archive.reference_number, 10);
+                if (Number.isFinite(id)) {
+                    await axios.post(`/api/students/${id}/unarchive`);
+                    setMessage('Student unarchived');
+                    fetchArchives();
+                    return;
+                }
+            }
+            if (archive.document_type === 'Faculty' && archive.reference_number) {
+                const id = parseInt(archive.reference_number, 10);
+                if (Number.isFinite(id)) {
+                    await axios.post(`/api/faculties/${id}/unarchive`);
+                    setMessage('Faculty unarchived');
+                    fetchArchives();
+                    return;
+                }
+            }
+            setMessage('Unarchive is not available for this item.');
+        } catch (error) {
+            console.error('Error unarchiving:', error);
+            setMessage('Error unarchiving');
+        }
+    };
+
+    const handleView = (archive) => {
+        if (archive.document_type === 'Student') {
+            navigate('/students');
+            return;
+        }
+        if (archive.document_type === 'Faculty') {
+            navigate('/faculty');
+            return;
+        }
+        if (archive.document_type === 'SchoolYear') {
+            navigate('/settings/school-year');
+            return;
         }
     };
 
@@ -311,6 +361,12 @@ export default function Archive() {
                                     </td>
                                     <td className="actions">
                                         <button className="btn-icon btn-edit" onClick={() => handleEdit(archive)} title="Edit">Edit</button>
+                                        {archive.status === 'Archived' && (
+                                            (archive.document_type === 'SchoolYear' || archive.document_type === 'Student' || archive.document_type === 'Faculty') && (
+                                                <button className="btn-icon" onClick={() => handleUnarchive(archive)} title="Unarchive">Unarchive</button>
+                                            )
+                                        )}
+                                        <button className="btn-icon" onClick={() => handleView(archive)} title="View">View</button>
                                         <button className="btn-icon btn-delete" onClick={() => handleDelete(archive.id)} title="Delete">Delete</button>
                                     </td>
                                 </tr>

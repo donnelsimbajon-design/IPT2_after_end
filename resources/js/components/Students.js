@@ -1,40 +1,24 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
+import StudentViewModal from './students/StudentViewModal';
+import StudentEditModal from './students/StudentEditModal';
 
 export default function Students() {
     const [students, setStudents] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [showForm, setShowForm] = useState(false);
-    const [editingId, setEditingId] = useState(null);
     const [message, setMessage] = useState(null);
-    const [formData, setFormData] = useState({
-        student_id: '',
-        first_name: '',
-        last_name: '',
-        middle_name: '',
-        email: '',
-        phone: '',
-        date_of_birth: '',
-        gender: '',
-        address: '',
-        city: '',
-        state: '',
-        zip_code: '',
-        country: 'Philippines',
-        enrollment_date: '',
-        program: '',
-        year_level: '',
-        status: 'Active'
-    });
+    const [viewing, setViewing] = useState(null);
+    const [modalMode, setModalMode] = useState(null); // 'view' | 'edit'
+    const [showForm, setShowForm] = useState(false);
+    const [editingData, setEditingData] = useState(null);
+    // no local form state here; editing/creating handled in StudentViewModal/StudentForm
 
-    // UI state for search/filters and avatar upload
+    // UI state for search/filters
     const [query, setQuery] = useState('');
-    const [filters, setFilters] = useState({ program: '', year_level: '', school_year: '', status: '' });
-    const [avatarFile, setAvatarFile] = useState(null);
-    const [avatarPreview, setAvatarPreview] = useState(null);
+    const [filters, setFilters] = useState({ department: '', year_level: '', school_year: '', status: '' });
 
     // Options derived from current data
-    const programs = useMemo(() => Array.from(new Set(students.map(s => s.program).filter(Boolean))).sort(), [students]);
+    const departments = useMemo(() => Array.from(new Set(students.map(s => s.department).filter(Boolean))).sort(), [students]);
     const yearLevels = useMemo(() => Array.from(new Set(students.map(s => s.year_level).filter(Boolean))).sort(), [students]);
     const schoolYears = useMemo(() => Array.from(new Set(students.map(s => s.enrollment_date ? new Date(s.enrollment_date).getFullYear() : null).filter(Boolean))).sort(), [students]);
 
@@ -60,7 +44,7 @@ export default function Students() {
             const response = await axios.get('/api/students', {
                 params: {
                     q: query || undefined,
-                    program: filters.program || undefined,
+                    department: filters.department || undefined,
                     year_level: filters.year_level || undefined,
                     school_year: filters.school_year || undefined,
                     status: filters.status || undefined,
@@ -75,53 +59,28 @@ export default function Students() {
         }
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            let saved;
-            if (editingId) {
-                const res = await axios.put(`/api/students/${editingId}`, formData);
-                saved = res.data.student ?? res.data;
-                setMessage('Student updated successfully');
-            } else {
-                const res = await axios.post('/api/students', formData);
-                saved = res.data.student ?? res.data;
-                setMessage('Student created successfully');
-            }
-
-            // Upload avatar if selected
-            if (avatarFile && saved?.id) {
-                const fd = new FormData();
-                fd.append('avatar', avatarFile);
-                await axios.post(`/api/students/${saved.id}/avatar`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
-            }
-
-            await fetchStudents();
-            resetForm();
-        } catch (error) {
-            console.error('Error saving student:', error);
-            setMessage(error.response?.data?.message || 'Error saving student');
-        }
-    };
-
-    const handleAvatarChange = (e) => {
-        const file = e.target.files && e.target.files[0];
-        if (file) {
-            setAvatarFile(file);
-            try { setAvatarPreview(URL.createObjectURL(file)); } catch { setAvatarPreview(null); }
-        }
-    };
+    // editing/creating handled in modal
 
     const handleEdit = (student) => {
-        setFormData(student);
-        setEditingId(student.id);
+        setEditingData(student || null);
         setShowForm(true);
-        setAvatarFile(null);
-        if (student.avatar_path) {
-            setAvatarPreview(student.avatar_path.startsWith('http') ? student.avatar_path : `/${student.avatar_path}`);
-        } else {
-            setAvatarPreview(null);
-        }
+        setViewing(null);
+        setModalMode(null);
+    };
+
+    const openView = (student) => {
+        setViewing(student);
+        setModalMode('view');
+    };
+    const closeView = () => {
+        setViewing(null);
+        setModalMode(null);
+    };
+    const openAdd = () => {
+        setEditingData(null);
+        setShowForm(true);
+        setViewing(null);
+        setModalMode(null);
     };
 
     const handleDelete = async (id) => {
@@ -136,38 +95,10 @@ export default function Students() {
         }
     };
 
-    const resetForm = () => {
-        setFormData({
-            student_id: '',
-            first_name: '',
-            last_name: '',
-            middle_name: '',
-            email: '',
-            phone: '',
-            date_of_birth: '',
-            gender: '',
-            address: '',
-            city: '',
-            state: '',
-            zip_code: '',
-            country: 'Philippines',
-            enrollment_date: '',
-            program: '',
-            year_level: '',
-            status: 'Active'
-        });
-        setEditingId(null);
-        setShowForm(false);
-        setAvatarFile(null);
-        setAvatarPreview(null);
-    };
-
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+    // no local form handlers
 
     const createArchiveFromStudent = async (student) => {
-        const archiveId = `STU-${student.student_id || student.id}-${Date.now()}`;
+        const archiveId = `STU-${student.id}-${Date.now()}`;
         const today = new Date();
         const ymd = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
         const payload = {
@@ -176,8 +107,8 @@ export default function Students() {
             description: `Archived Student: ${student.first_name || ''} ${student.last_name || ''} (${student.student_id || 'N/A'})`,
             document_type: 'Student',
             category: 'Record',
-            department: student.program || '',
-            reference_number: student.student_id || String(student.id),
+            department: student.department || student.program || '',
+            reference_number: String(student.id),
             archived_date: ymd,
             status: 'Archived',
             tags: 'student',
@@ -188,14 +119,25 @@ export default function Students() {
     const handleArchive = async (student) => {
         if (!confirm('Archive this student?')) return;
         try {
-            // Use 'Inactive' to keep within current DB enum while still archiving record separately
-            await axios.put(`/api/students/${student.id}`, { status: 'Inactive' });
+            await axios.post(`/api/students/${student.id}/archive`);
             try { await createArchiveFromStudent(student); } catch (e) { console.error('Archive create failed', e); }
             setMessage('Student archived successfully');
             fetchStudents();
         } catch (error) {
             console.error('Error archiving student:', error);
             setMessage('Error archiving student');
+        }
+    };
+
+    const handleUnarchive = async (student) => {
+        if (!confirm('Unarchive this student?')) return;
+        try {
+            await axios.post(`/api/students/${student.id}/unarchive`);
+            setMessage('Student unarchived successfully');
+            fetchStudents();
+        } catch (error) {
+            console.error('Error unarchiving student:', error);
+            setMessage('Error unarchiving student');
         }
     };
 
@@ -206,14 +148,11 @@ export default function Students() {
         <div className="module-page">
             <div className="page-header">
                 <h1>Students Management</h1>
-                <button className="btn btn-primary" onClick={() => setShowForm(!showForm)}>
-                    {showForm ? 'Cancel' : '+ Add Student'}
-                </button>
+                <button className="btn btn-primary" onClick={openAdd}>+ Add Student</button>
             </div>
 
             {message && <div className="alert alert-info">{message}</div>}
 
-            {/* Filters and search */}
             <div className="students-panel">
                 <div className="panel-header">
                     <h2>Student Management</h2>
@@ -225,9 +164,9 @@ export default function Students() {
                             onChange={(e)=>setQuery(e.target.value)}
                         />
                         <div className="filters">
-                            <select className="filter" value={filters.program} onChange={(e)=>setFilters({...filters, program: e.target.value})}>
+                            <select className="filter" value={filters.department} onChange={(e)=>setFilters({...filters, department: e.target.value})}>
                                 <option value="">All Departments</option>
-                                {programs.map(p => (<option key={p} value={p}>{p}</option>))}
+                                {departments.map(p => (<option key={p} value={p}>{p}</option>))}
                             </select>
                             <select className="filter" value={filters.year_level} onChange={(e)=>setFilters({...filters, year_level: e.target.value})}>
                                 <option value="">All Year Levels</option>
@@ -255,69 +194,16 @@ export default function Students() {
             </div>
 
             {showForm && (
-                <div className="form-card">
-                    <h2>{editingId ? 'Edit Student' : 'Add New Student'}</h2>
-                    <form onSubmit={handleSubmit} className="module-form">
-                        <div className="form-row">
-                            <div className="avatar-input">
-                                <div className="avatar-preview">
-                                    {avatarPreview ? (
-                                        <img src={avatarPreview} alt="Student avatar preview" />
-                                    ) : (
-                                        <div className="placeholder">{(formData.first_name || formData.last_name || 'S').toString().charAt(0).toUpperCase()}</div>
-                                    )}
-                                </div>
-                                <label className="btn btn-secondary" style={{marginTop: '8px'}}>
-                                    Upload Photo
-                                    <input type="file" accept="image/*" onChange={handleAvatarChange} style={{display:'none'}} />
-                                </label>
-                                <small style={{display:'block', color:'var(--text-secondary)'}}>Square image recommended. Displayed as 40x40 circle.</small>
-                            </div>
-                            <input name="first_name" placeholder="First Name *" value={formData.first_name} onChange={handleChange} required />
-                            <input name="last_name" placeholder="Last Name *" value={formData.last_name} onChange={handleChange} required />
-                        </div>
-                        <div className="form-row">
-                            <input name="middle_name" placeholder="Middle Name" value={formData.middle_name} onChange={handleChange} />
-                            <input name="email" type="email" placeholder="Email *" value={formData.email} onChange={handleChange} required />
-                            <input name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange} />
-                        </div>
-                        <div className="form-row">
-                            <input name="date_of_birth" type="date" placeholder="Date of Birth" value={formData.date_of_birth} onChange={handleChange} />
-                            <select name="gender" value={formData.gender} onChange={handleChange}>
-                                <option value="">Select Gender</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                                <option value="Other">Other</option>
-                            </select>
-                            <input name="enrollment_date" type="date" placeholder="Enrollment Date" value={formData.enrollment_date} onChange={handleChange} />
-                        </div>
-                        <div className="form-row">
-                            <input name="program" placeholder="Program (Department)" value={formData.program} onChange={handleChange} />
-                            <input name="year_level" placeholder="Year Level" value={formData.year_level} onChange={handleChange} />
-                            <select name="status" value={formData.status} onChange={handleChange}>
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                                <option value="Graduated">Graduated</option>
-                                <option value="Suspended">Suspended</option>
-                            </select>
-                        </div>
-                        <div className="form-row">
-                            <input name="address" placeholder="Address" value={formData.address} onChange={handleChange} />
-                            <input name="city" placeholder="City" value={formData.city} onChange={handleChange} />
-                        </div>
-                        <div className="form-row">
-                            <input name="state" placeholder="State" value={formData.state} onChange={handleChange} />
-                            <input name="zip_code" placeholder="Zip Code" value={formData.zip_code} onChange={handleChange} />
-                            <input name="country" placeholder="Country" value={formData.country} onChange={handleChange} />
-                        </div>
-                        <div className="form-actions">
-                            <button type="submit" className="btn btn-primary">
-                                {editingId ? 'Update' : 'Create'} Student
-                            </button>
-                            <button type="button" className="btn btn-secondary" onClick={resetForm}>Cancel</button>
-                        </div>
-                    </form>
-                </div>
+                <StudentEditModal
+                    initialData={editingData || undefined}
+                    onClose={() => { setShowForm(false); setEditingData(null); }}
+                    onSaved={(saved) => {
+                        setMessage(editingData ? 'Student updated successfully' : 'Student created successfully');
+                        setShowForm(false);
+                        setEditingData(null);
+                        fetchStudents();
+                    }}
+                />
             )}
 
             <div className="table-card">
@@ -330,6 +216,7 @@ export default function Students() {
                             <th>Department</th>
                             <th>Year Level</th>
                             <th>Enrollment Date</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -353,21 +240,28 @@ export default function Students() {
                                 </td>
                                 <td>{student.student_id}</td>
                                 <td>{student.email}</td>
-                                <td>{student.program}</td>
+                                <td>{student.department || student.program}</td>
                                 <td>{student.year_level}</td>
                                 <td>{student.enrollment_date ? new Date(student.enrollment_date).toISOString().slice(0,10) : ''}</td>
+                                <td><span className={`badge badge-${(student.status || 'Active').toLowerCase().replace(' ', '-')}`}>{student.status || 'Active'}</span></td>
                                 <td className="actions">
-                                    <button className="btn-chip btn-edit" onClick={() => handleEdit(student)}>Edit</button>
-                                    <button className="btn-chip btn-delete" onClick={() => handleDelete(student.id)}>Delete</button>
-                                    {student.status !== 'Archived' && (
-                                        <button className="btn-chip btn-archive" onClick={() => handleArchive(student)}>Archive</button>
-                                    )}
+                                    <button className="btn-chip" onClick={() => openView(student)}>View</button>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
+            {modalMode && (
+                <StudentViewModal
+                    initialData={viewing || undefined}
+                    onClose={closeView}
+                    onEdit={(student)=>{ handleEdit(student); }}
+                    onDelete={(id) => { handleDelete(id); closeView(); }}
+                    onArchive={(student) => { handleArchive(student); closeView(); }}
+                    onUnarchive={(student) => { handleUnarchive(student); closeView(); }}
+                />
+            )}
         </div>
         </div>
     );

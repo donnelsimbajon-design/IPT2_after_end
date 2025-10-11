@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Student;
+use App\Models\SchoolYear;
 
 class StudentController extends Controller
 {
@@ -14,9 +15,11 @@ class StudentController extends Controller
     {
         $q = request()->query('q');
         $program = request()->query('program');
+        $department = request()->query('department');
         $yearLevel = request()->query('year_level');
         $status = request()->query('status');
-        $schoolYear = request()->query('school_year'); // filter by enrollment year
+        $schoolYear = request()->query('school_year'); // filter by enrollment calendar year (legacy)
+        $schoolYearId = request()->query('school_year_id'); // filter by school_years.id via pivot
 
         $query = Student::query();
         if ($q) {
@@ -28,9 +31,19 @@ class StudentController extends Controller
             });
         }
         if ($program) { $query->where('program', $program); }
+        if ($department) { $query->where('department', $department); }
         if ($yearLevel) { $query->where('year_level', $yearLevel); }
         if ($status) { $query->where('status', $status); }
         if ($schoolYear) { $query->whereYear('enrollment_date', $schoolYear); }
+        if ($schoolYearId) {
+            $query->whereHas('schoolYears', function($sq) use ($schoolYearId) {
+                $sq->where('school_years.id', $schoolYearId);
+            });
+        }
+
+        if (!$status && !request()->boolean('include_archived')) {
+            $query->where('status', '!=', 'Archived');
+        }
 
         $students = $query->orderBy('created_at', 'desc')->get();
         return response()->json($students);
@@ -51,15 +64,26 @@ class StudentController extends Controller
             'date_of_birth' => 'nullable|date',
             'gender' => 'nullable|in:Male,Female,Other',
             'address' => 'nullable|string',
+            'region' => 'nullable|string|max:255',
+            'province' => 'nullable|string|max:255',
             'city' => 'nullable|string|max:255',
             'state' => 'nullable|string|max:255',
             'zip_code' => 'nullable|string|max:50',
             'country' => 'nullable|string|max:255',
             'enrollment_date' => 'nullable|date',
             'program' => 'nullable|string|max:255',
+            'department' => 'nullable|string|max:255',
             'year_level' => 'nullable|string|max:50',
-            'status' => 'nullable|in:Active,Inactive,Graduated,Suspended',
+            'status' => 'nullable|in:Active,Inactive,Graduated,Suspended,Archived',
+            'school_year_id' => 'nullable|exists:school_years,id',
         ]);
+
+        if (empty($data['status'])) {
+            $data['status'] = 'Active';
+        }
+        if (empty($data['enrollment_date'])) {
+            $data['enrollment_date'] = now()->toDateString();
+        }
 
         // Auto-generate student_id if missing (format: STU-YYYY-XXX)
         if (empty($data['student_id'])) {
@@ -77,7 +101,14 @@ class StudentController extends Controller
         }
 
         try {
+            $schoolYearIdToAttach = $data['school_year_id'] ?? null;
+            unset($data['school_year_id']);
+
             $student = Student::create($data);
+
+            if ($schoolYearIdToAttach) {
+                $student->schoolYears()->syncWithoutDetaching([$schoolYearIdToAttach]);
+            }
             return response()->json(['student' => $student, 'message' => 'Student created successfully'], 201);
         } catch (\Throwable $e) {
             \Log::error('Student store error: ' . $e->getMessage());
@@ -114,17 +145,33 @@ class StudentController extends Controller
             'date_of_birth' => 'sometimes|nullable|date',
             'gender' => 'sometimes|nullable|in:Male,Female,Other',
             'address' => 'sometimes|nullable|string',
+            'region' => 'sometimes|nullable|string|max:255',
+            'province' => 'sometimes|nullable|string|max:255',
             'city' => 'sometimes|nullable|string|max:255',
             'state' => 'sometimes|nullable|string|max:255',
             'zip_code' => 'sometimes|nullable|string|max:50',
             'country' => 'sometimes|nullable|string|max:255',
             'enrollment_date' => 'sometimes|nullable|date',
             'program' => 'sometimes|nullable|string|max:255',
+            'department' => 'sometimes|nullable|string|max:255',
             'year_level' => 'sometimes|nullable|string|max:50',
-            'status' => 'sometimes|nullable|in:Active,Inactive,Graduated,Suspended',
+            'status' => 'sometimes|nullable|in:Active,Inactive,Graduated,Suspended,Archived',
+            'school_year_id' => 'sometimes|nullable|exists:school_years,id',
+            'detach_school_year_id' => 'sometimes|nullable|exists:school_years,id',
         ]);
 
+        $schoolYearIdAttach = $data['school_year_id'] ?? null;
+        $schoolYearIdDetach = $data['detach_school_year_id'] ?? null;
+        unset($data['school_year_id'], $data['detach_school_year_id']);
+
         $student->update($data);
+
+        if ($schoolYearIdAttach) {
+            $student->schoolYears()->syncWithoutDetaching([$schoolYearIdAttach]);
+        }
+        if ($schoolYearIdDetach) {
+            $student->schoolYears()->detach($schoolYearIdDetach);
+        }
         return response()->json(['student' => $student, 'message' => 'Student updated successfully']);
     }
 
@@ -157,7 +204,7 @@ class StudentController extends Controller
         $file->move($targetDir, $filename);
 
         // delete old avatar if under our uploads dir
-        if ($student->avatar_path && str_starts_with($student->avatar_path, 'uploads/students/') && file_exists(public_path($student->avatar_path))) {
+        if ($student->avatar_path && strpos($student->avatar_path, 'uploads/students/') === 0 && file_exists(public_path($student->avatar_path))) {
             @unlink(public_path($student->avatar_path));
         }
         $student->avatar_path = 'uploads/students/' . $filename;
@@ -168,5 +215,27 @@ class StudentController extends Controller
             'avatar_url' => asset($student->avatar_path),
             'message' => 'Avatar uploaded successfully'
         ]);
+    }
+
+    public function archived()
+    {
+        $students = Student::where('status', 'Archived')->orderBy('created_at', 'desc')->get();
+        return response()->json($students);
+    }
+
+    public function archive($id)
+    {
+        $student = Student::findOrFail($id);
+        $student->status = 'Archived';
+        $student->save();
+        return response()->json(['student' => $student, 'message' => 'Student archived successfully']);
+    }
+
+    public function unarchive($id)
+    {
+        $student = Student::findOrFail($id);
+        $student->status = 'Active';
+        $student->save();
+        return response()->json(['student' => $student, 'message' => 'Student unarchived successfully']);
     }
 }

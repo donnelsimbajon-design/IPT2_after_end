@@ -28,6 +28,7 @@ class Faculty extends Model
         'hire_date',
         'employment_type',
         'status',
+        'avatar_path',
     ];
 
     protected $casts = [

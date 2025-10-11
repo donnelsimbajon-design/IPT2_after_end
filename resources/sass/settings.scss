@@ -43,6 +43,116 @@
   }
 }
 
+// School Year Management styles
+.school-year-page {
+  .page-subtitle {
+    color: var(--text-secondary);
+    margin-top: 4px;
+  }
+
+  .sy-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: $radius-lg;
+    padding: $spacing-lg;
+    box-shadow: $shadow-sm;
+    margin-bottom: $spacing-lg;
+  }
+
+  .sy-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-md;
+    h2 { margin: 0; font-size: 1.1rem; color: var(--text-primary); }
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 9999px;
+    font-weight: 700;
+    font-size: .85rem;
+    border: 1px solid var(--border-color);
+    &.active { background: rgba($success-color,.12); color: $success-color; border-color: rgba($success-color,.35); }
+    &.completed { background: rgba($dark-border,.15); color: var(--text-secondary); border-color: rgba($dark-border,.35); }
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: $spacing-lg;
+    margin-top: $spacing-md;
+  }
+
+  .sy-stat {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: $radius-md;
+    padding: $spacing-lg;
+    text-align: center;
+    .value { font-size: 1.75rem; font-weight: 800; color: var(--text-primary); }
+    .label { color: var(--text-secondary); margin-top: $spacing-xs; font-weight: 500; }
+  }
+
+  .sy-section {
+    margin-top: $spacing-xl;
+    h3 { font-size: 1.1rem; color: var(--text-primary); margin-bottom: $spacing-md; }
+  }
+
+  .sy-year-card {
+    @extend .sy-card;
+  }
+
+  .sy-year-header {
+    .title-row {
+      display: flex; align-items: center; justify-content: space-between; gap: $spacing-md;
+      h4 { margin: 0; font-size: 1.1rem; color: var(--text-primary); }
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: $spacing-md;
+      margin-top: $spacing-md;
+      .meta-label { color: var(--text-secondary); font-size: .8rem; text-transform: uppercase; letter-spacing: .3px; }
+      .meta-value { color: var(--text-primary); font-weight: 600; margin-top: 2px; }
+    }
+  }
+
+  .sy-semesters {
+    margin-top: $spacing-lg;
+    .section-title { color: var(--text-primary); font-weight: 600; margin-bottom: $spacing-sm; }
+    .semester-list { display: grid; gap: $spacing-sm; }
+    .semester-item {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: $radius-md;
+      padding: $spacing-md;
+      .sem-name { color: var(--text-primary); font-weight: 600; }
+      .sem-range { color: var(--text-secondary); font-size: .9rem; }
+      &:hover { background: var(--sidebar-active); }
+    }
+  }
+
+  .sy-actions {
+    display: flex; gap: $spacing-sm; margin-top: $spacing-md;
+    .btn { border-radius: 9999px; padding: 8px 14px; font-weight: 700; font-size: .9rem; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); }
+    .btn:hover { background: var(--sidebar-active); }
+    .btn-danger { background: rgba($danger-color,.12); color: $danger-color; border-color: rgba($danger-color,.35); }
+    .btn-danger:hover { background: rgba($danger-color,.18); }
+  }
+}
+
+@media (max-width: 768px) {
+  .school-year-page {
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .sy-actions { flex-wrap: wrap; }
+  }
+}
+
 @media (max-width: 768px) {
   .settings-landing {
     .settings-grid {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
 
@@ -12,12 +12,73 @@ export default function AccountSettings() {
   const [appearance, setAppearance] = useState({ theme_mode: 'light', theme_color: '#8B1538' });
   const [bgPreview, setBgPreview] = useState(null);
   const [bgFile, setBgFile] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const mapRef = useRef(null);
+  const mapElRef = useRef(null);
+  const markerRef = useRef(null);
+
+  const loadLeaflet = () => new Promise((resolve, reject) => {
+    if (window.L) return resolve(window.L);
+    let css = document.querySelector('link[data-leaflet]');
+    if (!css) {
+      css = document.createElement('link');
+      css.setAttribute('data-leaflet', '1');
+      css.rel = 'stylesheet';
+      css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+      document.head.appendChild(css);
+    }
+    let js = document.querySelector('script[data-leaflet]');
+    if (js) {
+      js.addEventListener('load', () => resolve(window.L));
+      return;
+    }
+    js = document.createElement('script');
+    js.setAttribute('data-leaflet', '1');
+    js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    js.onload = () => resolve(window.L);
+    js.onerror = reject;
+    document.head.appendChild(js);
+  });
 
   useEffect(() => {
     loadProfile();
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+    loadLeaflet()
+      .then((L) => {
+        if (cancelled) return;
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+        markerRef.current = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (loading) return;
+    let cancelled = false;
+    loadLeaflet().then((L) => {
+      if (cancelled || !mapElRef.current) return;
+      if (!mapRef.current) {
+        mapRef.current = L.map(mapElRef.current).setView([0, 0], 2);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors',
+        }).addTo(mapRef.current);
+      }
+    }).catch(() => {});
+    return () => { cancelled = true; };
+  }, [loading]);
+
   const loadProfile = async () => {
+    setLoading(true);
     try {
       const { data } = await axios.get('/api/account/profile');
       setProfile(data);
@@ -29,7 +90,13 @@ export default function AccountSettings() {
       });
       setBgPreview(data.bg_image_url || null);
     } catch (e) {
-      setMessage('Failed to load profile');
+      const status = e.response?.status;
+      setMessage(status === 401 ? 'Please sign in to view account settings.' : 'Failed to load profile');
+      setProfile({ user: { name: '', email: '' }, current_ip: null });
+      setAvatarPreview(null);
+      setBgPreview(null);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -118,7 +185,26 @@ export default function AccountSettings() {
     }
   };
 
-  if (!profile) return <div className="loading">Loading account...</div>;
+  const locateMe = () => {
+    if (!navigator.geolocation || !mapRef.current) return;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        const L = window.L;
+        mapRef.current.setView([latitude, longitude], 13);
+        if (markerRef.current) {
+          markerRef.current.setLatLng([latitude, longitude]);
+        } else {
+          markerRef.current = L.marker([latitude, longitude])
+            .addTo(mapRef.current)
+            .bindPopup('Your location');
+        }
+      },
+      () => {}
+    );
+  };
+
+  if (loading) return <div className="loading">Loading account...</div>;
 
   return (
     <div className="account-page">
@@ -210,8 +296,16 @@ export default function AccountSettings() {
           <h2>Security</h2>
           <div className="form-row" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}>
             <div>
+              <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Current Device</div>
+              <div style={{ fontWeight: 600 }}>{profile.current_device?.label || 'N/A'}</div>
+            </div>
+            <div>
               <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Current IP</div>
               <div style={{ fontWeight: 600 }}>{profile.current_ip || 'N/A'}</div>
+            </div>
+            <div>
+              <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Last Login Device</div>
+              <div style={{ fontWeight: 600 }}>{profile.last_login_device?.label || 'N/A'}</div>
             </div>
             <div>
               <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Last Login IP</div>
@@ -221,6 +315,15 @@ export default function AccountSettings() {
               <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Last Login At</div>
               <div style={{ fontWeight: 600 }}>{profile.user?.last_login_at ? new Date(profile.user.last_login_at).toLocaleString() : 'N/A'}</div>
             </div>
+          </div>
+          <div className="security-map-wrap">
+            <div className="security-map-header">
+              <div>Security Map</div>
+              <div className="map-actions">
+                <button type="button" className="btn btn-secondary" onClick={locateMe}>Locate</button>
+              </div>
+            </div>
+            <div ref={mapElRef} className="security-map" />
           </div>
         </div>
       </div>

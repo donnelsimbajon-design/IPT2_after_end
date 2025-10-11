@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 
@@ -10,6 +10,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
+  const mounted = useRef(true);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -17,27 +18,37 @@ export default function Login() {
     }
   }, [isAuthenticated, navigate]);
 
+  useEffect(() => {
+    return () => { mounted.current = false; };
+  }, []);
+
   const submit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setMsg(null);
+    if (mounted.current) setLoading(true);
+    if (mounted.current) setMsg(null);
 
     try {
       await login(email, password, remember);
       navigate('/dashboard', { replace: true });
     } catch (err) {
       const errorMsg = err.response?.data?.message || 'Invalid credentials. Please try again.';
-      setMsg(errorMsg);
+      if (mounted.current) setMsg(errorMsg);
     } finally {
-      setLoading(false);
+      if (mounted.current) setLoading(false);
     }
   };
 
   return (
     <div className="home-login">
+      <div className="bg-slideshow">
+        <div className="slide s1"></div>
+        <div className="slide s2"></div>
+        <div className="slide s3"></div>
+      </div>
       <div className="login-card">
         <div className="brand">
-          <h1>Admin Portal</h1>
+          <img src="/images/hcc-logo.png.png" alt="The Holy Child College" className="brand-logo" />
+          <h1>The Holy Child College</h1>
           <p>Please log in to continue</p>
         </div>
         {msg && <div className="message error">{msg}</div>}
