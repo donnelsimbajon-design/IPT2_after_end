@@ -15425,3 +15425,114 @@ body {
   width: 100%;
   height: clamp(220px, 35vh, 360px);
 }
+.account-page .map-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem 1rem;
+  padding: 10px 12px;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+.account-page .map-legend .legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.account-page .map-legend .legend-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.06) inset;
+  flex: 0 0 10px;
+}
+.account-page .security-map-header .map-actions {
+  display: flex;
+  gap: 8px;
+}
+.account-page .security-map-header .map-actions .btn {
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+.account-page .map-info-note {
+  padding: 8px 12px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  border-bottom: 1px dashed var(--border-color);
+  background: var(--bg-secondary);
+}
+.account-page .device-details {
+  margin-top: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+  padding: 12px;
+}
+.account-page .device-details .details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+.account-page .device-details .label {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  margin-bottom: 4px;
+}
+.account-page .device-details .value {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.account-page .device-details .ua {
+  word-break: break-word;
+  white-space: normal;
+}
+.account-page .history-panel {
+  margin-top: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--bg-secondary);
+}
+.account-page .history-panel .history-header {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.account-page .history-panel .history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.account-page .history-panel .history-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 0.8fr auto;
+  gap: 12px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--border-color);
+  align-items: center;
+  color: var(--text-primary);
+}
+.account-page .history-panel .when {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+.account-page .history-panel .device {
+  font-weight: 600;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.account-page .history-panel .ip {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+.account-page .history-panel .actions .btn {
+  padding: 6px 10px;
+  border-radius: 8px;
+}

@@ -34,6 +34,7 @@ export default function StudentViewModal({
           <div><strong>Student ID:</strong> {student?.student_id || '-'}</div>
           <div><strong>Status:</strong> {student?.status || 'Active'}</div>
           <div><strong>Department:</strong> {student?.department || student?.program || '-'}</div>
+          <div><strong>Course:</strong> {student?.course || '-'}</div>
           <div><strong>Year Level:</strong> {student?.year_level || '-'}</div>
           <div><strong>Enrollment Date:</strong> {student?.enrollment_date ? new Date(student.enrollment_date).toISOString().slice(0,10) : '-'}</div>
           <div><strong>Phone:</strong> {student?.phone || '-'}</div>

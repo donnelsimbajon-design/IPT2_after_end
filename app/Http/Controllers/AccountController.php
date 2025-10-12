@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use App\Models\LoginActivity;
 
 class AccountController extends Controller
 {
@@ -42,6 +43,7 @@ class AccountController extends Controller
         $data = $request->validate([
             'name' => 'sometimes|required|string|max:255',
             'email' => ['sometimes','required','email', Rule::unique('users', 'email')->ignore($user->id)],
+            'course' => 'sometimes|nullable|string|max:255',
         ]);
         $user->update($data);
         return response()->json(['user' => $user, 'message' => 'Profile updated']);
@@ -136,6 +138,28 @@ class AccountController extends Controller
             'bg_image_url' => asset($user->bg_image_path),
             'message' => 'Background updated',
         ]);
+    }
+
+    public function history(Request $request)
+    {
+        $user = $request->user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
+        $items = LoginActivity::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->limit(50)
+            ->get();
+        $data = $items->map(function ($a) {
+            return [
+                'id' => $a->id,
+                'ip_address' => $a->ip_address,
+                'user_agent' => $a->user_agent,
+                'device' => $this->parseUserAgent($a->user_agent),
+                'created_at' => $a->created_at,
+            ];
+        });
+        return response()->json(['history' => $data]);
     }
 
     private function parseUserAgent(?string $ua): array

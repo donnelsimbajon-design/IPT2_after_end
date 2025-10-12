@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\LoginActivity;
 
 class AuthController extends Controller
 {
@@ -26,6 +27,13 @@ class AuthController extends Controller
                 $user->last_login_at = now();
                 $user->last_login_user_agent = $request->header('User-Agent');
                 $user->save();
+                try {
+                    LoginActivity::create([
+                        'user_id' => $user->id,
+                        'ip_address' => $request->ip(),
+                        'user_agent' => $request->header('User-Agent'),
+                    ]);
+                } catch (\Throwable $e) {}
             }
             return response()->json(['message' => 'ok', 'user' => $user], 200);
         }

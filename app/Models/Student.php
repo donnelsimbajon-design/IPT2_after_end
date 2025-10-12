@@ -28,6 +28,7 @@ class Student extends Model
         'enrollment_date',
         'program',
         'department',
+        'course',
         'year_level',
         'status',
         'avatar_path',

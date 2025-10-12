@@ -66354,7 +66354,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 function AccountSettings() {
-  var _profile$user, _profile$user2, _profile$current_devi, _profile$last_login_d, _profile$user3, _profile$user4;
+  var _profile$user2, _profile$user3, _profile$current_devi, _profile$last_login_d, _profile$user4, _profile$user5, _profile$current_devi2, _profile$current_devi3, _profile$current_devi4;
   var _useAuth = (0,_AuthContext__WEBPACK_IMPORTED_MODULE_2__.useAuth)(),
     checkAuth = _useAuth.checkAuth;
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
@@ -66399,9 +66399,50 @@ function AccountSettings() {
     _useState16 = _slicedToArray(_useState15, 2),
     loading = _useState16[0],
     setLoading = _useState16[1];
+  var _useState17 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState18 = _slicedToArray(_useState17, 2),
+    showDeviceDetails = _useState18[0],
+    setShowDeviceDetails = _useState18[1];
+  var _useState19 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+      gps: '',
+      currentIp: '',
+      lastIp: ''
+    }),
+    _useState20 = _slicedToArray(_useState19, 2),
+    placeLabels = _useState20[0],
+    setPlaceLabels = _useState20[1];
+  var _useState21 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+    _useState22 = _slicedToArray(_useState21, 2),
+    mapInfo = _useState22[0],
+    setMapInfo = _useState22[1];
+  var _useState23 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+    _useState24 = _slicedToArray(_useState23, 2),
+    showIpLayers = _useState24[0],
+    setShowIpLayers = _useState24[1];
+  var _useState25 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState26 = _slicedToArray(_useState25, 2),
+    history = _useState26[0],
+    setHistory = _useState26[1];
+  var _useState27 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState28 = _slicedToArray(_useState27, 2),
+    historyLoading = _useState28[0],
+    setHistoryLoading = _useState28[1];
   var mapRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
   var mapElRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
   var markerRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  var butuanMarkerRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  var lastLoginMarkerRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  var accuracyCircleRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  var BUTUAN_CENTER = [8.9475, 125.5406];
+  var currentIpMarkerRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  var COLOR_PRIMARY = '#8B1538'; // device (GPS)
+  var COLOR_GOLD = '#D4AF37'; // current IP approx
+  var COLOR_BLUE = '#3B82F6'; // last login IP approx
+  var COLOR_GRAY = '#6B7280'; // fallback
+  var COLOR_GREEN = '#22C55E'; // history item
+  var geoWatchIdRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  var visHandlerRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  var historyMarkerRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
   var loadLeaflet = function loadLeaflet() {
     return new Promise(function (resolve, reject) {
       if (window.L) return resolve(window.L);
@@ -66444,8 +66485,23 @@ function AccountSettings() {
         mapRef.current.remove();
         mapRef.current = null;
         markerRef.current = null;
+        butuanMarkerRef.current = null;
       }
+      try {
+        if (geoWatchIdRef.current) {
+          navigator.geolocation && navigator.geolocation.clearWatch(geoWatchIdRef.current);
+          geoWatchIdRef.current = null;
+        }
+      } catch (_unused) {}
+      try {
+        if (visHandlerRef.current) {
+          document.removeEventListener('visibilitychange', visHandlerRef.current);
+          visHandlerRef.current = null;
+        }
+      } catch (_unused2) {}
     };
+    // removed by dead control flow
+ var viewHistoryOnMap; 
   }, []);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     if (loading) return;
@@ -66453,10 +66509,28 @@ function AccountSettings() {
     loadLeaflet().then(function (L) {
       if (cancelled || !mapElRef.current) return;
       if (!mapRef.current) {
-        mapRef.current = L.map(mapElRef.current).setView([0, 0], 2);
+        mapRef.current = L.map(mapElRef.current).setView(BUTUAN_CENTER, 12);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '&copy; OpenStreetMap contributors'
         }).addTo(mapRef.current);
+        if (!butuanMarkerRef.current) {
+          butuanMarkerRef.current = L.marker(BUTUAN_CENTER).addTo(mapRef.current).bindPopup('Butuan City');
+        }
+        // Auto-attempt to locate the user's device once on load
+        setTimeout(function () {
+          return locateMe();
+        }, 300);
+        // Do NOT auto-plot IP-based markers here. We'll only show them if GPS is unavailable/denied.
+        // Re-locate on tab focus
+        try {
+          if (!visHandlerRef.current) {
+            var onVis = function onVis() {
+              if (!document.hidden) locateMe();
+            };
+            document.addEventListener('visibilitychange', onVis);
+            visHandlerRef.current = onVis;
+          }
+        } catch (_unused5) {}
       }
     })["catch"](function () {});
     return function () {
@@ -66464,17 +66538,17 @@ function AccountSettings() {
     };
   }, [loading]);
   var loadProfile = /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
-      var _data$user, _data$user2, _yield$axios$get, data, _e$response, status, _t;
-      return _regenerator().w(function (_context) {
-        while (1) switch (_context.p = _context.n) {
+    var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+      var _data$user, _data$user2, _yield$axios$get, data, _e$response, status, _t2, _t3;
+      return _regenerator().w(function (_context2) {
+        while (1) switch (_context2.p = _context2.n) {
           case 0:
             setLoading(true);
-            _context.p = 1;
-            _context.n = 2;
+            _context2.p = 1;
+            _context2.n = 2;
             return axios__WEBPACK_IMPORTED_MODULE_1___default().get('/api/account/profile');
           case 2:
-            _yield$axios$get = _context.v;
+            _yield$axios$get = _context2.v;
             data = _yield$axios$get.data;
             setProfile(data);
             setForm({
@@ -66487,54 +66561,9 @@ function AccountSettings() {
               theme_color: data.theme_color || '#8B1538'
             });
             setBgPreview(data.bg_image_url || null);
-            _context.n = 4;
-            break;
-          case 3:
-            _context.p = 3;
-            _t = _context.v;
-            status = (_e$response = _t.response) === null || _e$response === void 0 ? void 0 : _e$response.status;
-            setMessage(status === 401 ? 'Please sign in to view account settings.' : 'Failed to load profile');
-            setProfile({
-              user: {
-                name: '',
-                email: ''
-              },
-              current_ip: null
-            });
-            setAvatarPreview(null);
-            setBgPreview(null);
-          case 4:
-            _context.p = 4;
-            setLoading(false);
-            return _context.f(4);
-          case 5:
-            return _context.a(2);
-        }
-      }, _callee, null, [[1, 3, 4, 5]]);
-    }));
-    return function loadProfile() {
-      return _ref.apply(this, arguments);
-    };
-  }();
-  var onChange = function onChange(e) {
-    return setForm(_objectSpread(_objectSpread({}, form), {}, _defineProperty({}, e.target.name, e.target.value)));
-  };
-  var onSave = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(e) {
-      var _e$response2, _t2, _t3;
-      return _regenerator().w(function (_context2) {
-        while (1) switch (_context2.p = _context2.n) {
-          case 0:
-            e.preventDefault();
-            _context2.p = 1;
-            _context2.n = 2;
-            return axios__WEBPACK_IMPORTED_MODULE_1___default().put('/api/account/profile', form);
-          case 2:
-            setMessage('Profile updated');
-            loadProfile();
             _context2.p = 3;
             _context2.n = 4;
-            return checkAuth();
+            return loadHistory();
           case 4:
             _context2.n = 6;
             break;
@@ -66547,14 +66576,96 @@ function AccountSettings() {
           case 7:
             _context2.p = 7;
             _t3 = _context2.v;
-            setMessage(((_e$response2 = _t3.response) === null || _e$response2 === void 0 || (_e$response2 = _e$response2.data) === null || _e$response2 === void 0 ? void 0 : _e$response2.message) || 'Failed to update profile');
+            status = (_e$response = _t3.response) === null || _e$response === void 0 ? void 0 : _e$response.status;
+            setMessage(status === 401 ? 'Please sign in to view account settings.' : 'Failed to load profile');
+            setProfile({
+              user: {
+                name: '',
+                email: ''
+              },
+              current_ip: null
+            });
+            setAvatarPreview(null);
+            setBgPreview(null);
           case 8:
+            _context2.p = 8;
+            setLoading(false);
+            return _context2.f(8);
+          case 9:
             return _context2.a(2);
         }
-      }, _callee2, null, [[3, 5], [1, 7]]);
+      }, _callee2, null, [[3, 5], [1, 7, 8, 9]]);
     }));
-    return function onSave(_x) {
+    return function loadProfile() {
       return _ref2.apply(this, arguments);
+    };
+  }();
+  var loadHistory = /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
+      var _yield$axios$get2, data;
+      return _regenerator().w(function (_context3) {
+        while (1) switch (_context3.p = _context3.n) {
+          case 0:
+            setHistoryLoading(true);
+            _context3.p = 1;
+            _context3.n = 2;
+            return axios__WEBPACK_IMPORTED_MODULE_1___default().get('/api/account/history');
+          case 2:
+            _yield$axios$get2 = _context3.v;
+            data = _yield$axios$get2.data;
+            setHistory(Array.isArray(data.history) ? data.history : []);
+          case 3:
+            _context3.p = 3;
+            setHistoryLoading(false);
+            return _context3.f(3);
+          case 4:
+            return _context3.a(2);
+        }
+      }, _callee3, null, [[1,, 3, 4]]);
+    }));
+    return function loadHistory() {
+      return _ref3.apply(this, arguments);
+    };
+  }();
+  var onChange = function onChange(e) {
+    return setForm(_objectSpread(_objectSpread({}, form), {}, _defineProperty({}, e.target.name, e.target.value)));
+  };
+  var onSave = /*#__PURE__*/function () {
+    var _ref4 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(e) {
+      var _e$response2, _t4, _t5;
+      return _regenerator().w(function (_context4) {
+        while (1) switch (_context4.p = _context4.n) {
+          case 0:
+            e.preventDefault();
+            _context4.p = 1;
+            _context4.n = 2;
+            return axios__WEBPACK_IMPORTED_MODULE_1___default().put('/api/account/profile', form);
+          case 2:
+            setMessage('Profile updated');
+            loadProfile();
+            _context4.p = 3;
+            _context4.n = 4;
+            return checkAuth();
+          case 4:
+            _context4.n = 6;
+            break;
+          case 5:
+            _context4.p = 5;
+            _t4 = _context4.v;
+          case 6:
+            _context4.n = 8;
+            break;
+          case 7:
+            _context4.p = 7;
+            _t5 = _context4.v;
+            setMessage(((_e$response2 = _t5.response) === null || _e$response2 === void 0 || (_e$response2 = _e$response2.data) === null || _e$response2 === void 0 ? void 0 : _e$response2.message) || 'Failed to update profile');
+          case 8:
+            return _context4.a(2);
+        }
+      }, _callee4, null, [[3, 5], [1, 7]]);
+    }));
+    return function onSave(_x2) {
+      return _ref4.apply(this, arguments);
     };
   }();
   var onAvatarChange = function onAvatarChange(e) {
@@ -66564,55 +66675,55 @@ function AccountSettings() {
     if (file) setAvatarPreview(URL.createObjectURL(file));
   };
   var onUploadAvatar = /*#__PURE__*/function () {
-    var _ref3 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
-      var fd, _yield$axios$post, data, _e$response3, _t4, _t5;
-      return _regenerator().w(function (_context3) {
-        while (1) switch (_context3.p = _context3.n) {
+    var _ref5 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
+      var fd, _yield$axios$post, data, _e$response3, _t6, _t7;
+      return _regenerator().w(function (_context5) {
+        while (1) switch (_context5.p = _context5.n) {
           case 0:
             if (avatarFile) {
-              _context3.n = 1;
+              _context5.n = 1;
               break;
             }
-            return _context3.a(2);
+            return _context5.a(2);
           case 1:
             fd = new FormData();
             fd.append('avatar', avatarFile);
-            _context3.p = 2;
-            _context3.n = 3;
+            _context5.p = 2;
+            _context5.n = 3;
             return axios__WEBPACK_IMPORTED_MODULE_1___default().post('/api/account/avatar', fd, {
               headers: {
                 'Content-Type': 'multipart/form-data'
               }
             });
           case 3:
-            _yield$axios$post = _context3.v;
+            _yield$axios$post = _context5.v;
             data = _yield$axios$post.data;
             setMessage('Avatar uploaded');
             setAvatarPreview(data.avatar_url);
             loadProfile();
-            _context3.p = 4;
-            _context3.n = 5;
+            _context5.p = 4;
+            _context5.n = 5;
             return checkAuth();
           case 5:
-            _context3.n = 7;
+            _context5.n = 7;
             break;
           case 6:
-            _context3.p = 6;
-            _t4 = _context3.v;
+            _context5.p = 6;
+            _t6 = _context5.v;
           case 7:
-            _context3.n = 9;
+            _context5.n = 9;
             break;
           case 8:
-            _context3.p = 8;
-            _t5 = _context3.v;
-            setMessage(((_e$response3 = _t5.response) === null || _e$response3 === void 0 || (_e$response3 = _e$response3.data) === null || _e$response3 === void 0 ? void 0 : _e$response3.message) || 'Failed to upload avatar');
+            _context5.p = 8;
+            _t7 = _context5.v;
+            setMessage(((_e$response3 = _t7.response) === null || _e$response3 === void 0 || (_e$response3 = _e$response3.data) === null || _e$response3 === void 0 ? void 0 : _e$response3.message) || 'Failed to upload avatar');
           case 9:
-            return _context3.a(2);
+            return _context5.a(2);
         }
-      }, _callee3, null, [[4, 6], [2, 8]]);
+      }, _callee5, null, [[4, 6], [2, 8]]);
     }));
     return function onUploadAvatar() {
-      return _ref3.apply(this, arguments);
+      return _ref5.apply(this, arguments);
     };
   }();
 
@@ -66626,118 +66737,16 @@ function AccountSettings() {
     });
   };
   var onSaveAppearance = /*#__PURE__*/function () {
-    var _ref4 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
-      var _e$response4, _t6, _t7;
-      return _regenerator().w(function (_context4) {
-        while (1) switch (_context4.p = _context4.n) {
-          case 0:
-            _context4.p = 0;
-            _context4.n = 1;
-            return axios__WEBPACK_IMPORTED_MODULE_1___default().put('/api/account/appearance', appearance);
-          case 1:
-            setMessage('Appearance saved');
-            _context4.n = 2;
-            return loadProfile();
-          case 2:
-            _context4.p = 2;
-            _context4.n = 3;
-            return checkAuth();
-          case 3:
-            _context4.n = 5;
-            break;
-          case 4:
-            _context4.p = 4;
-            _t6 = _context4.v;
-          case 5:
-            _context4.n = 7;
-            break;
-          case 6:
-            _context4.p = 6;
-            _t7 = _context4.v;
-            setMessage(((_e$response4 = _t7.response) === null || _e$response4 === void 0 || (_e$response4 = _e$response4.data) === null || _e$response4 === void 0 ? void 0 : _e$response4.message) || 'Failed to save appearance');
-          case 7:
-            return _context4.a(2);
-        }
-      }, _callee4, null, [[2, 4], [0, 6]]);
-    }));
-    return function onSaveAppearance() {
-      return _ref4.apply(this, arguments);
-    };
-  }();
-  var onBgChange = function onBgChange(e) {
-    var _e$target$files2;
-    var file = (_e$target$files2 = e.target.files) === null || _e$target$files2 === void 0 ? void 0 : _e$target$files2[0];
-    setBgFile(file || null);
-    if (file) setBgPreview(URL.createObjectURL(file));
-  };
-  var onUploadBackground = /*#__PURE__*/function () {
-    var _ref5 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
-      var fd, _yield$axios$post2, data, _e$response5, _t8, _t9;
-      return _regenerator().w(function (_context5) {
-        while (1) switch (_context5.p = _context5.n) {
-          case 0:
-            if (bgFile) {
-              _context5.n = 1;
-              break;
-            }
-            return _context5.a(2);
-          case 1:
-            fd = new FormData();
-            fd.append('bg_image', bgFile);
-            _context5.p = 2;
-            _context5.n = 3;
-            return axios__WEBPACK_IMPORTED_MODULE_1___default().post('/api/account/background', fd, {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }
-            });
-          case 3:
-            _yield$axios$post2 = _context5.v;
-            data = _yield$axios$post2.data;
-            setMessage('Background updated');
-            setBgPreview(data.bg_image_url);
-            _context5.n = 4;
-            return loadProfile();
-          case 4:
-            _context5.p = 4;
-            _context5.n = 5;
-            return checkAuth();
-          case 5:
-            _context5.n = 7;
-            break;
-          case 6:
-            _context5.p = 6;
-            _t8 = _context5.v;
-          case 7:
-            _context5.n = 9;
-            break;
-          case 8:
-            _context5.p = 8;
-            _t9 = _context5.v;
-            setMessage(((_e$response5 = _t9.response) === null || _e$response5 === void 0 || (_e$response5 = _e$response5.data) === null || _e$response5 === void 0 ? void 0 : _e$response5.message) || 'Failed to upload background');
-          case 9:
-            return _context5.a(2);
-        }
-      }, _callee5, null, [[4, 6], [2, 8]]);
-    }));
-    return function onUploadBackground() {
-      return _ref5.apply(this, arguments);
-    };
-  }();
-  var onClearBackground = /*#__PURE__*/function () {
     var _ref6 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
-      var _e$response6, _t0, _t1;
+      var _e$response4, _t8, _t9;
       return _regenerator().w(function (_context6) {
         while (1) switch (_context6.p = _context6.n) {
           case 0:
             _context6.p = 0;
             _context6.n = 1;
-            return axios__WEBPACK_IMPORTED_MODULE_1___default().put('/api/account/appearance', {
-              clear_bg: true
-            });
+            return axios__WEBPACK_IMPORTED_MODULE_1___default().put('/api/account/appearance', appearance);
           case 1:
-            setBgPreview(null);
-            setMessage('Background cleared');
+            setMessage('Appearance saved');
             _context6.n = 2;
             return loadProfile();
           case 2:
@@ -66749,37 +66758,572 @@ function AccountSettings() {
             break;
           case 4:
             _context6.p = 4;
-            _t0 = _context6.v;
+            _t8 = _context6.v;
           case 5:
             _context6.n = 7;
             break;
           case 6:
             _context6.p = 6;
-            _t1 = _context6.v;
-            setMessage(((_e$response6 = _t1.response) === null || _e$response6 === void 0 || (_e$response6 = _e$response6.data) === null || _e$response6 === void 0 ? void 0 : _e$response6.message) || 'Failed to clear background');
+            _t9 = _context6.v;
+            setMessage(((_e$response4 = _t9.response) === null || _e$response4 === void 0 || (_e$response4 = _e$response4.data) === null || _e$response4 === void 0 ? void 0 : _e$response4.message) || 'Failed to save appearance');
           case 7:
             return _context6.a(2);
         }
       }, _callee6, null, [[2, 4], [0, 6]]);
     }));
-    return function onClearBackground() {
+    return function onSaveAppearance() {
       return _ref6.apply(this, arguments);
+    };
+  }();
+  var onBgChange = function onBgChange(e) {
+    var _e$target$files2;
+    var file = (_e$target$files2 = e.target.files) === null || _e$target$files2 === void 0 ? void 0 : _e$target$files2[0];
+    setBgFile(file || null);
+    if (file) setBgPreview(URL.createObjectURL(file));
+  };
+  var onUploadBackground = /*#__PURE__*/function () {
+    var _ref7 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7() {
+      var fd, _yield$axios$post2, data, _e$response5, _t0, _t1;
+      return _regenerator().w(function (_context7) {
+        while (1) switch (_context7.p = _context7.n) {
+          case 0:
+            if (bgFile) {
+              _context7.n = 1;
+              break;
+            }
+            return _context7.a(2);
+          case 1:
+            fd = new FormData();
+            fd.append('bg_image', bgFile);
+            _context7.p = 2;
+            _context7.n = 3;
+            return axios__WEBPACK_IMPORTED_MODULE_1___default().post('/api/account/background', fd, {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            });
+          case 3:
+            _yield$axios$post2 = _context7.v;
+            data = _yield$axios$post2.data;
+            setMessage('Background updated');
+            setBgPreview(data.bg_image_url);
+            _context7.n = 4;
+            return loadProfile();
+          case 4:
+            _context7.p = 4;
+            _context7.n = 5;
+            return checkAuth();
+          case 5:
+            _context7.n = 7;
+            break;
+          case 6:
+            _context7.p = 6;
+            _t0 = _context7.v;
+          case 7:
+            _context7.n = 9;
+            break;
+          case 8:
+            _context7.p = 8;
+            _t1 = _context7.v;
+            setMessage(((_e$response5 = _t1.response) === null || _e$response5 === void 0 || (_e$response5 = _e$response5.data) === null || _e$response5 === void 0 ? void 0 : _e$response5.message) || 'Failed to upload background');
+          case 9:
+            return _context7.a(2);
+        }
+      }, _callee7, null, [[4, 6], [2, 8]]);
+    }));
+    return function onUploadBackground() {
+      return _ref7.apply(this, arguments);
+    };
+  }();
+  var onClearBackground = /*#__PURE__*/function () {
+    var _ref8 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8() {
+      var _e$response6, _t10, _t11;
+      return _regenerator().w(function (_context8) {
+        while (1) switch (_context8.p = _context8.n) {
+          case 0:
+            _context8.p = 0;
+            _context8.n = 1;
+            return axios__WEBPACK_IMPORTED_MODULE_1___default().put('/api/account/appearance', {
+              clear_bg: true
+            });
+          case 1:
+            setBgPreview(null);
+            setMessage('Background cleared');
+            _context8.n = 2;
+            return loadProfile();
+          case 2:
+            _context8.p = 2;
+            _context8.n = 3;
+            return checkAuth();
+          case 3:
+            _context8.n = 5;
+            break;
+          case 4:
+            _context8.p = 4;
+            _t10 = _context8.v;
+          case 5:
+            _context8.n = 7;
+            break;
+          case 6:
+            _context8.p = 6;
+            _t11 = _context8.v;
+            setMessage(((_e$response6 = _t11.response) === null || _e$response6 === void 0 || (_e$response6 = _e$response6.data) === null || _e$response6 === void 0 ? void 0 : _e$response6.message) || 'Failed to clear background');
+          case 7:
+            return _context8.a(2);
+        }
+      }, _callee8, null, [[2, 4], [0, 6]]);
+    }));
+    return function onClearBackground() {
+      return _ref8.apply(this, arguments);
     };
   }();
   var locateMe = function locateMe() {
     if (!navigator.geolocation || !mapRef.current) return;
-    navigator.geolocation.getCurrentPosition(function (pos) {
-      var _pos$coords = pos.coords,
-        latitude = _pos$coords.latitude,
-        longitude = _pos$coords.longitude;
-      var L = window.L;
-      mapRef.current.setView([latitude, longitude], 13);
-      if (markerRef.current) {
-        markerRef.current.setLatLng([latitude, longitude]);
-      } else {
-        markerRef.current = L.marker([latitude, longitude]).addTo(mapRef.current).bindPopup('Your location');
+    var L = window.L;
+    var onSuccess = /*#__PURE__*/function () {
+      var _ref9 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee9(pos) {
+        var _pos$coords, latitude, longitude, accuracy, latlng, label, _t12;
+        return _regenerator().w(function (_context9) {
+          while (1) switch (_context9.p = _context9.n) {
+            case 0:
+              _pos$coords = pos.coords, latitude = _pos$coords.latitude, longitude = _pos$coords.longitude, accuracy = _pos$coords.accuracy;
+              latlng = [latitude, longitude];
+              if (markerRef.current) {
+                markerRef.current.setLatLng(latlng);
+              } else {
+                markerRef.current = L.circleMarker(latlng, {
+                  radius: 7,
+                  color: COLOR_PRIMARY,
+                  fillColor: COLOR_PRIMARY,
+                  fillOpacity: 0.9,
+                  weight: 2
+                }).addTo(mapRef.current).bindPopup('Your location');
+              }
+              // accuracy circle ~ meters
+              if (accuracyCircleRef.current) {
+                accuracyCircleRef.current.setLatLng(latlng).setRadius(accuracy || 30);
+              } else {
+                accuracyCircleRef.current = L.circle(latlng, {
+                  radius: accuracy || 30,
+                  color: COLOR_PRIMARY,
+                  opacity: 0.3,
+                  weight: 1,
+                  fillOpacity: 0.08
+                }).addTo(mapRef.current);
+              }
+              // Remove fallback pin if GPS is available to avoid confusion
+              try {
+                if (butuanMarkerRef.current) {
+                  mapRef.current.removeLayer(butuanMarkerRef.current);
+                  butuanMarkerRef.current = null;
+                }
+              } catch (_unused10) {}
+              // Hide any IP-based markers when GPS is granted
+              removeIpLayers();
+              setShowIpLayers(false);
+              _context9.p = 1;
+              _context9.n = 2;
+              return reverseGeocode(latitude, longitude);
+            case 2:
+              label = _context9.v;
+              setPlaceLabels(function (s) {
+                return _objectSpread(_objectSpread({}, s), {}, {
+                  gps: label
+                });
+              });
+              try {
+                markerRef.current.bindPopup(label ? "Your location \u2014 ".concat(label) : 'Your location');
+              } catch (_unused11) {}
+              _context9.n = 4;
+              break;
+            case 3:
+              _context9.p = 3;
+              _t12 = _context9.v;
+            case 4:
+              setMapInfo('Using precise device location.');
+              fitBoundsToMarkers();
+            case 5:
+              return _context9.a(2);
+          }
+        }, _callee9, null, [[1, 3]]);
+      }));
+      return function onSuccess(_x3) {
+        return _ref9.apply(this, arguments);
+      };
+    }();
+    var onError = function onError() {
+      setMapInfo('Using IP-based approximate location. Click Locate and allow location permission for precise results.');
+      setShowIpLayers(true);
+      // GPS unavailable -> ensure IP-based layers are visible
+      ensureIpLayers();
+    };
+    navigator.geolocation.getCurrentPosition(onSuccess, onError, {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 0
+    });
+    // Optional: start watch for better fixes
+    try {
+      if (geoWatchIdRef.current) {
+        navigator.geolocation.clearWatch(geoWatchIdRef.current);
+        geoWatchIdRef.current = null;
       }
-    }, function () {});
+      geoWatchIdRef.current = navigator.geolocation.watchPosition(onSuccess, function () {}, {
+        enableHighAccuracy: true,
+        timeout: 20000,
+        maximumAge: 0
+      });
+    } catch (_unused13) {}
+  };
+  var removeIpLayers = function removeIpLayers() {
+    if (!mapRef.current) return;
+    try {
+      if (currentIpMarkerRef.current) {
+        mapRef.current.removeLayer(currentIpMarkerRef.current);
+        currentIpMarkerRef.current = null;
+      }
+    } catch (_unused14) {}
+    try {
+      if (lastLoginMarkerRef.current) {
+        mapRef.current.removeLayer(lastLoginMarkerRef.current);
+        lastLoginMarkerRef.current = null;
+      }
+    } catch (_unused15) {}
+    try {
+      if (historyMarkerRef.current) {
+        mapRef.current.removeLayer(historyMarkerRef.current);
+        historyMarkerRef.current = null;
+      }
+    } catch (_unused16) {}
+  };
+  var ensureIpLayers = /*#__PURE__*/function () {
+    var _ref0 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee0() {
+      var _t13, _t14;
+      return _regenerator().w(function (_context0) {
+        while (1) switch (_context0.p = _context0.n) {
+          case 0:
+            _context0.p = 0;
+            _context0.n = 1;
+            return plotLastLoginDeviceLocation();
+          case 1:
+            _context0.n = 3;
+            break;
+          case 2:
+            _context0.p = 2;
+            _t13 = _context0.v;
+          case 3:
+            _context0.p = 3;
+            _context0.n = 4;
+            return plotCurrentIpLocation();
+          case 4:
+            _context0.n = 6;
+            break;
+          case 5:
+            _context0.p = 5;
+            _t14 = _context0.v;
+          case 6:
+            return _context0.a(2);
+        }
+      }, _callee0, null, [[3, 5], [0, 2]]);
+    }));
+    return function ensureIpLayers() {
+      return _ref0.apply(this, arguments);
+    };
+  }();
+  var isPrivateIp = function isPrivateIp(ip) {
+    if (!ip) return true;
+    return ip.startsWith('127.') || ip.startsWith('10.') || ip.startsWith('192.168.') || /^172\.(1[6-9]|2\d|3[0-1])\./.test(ip);
+  };
+  var geocodeIp = /*#__PURE__*/function () {
+    var _ref1 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee1(ip) {
+      var _yield$axios$get3, data, _t15;
+      return _regenerator().w(function (_context1) {
+        while (1) switch (_context1.p = _context1.n) {
+          case 0:
+            _context1.p = 0;
+            _context1.n = 1;
+            return axios__WEBPACK_IMPORTED_MODULE_1___default().get("https://ipapi.co/".concat(ip, "/json/"));
+          case 1:
+            _yield$axios$get3 = _context1.v;
+            data = _yield$axios$get3.data;
+            if (!(data && typeof data.latitude === 'number' && typeof data.longitude === 'number')) {
+              _context1.n = 2;
+              break;
+            }
+            return _context1.a(2, [data.latitude, data.longitude]);
+          case 2:
+            _context1.n = 4;
+            break;
+          case 3:
+            _context1.p = 3;
+            _t15 = _context1.v;
+          case 4:
+            return _context1.a(2, null);
+        }
+      }, _callee1, null, [[0, 3]]);
+    }));
+    return function geocodeIp(_x4) {
+      return _ref1.apply(this, arguments);
+    };
+  }();
+  var fetchPublicIp = /*#__PURE__*/function () {
+    var _ref10 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee10() {
+      var _yield$axios$get4, data, _t16;
+      return _regenerator().w(function (_context10) {
+        while (1) switch (_context10.p = _context10.n) {
+          case 0:
+            _context10.p = 0;
+            _context10.n = 1;
+            return axios__WEBPACK_IMPORTED_MODULE_1___default().get('https://api.ipify.org?format=json');
+          case 1:
+            _yield$axios$get4 = _context10.v;
+            data = _yield$axios$get4.data;
+            return _context10.a(2, (data === null || data === void 0 ? void 0 : data.ip) || null);
+          case 2:
+            _context10.p = 2;
+            _t16 = _context10.v;
+            return _context10.a(2, null);
+        }
+      }, _callee10, null, [[0, 2]]);
+    }));
+    return function fetchPublicIp() {
+      return _ref10.apply(this, arguments);
+    };
+  }();
+  var reverseGeocode = /*#__PURE__*/function () {
+    var _ref11 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee11(lat, lon) {
+      var _data$address, _data$address2, _data$address3, _data$address4, _yield$axios$get5, data, name, _t17;
+      return _regenerator().w(function (_context11) {
+        while (1) switch (_context11.p = _context11.n) {
+          case 0:
+            _context11.p = 0;
+            _context11.n = 1;
+            return axios__WEBPACK_IMPORTED_MODULE_1___default().get('https://nominatim.openstreetmap.org/reverse', {
+              params: {
+                lat: lat,
+                lon: lon,
+                format: 'jsonv2'
+              }
+            });
+          case 1:
+            _yield$axios$get5 = _context11.v;
+            data = _yield$axios$get5.data;
+            name = (data === null || data === void 0 || (_data$address = data.address) === null || _data$address === void 0 ? void 0 : _data$address.city) || (data === null || data === void 0 || (_data$address2 = data.address) === null || _data$address2 === void 0 ? void 0 : _data$address2.town) || (data === null || data === void 0 || (_data$address3 = data.address) === null || _data$address3 === void 0 ? void 0 : _data$address3.village) || (data === null || data === void 0 || (_data$address4 = data.address) === null || _data$address4 === void 0 ? void 0 : _data$address4.municipality) || (data === null || data === void 0 ? void 0 : data.display_name) || '';
+            return _context11.a(2, name);
+          case 2:
+            _context11.p = 2;
+            _t17 = _context11.v;
+            return _context11.a(2, '');
+        }
+      }, _callee11, null, [[0, 2]]);
+    }));
+    return function reverseGeocode(_x5, _x6) {
+      return _ref11.apply(this, arguments);
+    };
+  }();
+  var plotLastLoginDeviceLocation = /*#__PURE__*/function () {
+    var _ref12 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee12() {
+      var _profile$user;
+      var L, ip, latlng, label, _t18;
+      return _regenerator().w(function (_context12) {
+        while (1) switch (_context12.p = _context12.n) {
+          case 0:
+            if (mapRef.current) {
+              _context12.n = 1;
+              break;
+            }
+            return _context12.a(2);
+          case 1:
+            L = window.L;
+            ip = (profile === null || profile === void 0 || (_profile$user = profile.user) === null || _profile$user === void 0 ? void 0 : _profile$user.last_login_ip) || null;
+            if (!(!ip || isPrivateIp(ip))) {
+              _context12.n = 3;
+              break;
+            }
+            _context12.n = 2;
+            return fetchPublicIp();
+          case 2:
+            ip = _context12.v;
+          case 3:
+            if (ip) {
+              _context12.n = 4;
+              break;
+            }
+            return _context12.a(2);
+          case 4:
+            _context12.n = 5;
+            return geocodeIp(ip);
+          case 5:
+            latlng = _context12.v;
+            if (latlng) {
+              _context12.n = 6;
+              break;
+            }
+            return _context12.a(2);
+          case 6:
+            if (lastLoginMarkerRef.current) {
+              lastLoginMarkerRef.current.setLatLng(latlng);
+            } else {
+              lastLoginMarkerRef.current = L.circleMarker(latlng, {
+                radius: 6,
+                color: COLOR_BLUE,
+                fillColor: COLOR_BLUE,
+                fillOpacity: 0.9,
+                weight: 2
+              }).addTo(mapRef.current).bindPopup('Last login device (by IP)');
+            }
+            _context12.p = 7;
+            _context12.n = 8;
+            return reverseGeocode(latlng[0], latlng[1]);
+          case 8:
+            label = _context12.v;
+            setPlaceLabels(function (s) {
+              return _objectSpread(_objectSpread({}, s), {}, {
+                lastIp: label
+              });
+            });
+            try {
+              lastLoginMarkerRef.current.bindPopup(label ? "Last login device (by IP) \u2014 ".concat(label) : 'Last login device (by IP)');
+            } catch (_unused22) {}
+            _context12.n = 10;
+            break;
+          case 9:
+            _context12.p = 9;
+            _t18 = _context12.v;
+          case 10:
+            fitBoundsToMarkers();
+          case 11:
+            return _context12.a(2);
+        }
+      }, _callee12, null, [[7, 9]]);
+    }));
+    return function plotLastLoginDeviceLocation() {
+      return _ref12.apply(this, arguments);
+    };
+  }();
+  var plotCurrentIpLocation = /*#__PURE__*/function () {
+    var _ref13 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee13() {
+      var L, ip, latlng, label, _t19;
+      return _regenerator().w(function (_context13) {
+        while (1) switch (_context13.p = _context13.n) {
+          case 0:
+            if (mapRef.current) {
+              _context13.n = 1;
+              break;
+            }
+            return _context13.a(2);
+          case 1:
+            L = window.L;
+            ip = (profile === null || profile === void 0 ? void 0 : profile.current_ip) || null;
+            if (!(!ip || isPrivateIp(ip))) {
+              _context13.n = 3;
+              break;
+            }
+            _context13.n = 2;
+            return fetchPublicIp();
+          case 2:
+            ip = _context13.v;
+          case 3:
+            if (ip) {
+              _context13.n = 4;
+              break;
+            }
+            return _context13.a(2);
+          case 4:
+            _context13.n = 5;
+            return geocodeIp(ip);
+          case 5:
+            latlng = _context13.v;
+            if (latlng) {
+              _context13.n = 6;
+              break;
+            }
+            return _context13.a(2);
+          case 6:
+            if (currentIpMarkerRef.current) {
+              currentIpMarkerRef.current.setLatLng(latlng);
+            } else {
+              currentIpMarkerRef.current = L.circleMarker(latlng, {
+                radius: 6,
+                color: COLOR_GOLD,
+                fillColor: COLOR_GOLD,
+                fillOpacity: 0.9,
+                weight: 2
+              }).addTo(mapRef.current).bindPopup('Current IP location (approx)');
+            }
+            _context13.p = 7;
+            _context13.n = 8;
+            return reverseGeocode(latlng[0], latlng[1]);
+          case 8:
+            label = _context13.v;
+            setPlaceLabels(function (s) {
+              return _objectSpread(_objectSpread({}, s), {}, {
+                currentIp: label
+              });
+            });
+            try {
+              currentIpMarkerRef.current.bindPopup(label ? "Current IP location (approx) \u2014 ".concat(label) : 'Current IP location (approx)');
+            } catch (_unused24) {}
+            _context13.n = 10;
+            break;
+          case 9:
+            _context13.p = 9;
+            _t19 = _context13.v;
+          case 10:
+            fitBoundsToMarkers();
+          case 11:
+            return _context13.a(2);
+        }
+      }, _callee13, null, [[7, 9]]);
+    }));
+    return function plotCurrentIpLocation() {
+      return _ref13.apply(this, arguments);
+    };
+  }();
+  var fitBoundsToMarkers = function fitBoundsToMarkers() {
+    if (!mapRef.current) return;
+    var L = window.L;
+    var latlngs = [];
+    if (butuanMarkerRef.current) latlngs.push(butuanMarkerRef.current.getLatLng());
+    if (markerRef.current) latlngs.push(markerRef.current.getLatLng());
+    if (showIpLayers) {
+      if (currentIpMarkerRef.current) latlngs.push(currentIpMarkerRef.current.getLatLng());
+      if (lastLoginMarkerRef.current) latlngs.push(lastLoginMarkerRef.current.getLatLng());
+    }
+    if (latlngs.length === 0) return;
+    if (latlngs.length === 1) {
+      mapRef.current.setView(latlngs[0], 13);
+    } else {
+      var bounds = L.latLngBounds(latlngs);
+      mapRef.current.fitBounds(bounds.pad(0.2));
+    }
+  };
+  var viewLocation = function viewLocation() {
+    if (!mapRef.current) return;
+    if (markerRef.current) {
+      var latlng = markerRef.current.getLatLng();
+      mapRef.current.flyTo(latlng, 13, {
+        duration: 0.6
+      });
+      try {
+        markerRef.current.openPopup();
+      } catch (_unused26) {}
+    } else if (butuanMarkerRef.current) {
+      var _latlng = butuanMarkerRef.current.getLatLng();
+      mapRef.current.flyTo(_latlng, 12, {
+        duration: 0.6
+      });
+      try {
+        butuanMarkerRef.current.openPopup();
+      } catch (_unused27) {}
+    } else {
+      locateMe();
+    }
+  };
+  var toggleDeviceDetails = function toggleDeviceDetails() {
+    return setShowDeviceDetails(function (v) {
+      return !v;
+    });
   };
   if (loading) return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
     className: "loading",
@@ -66817,7 +67361,7 @@ function AccountSettings() {
                   objectFit: 'cover'
                 }
               }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
-                children: (((_profile$user = profile.user) === null || _profile$user === void 0 ? void 0 : _profile$user.name) || ((_profile$user2 = profile.user) === null || _profile$user2 === void 0 ? void 0 : _profile$user2.email) || 'U').toString().charAt(0).toUpperCase()
+                children: (((_profile$user2 = profile.user) === null || _profile$user2 === void 0 ? void 0 : _profile$user2.name) || ((_profile$user3 = profile.user) === null || _profile$user3 === void 0 ? void 0 : _profile$user3.email) || 'U').toString().charAt(0).toUpperCase()
               })
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
@@ -67054,7 +67598,7 @@ function AccountSettings() {
               style: {
                 fontWeight: 600
               },
-              children: ((_profile$user3 = profile.user) === null || _profile$user3 === void 0 ? void 0 : _profile$user3.last_login_ip) || 'N/A'
+              children: ((_profile$user4 = profile.user) === null || _profile$user4 === void 0 ? void 0 : _profile$user4.last_login_ip) || 'N/A'
             })]
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
@@ -67067,7 +67611,7 @@ function AccountSettings() {
               style: {
                 fontWeight: 600
               },
-              children: (_profile$user4 = profile.user) !== null && _profile$user4 !== void 0 && _profile$user4.last_login_at ? new Date(profile.user.last_login_at).toLocaleString() : 'N/A'
+              children: (_profile$user5 = profile.user) !== null && _profile$user5 !== void 0 && _profile$user5.last_login_at ? new Date(profile.user.last_login_at).toLocaleString() : 'N/A'
             })]
           })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
@@ -67076,18 +67620,162 @@ function AccountSettings() {
             className: "security-map-header",
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
               children: "Security Map"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
               className: "map-actions",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
+                type: "button",
+                className: "btn btn-secondary",
+                onClick: viewLocation,
+                children: "View Location"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
+                type: "button",
+                className: "btn btn-secondary",
+                onClick: toggleDeviceDetails,
+                children: "View Device Used"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
                 type: "button",
                 className: "btn btn-secondary",
                 onClick: locateMe,
                 children: "Locate"
-              })
+              })]
             })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+            className: "map-info-note",
+            children: mapInfo
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
             ref: mapElRef,
             className: "security-map"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+            className: "map-legend",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+              className: "legend-item",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+                className: "legend-dot",
+                style: {
+                  background: COLOR_PRIMARY
+                }
+              }), " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
+                children: ["Device (GPS)", placeLabels.gps ? " \u2014 ".concat(placeLabels.gps) : '']
+              })]
+            }), showIpLayers && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+                className: "legend-item",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+                  className: "legend-dot",
+                  style: {
+                    background: COLOR_GOLD
+                  }
+                }), " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
+                  children: ["Current IP (approx)", placeLabels.currentIp ? " \u2014 ".concat(placeLabels.currentIp) : '']
+                })]
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+                className: "legend-item",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+                  className: "legend-dot",
+                  style: {
+                    background: COLOR_BLUE
+                  }
+                }), " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
+                  children: ["Last Login IP (approx)", placeLabels.lastIp ? " \u2014 ".concat(placeLabels.lastIp) : '']
+                })]
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+              className: "legend-item",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+                className: "legend-dot",
+                style: {
+                  background: COLOR_GREEN
+                }
+              }), " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+                children: "History device (by IP)"
+              })]
+            })]
+          })]
+        }), showDeviceDetails && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+          className: "device-details",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+            className: "details-grid",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+                className: "label",
+                children: "Device Type"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+                className: "value",
+                children: ((_profile$current_devi2 = profile.current_device) === null || _profile$current_devi2 === void 0 ? void 0 : _profile$current_devi2.device_type) || 'Unknown'
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+                className: "label",
+                children: "OS"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+                className: "value",
+                children: ((_profile$current_devi3 = profile.current_device) === null || _profile$current_devi3 === void 0 ? void 0 : _profile$current_devi3.os) || 'Unknown'
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+                className: "label",
+                children: "Browser"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+                className: "value",
+                children: ((_profile$current_devi4 = profile.current_device) === null || _profile$current_devi4 === void 0 ? void 0 : _profile$current_devi4.browser) || 'Unknown'
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+                className: "label",
+                children: "Current IP"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+                className: "value",
+                children: profile.current_ip || 'N/A'
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+                className: "label",
+                children: "User-Agent"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+                className: "value ua",
+                children: profile.current_user_agent || 'N/A'
+              })]
+            })]
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+          className: "history-panel",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+            className: "history-header",
+            children: "Device/Login History"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+            className: "history-list",
+            children: [historyLoading && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+              className: "history-row",
+              children: "Loading history\u2026"
+            }), !historyLoading && history.length === 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+              className: "history-row",
+              children: "No recent logins."
+            }), !historyLoading && history.slice(0, 10).map(function (h) {
+              var _h$device;
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+                className: "history-row",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+                  className: "when",
+                  children: h.created_at ? new Date(h.created_at).toLocaleString() : ''
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+                  className: "device",
+                  children: ((_h$device = h.device) === null || _h$device === void 0 ? void 0 : _h$device.label) || 'Unknown'
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+                  className: "ip",
+                  children: h.ip_address || 'N/A'
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+                  className: "actions",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
+                    type: "button",
+                    className: "btn btn-secondary",
+                    onClick: function onClick() {
+                      return viewHistoryOnMap(h);
+                    },
+                    children: "View on Map"
+                  })
+                })]
+              }, h.id);
+            })]
           })]
         })]
       })]
@@ -70746,26 +71434,286 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ Courses)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
+
+var DEFAULT_COURSES = ['AB-C BACHELOR OF ARTS MAJOR IN COMMUNICATION', 'AB-CA BACHELOR OF ARTS - MAJOR IN COMMUNICATION ARTS', 'AB-ECON - BACHELOR OF ARTS MAJOR IN ECONOMICS', 'AB-ELS BACHELOR OF ARTS IN ENGLISH LANGUAGE STUDIES', 'AB-ENGLANG - BACHELOR OF ARTS - MAJOR IN ENGLISH LANGUAGE', 'AB-FILLANG - BACHELOR OF ARTS - FILIPINO LANGUAGE', 'AB-GC BACHELOR OF ARTS MAJOR IN GUIDANCE AND COUNSELING', 'AB-HISTORY - BACHELOR OF ARTS IN HISTORY', 'AB-MC BACHELOR OF ARTS MASS COMMUNICATION', 'BACHELOR OF ARTS MAJOR IN POLITICAL SCIENCE AB-PS', 'ACAD-ABM-ABP-ACADEMIC ABM-ABP MORELOS ACCOUNTANCY BUSINESS AND MANAGEMENT STRAND', 'ACAD-ABM-BPP ACADEMIC ABM-BP PUEBLOS ACCOUNTANCY BUSINESS AND MANAGEMENT STRAND', 'ACAD-GAS-ABP-ACADEMIC GAS-ABP MORELOS GENERAL ACADEMIC STRAND', 'ACAD-GAS-BPP ACADEMIC GAS-BP PUEBLOS GENERAL ACADEMIC STRAND', 'ACAD-HUMSS-ABP-ACADEMIC HUMSS-ABP MORELOS - HUMANITIES AND SOCIAL SCIENCES STRAND', 'ACAD-HUMSS-BPP - ACADEMIC HUMSS-BP PUEBLOS - HUMANITIES AND SOCIAL SCIENCES STRAND', 'ACAD-STEM-ABP-ACADEMIC STEM-ABP MORELOS - SCIENCE, TECHNOLOGY, ENGINEERING, AND MATHEMATICS STRAND', 'ACAD-STEM-BPP - ACADEMIC STEM-BP PUEBLOS - SCIENCE, TECHNOLOGY, ENGINEERING, AND MATHEMATICS STRAND', 'ACAD-STEM-ABP-ACADEMIC STEM-ABP MORELOS - SCIENCE, TECHNOLOGY, ENGINEERING, AND MATHEMATICS STRAND', 'ACAD-STEM-BPP - ACADEMIC STEM-BP PUEBLOS - SCIENCE, TECHNOLOGY, ENGINEERING, AND MATHEMATICS STRAND', 'AT Automotive Technology', 'ATC1 Automotive Technology-Clustered (One Year)', 'AUDIT_ACC AUDIT UNDERGRADUATE_ACCOUNTANCY', 'BECE', 'BACHELOR OF EARLY CHILDHOOD EDUCATION', 'BECED', 'BACHELOR OF EARLY CHILDHOOD EDUCATION', 'BEE', 'BACHELOR OF ELEMENTARY EDUCATION (WITH SPECIALIZATION IN SPECIAL EDUCATION)', 'BEE-PRES.ED. - BACHELOR OF ELEMENTARY EDUCATION (WITH SPECIALIZATION IN PRE-SCHOOL EDUCATION)', 'BEED', 'BACHELOR OF ELEMENTARY EDUCATION', 'BEEG', 'BACHELOR OF ELEMENTARY EDUCATION', 'BEESE', 'BEEPE BACHELOR OF ELEMENTARY EDUCATION (WITH SPECIALIZATION IN PRESCHOOL EDUCATION)', 'BACHELOR OF ELEMENTARY EDUCATION SPECIALIZATION IN SPECIAL EDUCATION', 'BLIS', 'BHUMSERV BACHELOR IN HUMAN SERVICES', 'BACHELOR OF LIBRARY AND INFORMATION SCIENCE', 'BPA', 'BACHELOR OF PUBLIC ADMINISTRATION', 'BPE', 'BACHELOR OF PHYSICAL EDUCATION MAJOR IN SCHOOL P.E..', 'BS PSYCH', 'BPED BACHELOR OF PHYSICAL EDUCATION', 'BACHELOR OF SCIENCE IN PSYCHOLOGY', 'BSA BACHELOR OF SCIENCE IN ACCOUNTANCY', 'BSAAM BACHELOR OF SCIENCE IN ACCOUNTANCY MAJOR IN ACCOUNTING MANAGEMENT', 'BSAIS BACHELOR OF SCIENCE IN ACCOUNTING INFORMATION SYSTEM', 'BSAM BACHELOR OF SCIENCE IN APPLIED MATHEMATICS', 'BSAT BACHELOR OF SCIENCE IN ACCOUNTING TECHNOLOGY', 'BSBA-FM BACHELOR OF SCIENCE IN BUSINESS ADMINISTRATION - MAJOR IN FINANCIAL MANAGEMENT', 'BSBA-HRDM BACHELOR OF SCIENCE IN BUSINESS ADMINISTRATION MAJOR IN HUMAN RESOURCE DEVELOPMENT MANAGEMENT', 'BSBA-HRMGT BACHELOR OF SCIENCE IN BUSINESS ADMINISTRATION - MAJOR IN HUMAN RESOURCE MANAGEMENT', 'BSBA-MM - BACHELOR OF SCIENCE IN BUSINESS ADMINISTRATION MAJOR IN MARKETING MANAGEMENT', 'BSBA-OM BACHELOR OF SCIENCE IN BUSINESS ADMINISTRATION MAJOR IN OPERATIONS MANAGEMENT', 'BACHELOR OF SCIENCE IN BIOLOGY BSBIO', 'BSC-ACM BACHELOR OF SCIENCE IN COMMERCE MAJOR IN ACCOUNTING MANAGEMENT', 'BSC-BIS BACHELOR OF SCIENCE IN COMMERCE - MAJOR IN BUSINESS INFORMATION SYSTEM', 'BSC-F BACHELOR OF SCIENCE IN COMMERCE - MAJOR IN FINANCE', 'BSC-LM BACHELOR OF SCIENCE IN COMMERCE MAJOR IN LEGAL MANAGEMENT', 'BSC-MK BACHELOR OF SCIENCE IN COMMERCE MAJOR IN MARKETING', 'BSC-MN BACHELOR OF SCIENCE IN COMMERCE - MAJOR IN MANAGEMENT', 'BSCE BACHELOR OF SCIENCE IN CIVIL ENGINEERING', 'BSCRIM BACHELOR OF SCIENCE IN CRIMINOLOGY', 'BACHELOR OF SCIENCE IN COMPUTER SCIENCE', 'BSCS-DS BACHELOR OF SCIENCE IN COMPUTER SCIENCE - WITH SPECIAL TRAINING IN DATA SCIENCE AND ANALYTICS', 'BSE BACHELOR OF SCIENCE IN ENTREPRENEURSHIP', 'BSE-BS - BACHELOR OF SECONDARY EDUCATION MAJOR IN BIOLOGICAL SCIENCE', 'BSE-E BACHELOR OF SECONDARY EDUCATION MAJOR IN ENGLISH', 'BSE-F - BACHELOR OF SECONDARY EDUCATION MAJOR IN FILIPIΝΟ', 'BSE-M BACHELOR OF SECONDARY EDUCATION - MAJOR IN MATHEMATICS', 'BSE-MAPEH BACHELOR OF SECONDARY EDUCATION MAJOR IN MAPEH', 'BSE-PS BACHELOR OF SECONDARY EDUCATION MAJOR IN PHYSICAL SCIENCE', 'BSE-S BACHELOR OF SECONDARY EDUCATION MAJOR IN SCIENCE', 'BSE-SS BACHELOR OF SECONDARY EDUCATION MAJOR IN SOCIAL STUDIES', 'BSE-UNIT EARNER - BACHELOR OF SECONDARY EDUCATION (UNIT EARNER)', 'BSED BACHELOR OF SECONDARY EDUCATION (UNIT EARNER)', 'BSEMC-DA BACHELOR OF SCIENCE IN ENTERTAINMENT AND MULTIMEDIA COMPUTING-DA DIGITAL ANIMATION', 'BSEMC-GD BACHELOR OF SCIENCE IN ENTERTAINMENT AND MULTIMEDIA COMPUTING-GD-GAME DEVELOPMENT', 'BSF BATSILYER NG SINING SA FILIPINO', 'BSHM BACHELOR OF SCIENCE IN HOSPITALITY MANAGEMENT', 'BSHM REV. BACHELOR OF SCIENCE IN HOSPITALITY MANAGEMENT REV.', 'BSHRM BACHELOR OF SCIENCE IN HOTEL AND RESTAURANT MANAGEMENT', 'BSIA BACHELOR OF SCIENCE IN INTERNAL AUDITING', 'BSISM BACHELOR OF SCIENCE IN INDUSTRIAL SECURITY MANAGEMENT', 'BSIT BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY', 'BSIT-CA BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY (WITH SPECIAL TRAINING COURSES IN COMPUTER ANIMATION)', 'BACHELOR OF SCIENCE IN MANAGEMENT ACCOUNTING BSMA', 'BSN BACHELOR OF SCIENCE IN NURSING', 'BSNED BACHELOR OF SPECIAL NEEDS EDUCATION', 'BSOA BACHELOR OF SCIENCE IN OFFICE ADMINISTRATION', 'BSOA-IOM BACHELOR OF SCIENCE IN OFFICE ADMINISTRATION WITH SPECIALIZATION IN INDUSTRIAL OFFICE MANAGEMENT', 'BSOA-LOM - BACHELOR OF SCIENCE IN OFFICE ADMINISTRATION - WITH SPECIALIZATION IN LEGAL OFFICE MANAGEMENT', 'BACHELOR OF SPECIAL EDUCATION BSPEd', 'BSSE BACHELOR OF SCIENCE IN SOCIAL ENTREPRENEURSHIP', 'BSSE-AB BACHELOR OF SCIENCE IN SOCIAL ENTREPRENEURSHIP - WITH SPECIALIZATION IN AGRI-AQUA BUSINESS', 'BSSE-ACB BACHELOR OF SCIENCE IN SOCIAL ENTREPRENEURSHIP WITH SPECIALIZATION IN ARTS AND CRAFTS BUSINESS', 'BSTM BACHELOR OF SCIENCE IN TOURISM MANAGEMENT', 'CES1 Consumer Electronics Servicing NC II', 'CHS Computer Hardware Servicing NC II', 'CPA R - CPA-REFRESHER', 'CS - Computer Secretarial', 'DRA - DOCTOR IN BUSINESS ADMINISTRATION', 'DHRST - DIPLOMA IN HOTEL AND RESTAURANT SERVICES TECHNOLOGY', 'DIT DIPLOMA IN INFORMATION TECHNOLOGY', 'DM DOCTOR OF MANAGEMENT IN ORGANIZATIONAL MANAGEMENT', 'DM-OM', 'DOCTOR OF MANAGEMENT - MAJOR IN ORGANIZATIONAL MANAGEMENT', 'DT - Drafting Technology', 'DT1 - Drafting Technology (One Year)', 'ETC - Electronic Technician Course', 'GEN.ED-BAP - GENERAL EDUCATION', 'GEN.ED-TE - GENERAL EDUCATION', 'GS GRADE SCHOOL', 'HMDP - HOTEL AND RESTAURANT SERVICES TECHNOLOGY', 'HS -HIGH SCHOOL', 'ITDP - INFORMATION TECHNOLOGY DIPLOMA PROGRAM', 'JD - Juris Doctor', 'LAW - JURIS DOCTOR', 'MACSEA MASTER OF ARTS IN COMMUNITY STUDIES AND EXTENSION ADMINISTRATION', 'MAEM MASTER OF ARTS IN EDUCATIONAL MANAGEMENT', 'MAGC MASTER OF ARTS IN GUIDANCE AND COUNSELING', 'MAN-MSN MASTER OF ARTS IN NURSING - MAJOR IN MEDICAL-SURGICAL NURSING', 'MAN-NSA MASTER OF ARTS IN NURSING MAJOR IN NURSING SUPERVISION AND ADMINISTRATION', 'MANM MASTER OF ARTS IN NURSING WITH SPECIAL TRAINING COURSES IN MEDICAL-SURGICAL NURSING', 'MANN MASTER OF ARTS IN NURSING WITH SPECIAL TRAINING COURSES IN NURSING SUPERVISION', 'MATE MASTER OF ARTS IN TEACHING ENGLISH', 'MATF MASTER OF ARTS IN TEACHING FILIPINO', 'MATGS MASTER OF ARTS IN TEACHING GENERAL SCIENCE', 'MATSE MASTER OF ARTS IN TEACHING SPECIAL EDUCATION', 'MBA -MASTER IN BUSINESS ADMINISTRATION', 'MBA-BM MASTER IN BUSINESS ADMINISTRATION (WITH SPECIALIZATION IN BUSINESS MANAGEMENT)', 'MBA-HR MASTER IN BUSINESS ADMINISTRATION (WITH SPECIALIZATION IN HUMAN RESOURCE MANAGEMENT)', 'MBA-HRM MASTER OF BUSINESS ADMINISTRATION - HUMAN RESOURCE MANAGEMENT', 'MNC1 Machining NC II', 'MPA MASTER IN PUBLIC ADMINISTRATION', 'MSPE MASTER OF SCIENCE IN PHYSICAL EDUCATION', 'MST MACHINE SHOP TECHNOLOGY', 'MSTM MASTER OF SCIENCE IN TEACHING MATHEMATICS', 'PCO PC Operations NC II', 'PHD DOCTOR OF PHILOSOPHY IN EDUCATION', 'PRG Programming NC IV'];
 function Courses() {
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState2 = _slicedToArray(_useState, 2),
+    list = _useState2[0],
+    setList = _useState2[1];
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+    _useState4 = _slicedToArray(_useState3, 2),
+    loading = _useState4[0],
+    setLoading = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+    _useState6 = _slicedToArray(_useState5, 2),
+    message = _useState6[0],
+    setMessage = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+    _useState8 = _slicedToArray(_useState7, 2),
+    filter = _useState8[0],
+    setFilter = _useState8[1];
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    loadCourses();
+  }, []);
+  var loadCourses = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+      var _yield$axios$get, data, arr, _t;
+      return _regenerator().w(function (_context) {
+        while (1) switch (_context.p = _context.n) {
+          case 0:
+            setLoading(true);
+            _context.p = 1;
+            _context.n = 2;
+            return axios__WEBPACK_IMPORTED_MODULE_1___default().get('/api/settings/key/courses');
+          case 2:
+            _yield$axios$get = _context.v;
+            data = _yield$axios$get.data;
+            arr = safeParseArray(data === null || data === void 0 ? void 0 : data.setting_value);
+            setList(arr);
+            _context.n = 4;
+            break;
+          case 3:
+            _context.p = 3;
+            _t = _context.v;
+            setList([]);
+          case 4:
+            _context.p = 4;
+            setLoading(false);
+            return _context.f(4);
+          case 5:
+            return _context.a(2);
+        }
+      }, _callee, null, [[1, 3, 4, 5]]);
+    }));
+    return function loadCourses() {
+      return _ref.apply(this, arguments);
+    };
+  }();
+  var safeParseArray = function safeParseArray(value) {
+    try {
+      var parsed = JSON.parse(value || '[]');
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (_unused) {
+      return [];
+    }
+  };
+  var saveCourses = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+      var payload, _e$response, _t2, _t3;
+      return _regenerator().w(function (_context2) {
+        while (1) switch (_context2.p = _context2.n) {
+          case 0:
+            payload = JSON.stringify(uniqueSorted(list));
+            _context2.p = 1;
+            _context2.n = 2;
+            return axios__WEBPACK_IMPORTED_MODULE_1___default().put('/api/settings/key/courses', {
+              setting_value: payload
+            });
+          case 2:
+            setMessage('Courses saved');
+            _context2.n = 9;
+            break;
+          case 3:
+            _context2.p = 3;
+            _t2 = _context2.v;
+            if (!((_t2 === null || _t2 === void 0 || (_e$response = _t2.response) === null || _e$response === void 0 ? void 0 : _e$response.status) === 404)) {
+              _context2.n = 8;
+              break;
+            }
+            _context2.p = 4;
+            _context2.n = 5;
+            return axios__WEBPACK_IMPORTED_MODULE_1___default().post('/api/settings', {
+              setting_key: 'courses',
+              setting_value: payload,
+              setting_type: 'json',
+              category: 'academics',
+              description: 'Available courses list',
+              is_public: false
+            });
+          case 5:
+            setMessage('Courses created');
+            _context2.n = 7;
+            break;
+          case 6:
+            _context2.p = 6;
+            _t3 = _context2.v;
+            setMessage('Failed to save courses');
+          case 7:
+            _context2.n = 9;
+            break;
+          case 8:
+            setMessage('Failed to save courses');
+          case 9:
+            return _context2.a(2);
+        }
+      }, _callee2, null, [[4, 6], [1, 3]]);
+    }));
+    return function saveCourses() {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+  var uniqueSorted = function uniqueSorted(arr) {
+    return Array.from(new Set(arr.map(function (s) {
+      return s.trim();
+    }).filter(Boolean))).sort(function (a, b) {
+      return a.localeCompare(b);
+    });
+  };
+  var addCourse = function addCourse(value) {
+    var trimmed = value.trim();
+    if (!trimmed) return;
+    setList(function (prev) {
+      return uniqueSorted([].concat(_toConsumableArray(prev), [trimmed]));
+    });
+  };
+  var removeCourse = function removeCourse(idx) {
+    return setList(function (prev) {
+      return prev.filter(function (_, i) {
+        return i !== idx;
+      });
+    });
+  };
+  var resetToDefault = function resetToDefault() {
+    return setList(uniqueSorted(DEFAULT_COURSES));
+  };
+  var visible = filter ? list.filter(function (c) {
+    return c.toLowerCase().includes(filter.toLowerCase());
+  }) : list;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
     className: "module-page",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
       className: "page-header",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("h1", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h1", {
         children: "Courses"
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
       className: "form-card",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("h2", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
         children: "Manage Courses"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("p", {
+      }), message && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "alert alert-info",
         style: {
-          color: 'var(--text-secondary)'
+          marginTop: 8
         },
-        children: "Placeholder module. Define CRUD for courses here."
+        children: message
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        className: "module-form",
+        style: {
+          gap: 12
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+          className: "form-row",
+          style: {
+            gridTemplateColumns: '1fr auto auto'
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+            placeholder: "Add a course",
+            onKeyDown: function onKeyDown(e) {
+              if (e.key === 'Enter') {
+                addCourse(e.target.value);
+                e.target.value = '';
+              }
+            }
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+            type: "button",
+            className: "btn btn-secondary",
+            onClick: function onClick(e) {
+              var el = e.currentTarget.previousSibling;
+              addCourse(el.value || '');
+              el.value = '';
+            },
+            children: "Add"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+            type: "button",
+            className: "btn btn-secondary",
+            onClick: resetToDefault,
+            children: "Use Default List"
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+          className: "form-row",
+          style: {
+            gridTemplateColumns: '1fr auto'
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+            placeholder: "Filter courses",
+            value: filter,
+            onChange: function onChange(e) {
+              return setFilter(e.target.value);
+            }
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+            type: "button",
+            className: "btn btn-primary",
+            onClick: saveCourses,
+            children: "Save"
+          })]
+        })]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+      className: "form-card",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("h2", {
+        children: ["Course List ", loading ? '(Loading...)' : "(".concat(visible.length, ")")]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        className: "module-list",
+        style: {
+          maxHeight: '50vh',
+          overflow: 'auto',
+          border: '1px solid var(--border-color)',
+          borderRadius: 8
+        },
+        children: [visible.length === 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+          style: {
+            padding: 12,
+            color: 'var(--text-secondary)'
+          },
+          children: "No courses to show."
+        }), visible.map(function (c, idx) {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+            className: "list-row",
+            style: {
+              display: 'grid',
+              gridTemplateColumns: '1fr auto',
+              gap: 8,
+              padding: '8px 12px',
+              borderBottom: '1px solid var(--border-color)'
+            },
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+              style: {
+                minWidth: 0,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap'
+              },
+              children: c
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+              type: "button",
+              className: "btn btn-secondary",
+              onClick: function onClick() {
+                return removeCourse(list.indexOf(c));
+              },
+              children: "Remove"
+            })]
+          }, c + idx);
+        })]
       })]
     })]
   });
@@ -71467,26 +72415,334 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ Subjects)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
 
 
 function Subjects() {
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+    _useState2 = _slicedToArray(_useState, 2),
+    raw = _useState2[0],
+    setRaw = _useState2[1];
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState4 = _slicedToArray(_useState3, 2),
+    items = _useState4[0],
+    setItems = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+    _useState6 = _slicedToArray(_useState5, 2),
+    message = _useState6[0],
+    setMessage = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+    _useState8 = _slicedToArray(_useState7, 2),
+    replace = _useState8[0],
+    setReplace = _useState8[1];
+  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState0 = _slicedToArray(_useState9, 2),
+    loading = _useState0[0],
+    setLoading = _useState0[1];
+  var parsedStats = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () {
+    return {
+      count: items.length
+    };
+  }, [items]);
+  var parse = function parse() {
+    var lines = raw.split(/\r?\n/);
+    var out = [];
+    var year = '';
+    var sectionLabel = '';
+    var _loop = function _loop(_i) {
+        var line = lines[_i].trim();
+        if (!line) {
+          i = _i;
+          return 0;
+        } // continue
+        var upper = line.toUpperCase();
+        // Year headers (FIRST YEAR, SECOND YEAR, etc.)
+        if (/^(FIRST|SECOND|THIRD|FOURTH|FIFTH)\s+YEAR$/.test(upper)) {
+          year = line;
+          i = _i;
+          return 0; // continue
+        }
+        // SECTION : XYZ
+        var sec = line.match(/^SECTION\s*:\s*(.+)$/i);
+        if (sec) {
+          sectionLabel = (sec[1] || '').trim();
+          i = _i;
+          return 0; // continue
+        }
+        if (upper.startsWith('SUBJECT CODE') || upper.startsWith('TOTAL')) {
+          i = _i;
+          return 0;
+        } // continue
+
+        // Try to split columns either by tab or 2+ spaces
+        var cols = line.split('\t');
+        if (cols.length < 3) cols = line.split(/\s{2,}/);
+        if (cols.length < 3) {
+          i = _i;
+          return 0;
+        } // continue
+
+        // Normalize
+        var _cols = cols,
+          _cols2 = _slicedToArray(_cols, 8),
+          subject_code = _cols2[0],
+          subject_description = _cols2[1],
+          section_code = _cols2[2],
+          lec = _cols2[3],
+          lab = _cols2[4],
+          units = _cols2[5],
+          room = _cols2[6],
+          schedule = _cols2[7];
+        subject_code = (subject_code || '').replace(/^\*/, '').trim();
+        subject_description = (subject_description || '').trim();
+        section_code = (section_code || '').trim();
+        lec = parseInt((lec || '0').trim(), 10) || 0;
+        lab = parseInt((lab || '0').trim(), 10) || 0;
+        units = parseInt((units || '0').trim(), 10) || 0;
+        room = (room || '').trim();
+        schedule = (schedule || '').trim();
+
+        // If schedule spilled to next line(s) without columns, capture subsequent lines until blank or new header
+        while (_i + 1 < lines.length && lines[_i + 1] && !/^SECTION\s*:/i.test(lines[_i + 1]) && !/^(FIRST|SECOND|THIRD|FOURTH|FIFTH)\s+YEAR$/i.test(lines[_i + 1]) && !/^SUBJECT CODE/i.test(lines[_i + 1]) && !/^TOTAL/i.test(lines[_i + 1]) && lines[_i + 1].split(/\s{2,}|\t/).length < 3) {
+          schedule = (schedule ? schedule + ' ' : '') + lines[_i + 1].trim();
+          _i++;
+        }
+        var course_code = function () {
+          var sc = section_code || '';
+          var m = sc.match(/^(.*)\s+\d+\s*-/);
+          return (m ? m[1] : sc).trim();
+        }();
+        out.push({
+          year_level: year || '',
+          course_code: course_code,
+          section_label: sectionLabel || '',
+          section_code: section_code,
+          subject_code: subject_code,
+          subject_description: subject_description,
+          lec: lec,
+          lab: lab,
+          units: units,
+          room: room || null,
+          schedule: schedule || null
+        });
+        i = _i;
+      },
+      _ret;
+    for (var i = 0; i < lines.length; i++) {
+      _ret = _loop(i);
+      if (_ret === 0) continue;
+    }
+    setItems(out);
+    setMessage("Parsed ".concat(out.length, " rows"));
+  };
+  var importAll = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+      var _data$count, _yield$axios$post, data, _e$response, _t;
+      return _regenerator().w(function (_context) {
+        while (1) switch (_context.p = _context.n) {
+          case 0:
+            if (!(items.length === 0)) {
+              _context.n = 1;
+              break;
+            }
+            setMessage('Nothing to import');
+            return _context.a(2);
+          case 1:
+            setLoading(true);
+            _context.p = 2;
+            _context.n = 3;
+            return axios__WEBPACK_IMPORTED_MODULE_1___default().post('/api/subject-offerings/import', {
+              items: items,
+              replace: replace
+            });
+          case 3:
+            _yield$axios$post = _context.v;
+            data = _yield$axios$post.data;
+            setMessage("Imported ".concat((_data$count = data === null || data === void 0 ? void 0 : data.count) !== null && _data$count !== void 0 ? _data$count : items.length, " subject offerings"));
+            _context.n = 5;
+            break;
+          case 4:
+            _context.p = 4;
+            _t = _context.v;
+            setMessage(((_e$response = _t.response) === null || _e$response === void 0 || (_e$response = _e$response.data) === null || _e$response === void 0 ? void 0 : _e$response.message) || 'Import failed');
+          case 5:
+            _context.p = 5;
+            setLoading(false);
+            return _context.f(5);
+          case 6:
+            return _context.a(2);
+        }
+      }, _callee, null, [[2, 4, 5, 6]]);
+    }));
+    return function importAll() {
+      return _ref.apply(this, arguments);
+    };
+  }();
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
     className: "module-page",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
       className: "page-header",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("h1", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h1", {
         children: "Subjects"
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
       className: "form-card",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("h2", {
-        children: "Manage Subjects"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("p", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
+        children: "Bulk Import Subject Offerings"
+      }), message && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "alert alert-info",
         style: {
-          color: 'var(--text-secondary)'
+          marginTop: 8
         },
-        children: "Placeholder module. Define CRUD for subjects here."
+        children: message
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        className: "module-form",
+        style: {
+          gap: 12
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
+            style: {
+              display: 'block',
+              color: 'var(--text-secondary)',
+              fontSize: '0.9rem'
+            },
+            children: "Paste subject offerings text"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("textarea", {
+            value: raw,
+            onChange: function onChange(e) {
+              return setRaw(e.target.value);
+            },
+            rows: 12,
+            style: {
+              width: '100%'
+            },
+            placeholder: "Paste the subject offerings list here..."
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+          className: "form-row",
+          style: {
+            gridTemplateColumns: 'auto auto 1fr auto'
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("label", {
+            className: "checkbox",
+            style: {
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8
+            },
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+              type: "checkbox",
+              checked: replace,
+              onChange: function onChange(e) {
+                return setReplace(e.target.checked);
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
+              children: "Replace existing rows for the same Year/Course/Section"
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+            type: "button",
+            className: "btn btn-secondary",
+            onClick: parse,
+            children: "Parse"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+            type: "button",
+            className: "btn btn-primary",
+            disabled: loading || items.length === 0,
+            onClick: importAll,
+            children: loading ? 'Importing…' : 'Import'
+          })]
+        })]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+      className: "form-card",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("h2", {
+        children: ["Preview (", parsedStats.count, ")"]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "table-wrap",
+        style: {
+          maxHeight: '45vh',
+          overflow: 'auto'
+        },
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("table", {
+          className: "data-table",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("thead", {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("tr", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                children: "Year"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                children: "Section"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                children: "Section Code"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                children: "Subject Code"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                children: "Description"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                children: "Lec"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                children: "Lab"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                children: "Units"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                children: "Room"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                children: "Schedule"
+              })]
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("tbody", {
+            children: items.slice(0, 300).map(function (it, idx) {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("tr", {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                  children: it.year_level
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                  children: it.section_label
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                  children: it.section_code
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                  children: it.subject_code
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                  style: {
+                    minWidth: 260
+                  },
+                  children: it.subject_description
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                  children: it.lec
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                  children: it.lab
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                  children: it.units
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                  children: it.room || ''
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                  style: {
+                    minWidth: 260
+                  },
+                  children: it.schedule || ''
+                })]
+              }, idx);
+            })
+          })]
+        })
+      }), items.length > 300 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        style: {
+          color: 'var(--text-secondary)',
+          marginTop: 8
+        },
+        children: "Showing first 300 rows\u2026"
       })]
     })]
   });
@@ -71551,15 +72807,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
-function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
-function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
-function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -71571,51 +72827,51 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 var DEPARTMENTS = [{
   code: 'CSP',
-  name: 'Computer Science Program'
+  name: 'COMPUTER SCIENCE PROGRAM'
 }, {
   code: 'AP',
-  name: 'Accountancy Program'
+  name: 'ACCOUNTANCY PROGRAM'
 }, {
   code: 'BAP',
-  name: 'Business Administration Program'
+  name: 'BUSINESS ADMINISTRATION PROGRAM'
 }, {
   code: 'NP',
-  name: 'Nursing Program'
+  name: 'NURSING PROGRAM'
 }, {
   code: 'ICJ',
-  name: 'Criminology Program'
+  name: 'CRIMINOLOGY PROGRAM'
 }, {
   code: 'TEP',
-  name: 'Teacher Education Program'
+  name: 'TEACHER ADMINISTRATION PROGRAM'
 }, {
   code: 'ETP',
-  name: 'Engineering Program'
+  name: 'ENGINEERING PROGRAM'
 }];
 var YEAR_LEVELS = ['1st-Year', '2nd-Year', '3rd-Year', '4th-Year'];
 var MINDANAO_REGIONS = {
-  'Region IX – Zamboanga Peninsula': {
-    provinces: ['Zamboanga del Norte', 'Zamboanga del Sur', 'Zamboanga Sibugay'],
-    cities: ['Zamboanga City', 'Isabela City', 'Pagadian City', 'Dipolog City', 'Dapitan City']
+  'REGION IX – ZAMBOANGA PENINSULA': {
+    provinces: ['ZAMBOANGA DEL NORTE', 'ZAMBOANGA DEL SUR', 'ZAMBOANGA SIBUGAY'],
+    cities: ['ZAMBOANGA CITY', 'ISABELA CITY', 'PAGADIAN CITY', 'DIPOLOG CITY', 'DAPITAN CITY']
   },
-  'Region X – Northern Mindanao': {
-    provinces: ['Bukidnon', 'Camiguin', 'Lanao del Norte', 'Misamis Occidental', 'Misamis Oriental'],
-    cities: ['Cagayan de Oro City', 'Iligan City', 'Ozamiz City', 'Oroquieta City', 'Tangub City', 'Gingoog City', 'Valencia City', 'El Salvador City']
+  'REGION X – NORTHERN MINDANAO': {
+    provinces: ['BUKIDNON', 'CAMIGUIN', 'LANAO DEL NORTE', 'MISAMIS OCCIDENTAL', 'MISAMIS ORIENTAL'],
+    cities: ['CAGAYAN DE ORO CITY', 'ILIGAN CITY', 'OZAMIZ CITY', 'OROQUIETA CITY', 'TANGUB CITY', 'GINGOOG CITY', 'VALENCIA CITY', 'EL SALVADOR CITY']
   },
-  'Region XI – Davao Region': {
-    provinces: ['Davao del Norte', 'Davao del Sur', 'Davao Oriental', 'Davao de Oro', 'Davao Occidental'],
-    cities: ['Davao City', 'Panabo City', 'Tagum City', 'Samal (Island Garden City of Samal)', 'Digos City', 'Mati City']
+  'REGION XI – DAVAO REGION': {
+    provinces: ['DAVAO DEL NORTE', 'DAVAO DEL SUR', 'DAVAO ORIENTAL', 'DAVAO DE ORO', 'DAVAO OCCIDENTAL'],
+    cities: ['DAVAO CITY', 'PANABO CITY', 'TAGUM CITY', 'SAMAL (ISLAND GARDEN CITY OF SAMAL)', 'DIGOS CITY', 'MATI CITY']
   },
-  'Region XII – SOCCSKSARGEN': {
-    provinces: ['Cotabato (North Cotabato)', 'South Cotabato', 'Sultan Kudarat', 'Sarangani'],
-    cities: ['General Santos City', 'Koronadal City', 'Kidapawan City', 'Tacurong City']
+  'REGION XII – SOCCSKSARGEN': {
+    provinces: ['COTABATO (NORTH COTABATO)', 'SOUTH COTABATO', 'SULTAN KUDARAT', 'SARANGANI'],
+    cities: ['GENERAL SANTOS CITY', 'KORONADAL CITY', 'KIDAPAWAN CITY', 'TACURONG CITY']
   },
-  'Region XIII – Caraga': {
-    provinces: ['Agusan del Norte', 'Agusan del Sur', 'Dinagat Islands', 'Surigao del Norte', 'Surigao del Sur'],
-    cities: ['Butuan City', 'Surigao City', 'Tandag City', 'Bayugan City', 'Bislig City', 'Cabadbaran City']
+  'REGION XIII – CARAGA': {
+    provinces: ['AGUSAN DEL NORTE', 'AGUSAN DEL SUR', 'DINAGAT ISLANDS', 'SURIGAO DEL NORTE', 'SURIGAO DEL SUR'],
+    cities: ['BUTUAN CITY', 'SURIGAO CITY', 'TANDAG CITY', 'BAYUGAN CITY', 'BISLIG CITY', 'CABADBARAN CITY']
   },
-  'Bangsamoro Autonomous Region in Muslim Mindanao (BARMM)': {
-    provinces: ['Basilan', 'Lanao del Sur', 'Maguindanao del Norte', 'Maguindanao del Sur', 'Sulu', 'Tawi-Tawi'],
-    cities: ['Cotabato City', 'Marawi City', 'Lamitan City']
+  'BANGSAMORO AUTONOMOUS REGION IN MUSLIM MINDANAO (BARMM)': {
+    provinces: ['BASILAN', 'LANAO DEL SUR', 'MAGUINDANAO DEL NORTE', 'MAGUINDANAO DEL SUR', 'SULU', 'TAWI-TAWI'],
+    cities: ['COTABATO CITY', 'MARAWI CITY', 'LAMITAN CITY']
   }
 };
 function StudentForm(_ref) {
@@ -71642,20 +72898,25 @@ function StudentForm(_ref) {
       enrollment_date: new Date().toISOString().slice(0, 10),
       program: '',
       department: '',
+      course: '',
       year_level: '',
       status: 'Active'
     }),
     _useState2 = _slicedToArray(_useState, 2),
     formData = _useState2[0],
     setFormData = _useState2[1];
-  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
     _useState4 = _slicedToArray(_useState3, 2),
-    avatarFile = _useState4[0],
-    setAvatarFile = _useState4[1];
+    courses = _useState4[0],
+    setCourses = _useState4[1];
   var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
     _useState6 = _slicedToArray(_useState5, 2),
-    avatarPreview = _useState6[0],
-    setAvatarPreview = _useState6[1];
+    avatarFile = _useState6[0],
+    setAvatarFile = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState8 = _slicedToArray(_useState7, 2),
+    avatarPreview = _useState8[0],
+    setAvatarPreview = _useState8[1];
   var editingId = (initialData === null || initialData === void 0 ? void 0 : initialData.id) || null;
   var UPPERCASE_FIELDS = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () {
     return new Set(['first_name', 'last_name', 'middle_name', 'address', 'state', 'country']);
@@ -71681,6 +72942,7 @@ function StudentForm(_ref) {
         enrollment_date: initialData.enrollment_date || new Date().toISOString().slice(0, 10),
         program: initialData.program || '',
         department: initialData.department || '',
+        course: initialData.course || '',
         year_level: initialData.year_level || '',
         status: initialData.status || 'Active'
       });
@@ -71691,6 +72953,49 @@ function StudentForm(_ref) {
       }
     }
   }, [initialData]);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    var mounted = true;
+    var loadCourses = /*#__PURE__*/function () {
+      var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+        var _yield$axios$get, data, arr, _t;
+        return _regenerator().w(function (_context) {
+          while (1) switch (_context.p = _context.n) {
+            case 0:
+              _context.p = 0;
+              _context.n = 1;
+              return axios__WEBPACK_IMPORTED_MODULE_1___default().get('/api/settings/key/courses');
+            case 1:
+              _yield$axios$get = _context.v;
+              data = _yield$axios$get.data;
+              arr = function () {
+                try {
+                  var j = JSON.parse((data === null || data === void 0 ? void 0 : data.setting_value) || '[]');
+                  return Array.isArray(j) ? j : [];
+                } catch (_unused) {
+                  return [];
+                }
+              }();
+              if (mounted) setCourses(arr);
+              _context.n = 3;
+              break;
+            case 2:
+              _context.p = 2;
+              _t = _context.v;
+              if (mounted) setCourses([]);
+            case 3:
+              return _context.a(2);
+          }
+        }, _callee, null, [[0, 2]]);
+      }));
+      return function loadCourses() {
+        return _ref2.apply(this, arguments);
+      };
+    }();
+    loadCourses();
+    return function () {
+      mounted = false;
+    };
+  }, []);
   var handleChange = function handleChange(e) {
     var _e$target = e.target,
       name = _e$target.name,
@@ -71712,44 +73017,44 @@ function StudentForm(_ref) {
       setAvatarFile(file);
       try {
         setAvatarPreview(URL.createObjectURL(file));
-      } catch (_unused) {
+      } catch (_unused3) {
         setAvatarPreview(null);
       }
     }
   };
   var handleSubmit = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(e) {
-      var _saved, saved, _res$data$student, res, _res$data$student2, _res, fd, _error$response, _t;
-      return _regenerator().w(function (_context) {
-        while (1) switch (_context.p = _context.n) {
+    var _ref3 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(e) {
+      var _saved, saved, _res$data$student, res, _res$data$student2, _res, fd, _error$response, _t2;
+      return _regenerator().w(function (_context2) {
+        while (1) switch (_context2.p = _context2.n) {
           case 0:
             e.preventDefault();
-            _context.p = 1;
+            _context2.p = 1;
             if (!editingId) {
-              _context.n = 3;
+              _context2.n = 3;
               break;
             }
-            _context.n = 2;
+            _context2.n = 2;
             return axios__WEBPACK_IMPORTED_MODULE_1___default().put("/api/students/".concat(editingId), formData);
           case 2:
-            res = _context.v;
+            res = _context2.v;
             saved = (_res$data$student = res.data.student) !== null && _res$data$student !== void 0 ? _res$data$student : res.data;
-            _context.n = 5;
+            _context2.n = 5;
             break;
           case 3:
-            _context.n = 4;
+            _context2.n = 4;
             return axios__WEBPACK_IMPORTED_MODULE_1___default().post('/api/students', formData);
           case 4:
-            _res = _context.v;
+            _res = _context2.v;
             saved = (_res$data$student2 = _res.data.student) !== null && _res$data$student2 !== void 0 ? _res$data$student2 : _res.data;
           case 5:
             if (!(avatarFile && (_saved = saved) !== null && _saved !== void 0 && _saved.id)) {
-              _context.n = 6;
+              _context2.n = 6;
               break;
             }
             fd = new FormData();
             fd.append('avatar', avatarFile);
-            _context.n = 6;
+            _context2.n = 6;
             return axios__WEBPACK_IMPORTED_MODULE_1___default().post("/api/students/".concat(saved.id, "/avatar"), fd, {
               headers: {
                 'Content-Type': 'multipart/form-data'
@@ -71757,20 +73062,20 @@ function StudentForm(_ref) {
             });
           case 6:
             if (onSaved) onSaved(saved);
-            _context.n = 8;
+            _context2.n = 8;
             break;
           case 7:
-            _context.p = 7;
-            _t = _context.v;
-            console.error('Error saving student:', _t);
-            alert(((_error$response = _t.response) === null || _error$response === void 0 || (_error$response = _error$response.data) === null || _error$response === void 0 ? void 0 : _error$response.message) || 'Error saving student');
+            _context2.p = 7;
+            _t2 = _context2.v;
+            console.error('Error saving student:', _t2);
+            alert(((_error$response = _t2.response) === null || _error$response === void 0 || (_error$response = _error$response.data) === null || _error$response === void 0 ? void 0 : _error$response.message) || 'Error saving student');
           case 8:
-            return _context.a(2);
+            return _context2.a(2);
         }
-      }, _callee, null, [[1, 7]]);
+      }, _callee2, null, [[1, 7]]);
     }));
     return function handleSubmit(_x) {
-      return _ref2.apply(this, arguments);
+      return _ref3.apply(this, arguments);
     };
   }();
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("form", {
@@ -71853,16 +73158,16 @@ function StudentForm(_ref) {
         onChange: handleChange,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
           value: "",
-          children: "Select Gender"
+          children: "SELECT GENDER"
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
           value: "Male",
-          children: "Male"
+          children: "MALE"
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
           value: "Female",
-          children: "Female"
+          children: "FEMALE"
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
           value: "Other",
-          children: "Other"
+          children: "OTHER"
         })]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
         name: "enrollment_date",
@@ -71879,7 +73184,7 @@ function StudentForm(_ref) {
         onChange: handleChange,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
           value: "",
-          children: "Select Department"
+          children: "SELECT DEPARTMENT"
         }), DEPARTMENTS.map(function (d) {
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("option", {
             value: d.code,
@@ -71892,7 +73197,7 @@ function StudentForm(_ref) {
         onChange: handleChange,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
           value: "",
-          children: "Select Year Level"
+          children: "SELECT YEAR LEVEL"
         }), YEAR_LEVELS.map(function (y) {
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
             value: y,
@@ -71905,18 +73210,34 @@ function StudentForm(_ref) {
         onChange: handleChange,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
           value: "Active",
-          children: "Active"
+          children: "ACTIVE"
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
           value: "Inactive",
-          children: "Inactive"
+          children: "INACTIVE"
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
           value: "Graduated",
-          children: "Graduated"
+          children: "GRADUATED"
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
           value: "Suspended",
-          children: "Suspended"
+          children: "SUSPENDED"
         })]
       })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+      className: "form-row",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("select", {
+        name: "course",
+        value: formData.course,
+        onChange: handleChange,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+          value: "",
+          children: "SELECT COURSE"
+        }), courses.map(function (c) {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+            value: c,
+            children: c
+          }, c);
+        })]
+      })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
       className: "form-row",
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("select", {
@@ -71925,7 +73246,7 @@ function StudentForm(_ref) {
         onChange: handleRegionChange,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
           value: "",
-          children: "Select Region"
+          children: "SELECT REGION"
         }), Object.keys(MINDANAO_REGIONS).map(function (r) {
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
             value: r,
@@ -71938,7 +73259,7 @@ function StudentForm(_ref) {
         onChange: handleChange,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
           value: "",
-          children: "Select Province"
+          children: "SELECT PROVINCE"
         }), (((_MINDANAO_REGIONS$for = MINDANAO_REGIONS[formData.region]) === null || _MINDANAO_REGIONS$for === void 0 ? void 0 : _MINDANAO_REGIONS$for.provinces) || []).map(function (p) {
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
             value: p,
@@ -71951,7 +73272,7 @@ function StudentForm(_ref) {
         onChange: handleChange,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
           value: "",
-          children: "Select City"
+          children: "SELECT CITY"
         }), (((_MINDANAO_REGIONS$for2 = MINDANAO_REGIONS[formData.region]) === null || _MINDANAO_REGIONS$for2 === void 0 ? void 0 : _MINDANAO_REGIONS$for2.cities) || []).map(function (c) {
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
             value: c,
@@ -71993,12 +73314,12 @@ function StudentForm(_ref) {
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("button", {
         type: "submit",
         className: "btn btn-primary",
-        children: [editingId ? 'Update' : 'Create', " Student"]
+        children: [editingId ? 'Update' : 'Create', " STUDENT"]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
         type: "button",
         className: "btn btn-secondary",
         onClick: onCancel,
-        children: "Cancel"
+        children: "CANCEL"
       })]
     })]
   });
@@ -72076,6 +73397,10 @@ function StudentViewModal(_ref) {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("strong", {
             children: "Department:"
           }), " ", (student === null || student === void 0 ? void 0 : student.department) || (student === null || student === void 0 ? void 0 : student.program) || '-']
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("strong", {
+            children: "Course:"
+          }), " ", (student === null || student === void 0 ? void 0 : student.course) || '-']
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("strong", {
             children: "Year Level:"

@@ -11,6 +11,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SystemSettingController;
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\SubjectOfferingController;
 use App\Http\Controllers\SchoolYearController;
 
 // Public routes
@@ -32,6 +33,14 @@ Route::middleware(['auth:web'])->group(function () {
     Route::post('/account/avatar', [AccountController::class, 'uploadAvatar']);
     Route::put('/account/appearance', [AccountController::class, 'updateAppearance']);
     Route::post('/account/background', [AccountController::class, 'uploadBackground']);
+    Route::get('/account/history', [AccountController::class, 'history']);
+
+    // Subject offerings
+    Route::get('/subject-offerings', [SubjectOfferingController::class, 'index']);
+    Route::post('/subject-offerings', [SubjectOfferingController::class, 'store']);
+    Route::put('/subject-offerings/{id}', [SubjectOfferingController::class, 'update']);
+    Route::delete('/subject-offerings/{id}', [SubjectOfferingController::class, 'destroy']);
+    Route::post('/subject-offerings/import', [SubjectOfferingController::class, 'import']);
 
     // Dashboard routes
     Route::get('/dashboard', [DashboardController::class, 'index']);
