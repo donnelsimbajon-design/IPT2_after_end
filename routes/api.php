@@ -13,6 +13,12 @@ use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\SubjectOfferingController;
 use App\Http\Controllers\SchoolYearController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\SectionController;
+use App\Http\Controllers\OfferingController;
+use App\Http\Controllers\ActivityController;
 
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
@@ -42,9 +48,51 @@ Route::middleware(['auth:web'])->group(function () {
     Route::delete('/subject-offerings/{id}', [SubjectOfferingController::class, 'destroy']);
     Route::post('/subject-offerings/import', [SubjectOfferingController::class, 'import']);
 
+    // New normalized academic resources
+    Route::get('/departments', [DepartmentController::class, 'index']);
+    Route::post('/departments', [DepartmentController::class, 'store']);
+    Route::get('/departments/{id}', [DepartmentController::class, 'show']);
+    Route::put('/departments/{id}', [DepartmentController::class, 'update']);
+    Route::patch('/departments/{id}', [DepartmentController::class, 'update']);
+    Route::delete('/departments/{id}', [DepartmentController::class, 'destroy']);
+
+    Route::get('/courses', [CourseController::class, 'index']);
+    Route::post('/courses', [CourseController::class, 'store']);
+    Route::get('/courses/{id}', [CourseController::class, 'show']);
+    Route::put('/courses/{id}', [CourseController::class, 'update']);
+    Route::patch('/courses/{id}', [CourseController::class, 'update']);
+    Route::delete('/courses/{id}', [CourseController::class, 'destroy']);
+    Route::get('/departments/{id}/courses', [CourseController::class, 'byDepartment']);
+
+    Route::get('/subjects', [SubjectController::class, 'index']);
+    Route::post('/subjects', [SubjectController::class, 'store']);
+    Route::get('/subjects/{id}', [SubjectController::class, 'show']);
+    Route::put('/subjects/{id}', [SubjectController::class, 'update']);
+    Route::patch('/subjects/{id}', [SubjectController::class, 'update']);
+    Route::delete('/subjects/{id}', [SubjectController::class, 'destroy']);
+    Route::get('/departments/{id}/subjects', [SubjectController::class, 'byDepartment']);
+
+    Route::get('/sections', [SectionController::class, 'index']);
+    Route::post('/sections', [SectionController::class, 'store']);
+    Route::get('/sections/{id}', [SectionController::class, 'show']);
+    Route::put('/sections/{id}', [SectionController::class, 'update']);
+    Route::patch('/sections/{id}', [SectionController::class, 'update']);
+    Route::delete('/sections/{id}', [SectionController::class, 'destroy']);
+
+    Route::get('/offerings', [OfferingController::class, 'index']);
+    Route::post('/offerings', [OfferingController::class, 'store']);
+    Route::put('/offerings/{id}', [OfferingController::class, 'update']);
+    Route::patch('/offerings/{id}', [OfferingController::class, 'update']);
+    Route::delete('/offerings/{id}', [OfferingController::class, 'destroy']);
+    Route::post('/offerings/import', [OfferingController::class, 'import']);
+
     // Dashboard routes
     Route::get('/dashboard', [DashboardController::class, 'index']);
     Route::get('/dashboard/statistics', [DashboardController::class, 'statistics']);
+
+    // Activity calendar
+    Route::get('/activities/summary', [ActivityController::class, 'summary']);
+    Route::get('/activities/day', [ActivityController::class, 'day']);
 
     // Student routes
     Route::get('/students', [StudentController::class, 'index']);

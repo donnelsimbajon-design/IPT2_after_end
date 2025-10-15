@@ -17,7 +17,7 @@ import SchoolYear from './settings/SchoolYear';
 import Departments from './settings/Departments';
 import Courses from './settings/Courses';
 import Subjects from './settings/Subjects';
-import ActiveCourse from './settings/ActiveCourse';
+import Calendar from './settings/Calendar';
 
 export default function Routers() {
   return (
@@ -76,9 +76,14 @@ export default function Routers() {
                 <Layout><Subjects /></Layout>
               </ProtectedRoute>
             } />
+            <Route path="/settings/calendar" element={
+              <ProtectedRoute>
+                <Layout><Calendar /></Layout>
+              </ProtectedRoute>
+            } />
             <Route path="/settings/active-course" element={
               <ProtectedRoute>
-                <Layout><ActiveCourse /></Layout>
+                <Layout><Calendar /></Layout>
               </ProtectedRoute>
             } />
 

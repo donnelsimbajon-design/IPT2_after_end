@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 
-export default function ActiveCourse() {
+export default function Calendar() {
   const [message, setMessage] = React.useState('');
   const [monthCursor, setMonthCursor] = React.useState(() => {
     const d = new Date();
@@ -11,10 +11,10 @@ export default function ActiveCourse() {
   const [loading, setLoading] = React.useState(false);
   const [selectedDate, setSelectedDate] = React.useState('');
   const [dayItems, setDayItems] = React.useState([]);
+  const [viewOpen, setViewOpen] = React.useState(false);
 
   const fmtMonthKey = (d) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
   const fmtISO = (d) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-
   const weekdayLabels = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
   const fetchSummary = React.useCallback(async () => {
@@ -29,6 +29,9 @@ export default function ActiveCourse() {
     } finally { setLoading(false); }
   }, [monthCursor]);
 
+
+  React.useEffect(() => { fetchSummary(); }, [fetchSummary]);
+
   const fetchDay = React.useCallback(async (dateStr) => {
     try {
       const { data } = await axios.get('/api/activities/day', { params: { date: dateStr } });
@@ -36,12 +39,10 @@ export default function ActiveCourse() {
     } catch { setDayItems([]); }
   }, []);
 
-  React.useEffect(() => { fetchSummary(); }, [fetchSummary]);
-
   React.useEffect(() => {
-    const t = setInterval(() => { fetchSummary(); if (selectedDate) fetchDay(selectedDate); }, 20000);
+    const t = setInterval(() => { fetchSummary(); }, 20000);
     return () => clearInterval(t);
-  }, [fetchSummary, fetchDay, selectedDate]);
+  }, [fetchSummary]);
 
   const mapByDate = React.useMemo(() => {
     const m = new Map();
@@ -79,29 +80,44 @@ export default function ActiveCourse() {
     return { all, students: r.students||0, faculties: r.faculties||0, offerings: r.offerings||0, logins: r.logins||0 };
   };
 
+  const monthTotals = React.useMemo(() => {
+    return summary.reduce((acc, r) => {
+      acc.students += r.students||0; acc.faculties += r.faculties||0; acc.offerings += r.offerings||0; acc.logins += r.logins||0; return acc;
+    }, { students:0, faculties:0, offerings:0, logins:0 });
+  }, [summary]);
+
   const todayISO = fmtISO(new Date());
 
   return (
-    <div className="students-page">
+    <div className="students-page calendar-page">
       <div className="module-page">
         <div className="page-header">
-          <h1>Activity Calendar</h1>
+          <h1>Calendar</h1>
         </div>
 
         {message && <div className="alert alert-info" style={{marginTop:8}}>{message}</div>}
 
         <div className="form-card">
-          <h2>Calendar</h2>
+          <h2>Monthly Overview</h2>
           <div className="module-form">
-            <div className="form-row" style={{gridTemplateColumns:'auto 1fr auto auto', alignItems:'center'}}>
+            <div className="form-row calendar-toolbar">
               <button className="btn btn-secondary" type="button" onClick={()=>setMonthCursor(new Date(monthCursor.getFullYear(), monthCursor.getMonth()-1, 1))}>Prev</button>
-              <div style={{textAlign:'center', fontWeight:700, color:'var(--text-primary)'}}>{monthCursor.toLocaleString(undefined, { month:'long', year:'numeric' })} {loading ? '•' : ''}</div>
+              <div className="month-title">{monthCursor.toLocaleString(undefined, { month:'long', year:'numeric' })} {loading ? '•' : ''}</div>
               <button className="btn btn-secondary" type="button" onClick={()=>setMonthCursor(new Date(monthCursor.getFullYear(), monthCursor.getMonth()+1, 1))}>Next</button>
-              <button className="btn btn-secondary" type="button" onClick={()=>{ const d=new Date(); setMonthCursor(new Date(d.getFullYear(), d.getMonth(), 1)); setSelectedDate(fmtISO(d)); fetchDay(fmtISO(d)); }}>Today</button>
+              <button className="btn btn-secondary" type="button" onClick={()=>{ const d=new Date(); setMonthCursor(new Date(d.getFullYear(), d.getMonth(), 1)); }}>Today</button>
+            </div>
+            <div className="form-row calendar-stats">
+              <div className="calendar-stat">Students: <strong>{monthTotals.students}</strong></div>
+              <div className="calendar-stat">Faculty: <strong>{monthTotals.faculties}</strong></div>
+              <div className="calendar-stat">Offerings: <strong>{monthTotals.offerings}</strong></div>
+              <div className="calendar-stat">Logins: <strong>{monthTotals.logins}</strong></div>
+            </div>
+            <div className="form-actions">
+              <button type="button" className="btn btn-primary" disabled={!selectedDate} onClick={async()=>{ const d = selectedDate || fmtISO(new Date()); setSelectedDate(d); await fetchDay(d); setViewOpen(true); }}>View Day</button>
             </div>
           </div>
 
-          <div className="table-card" style={{marginTop:12}}>
+          <div className="table-card calendar-grid" style={{marginTop:12}}>
             <table className="data-table">
               <thead>
                 <tr>
@@ -118,20 +134,11 @@ export default function ActiveCourse() {
                       const isToday = k === todayISO;
                       const isSelected = k === selectedDate;
                       return (
-                        <td key={'c'+ci} onClick={()=>{ setSelectedDate(k); fetchDay(k); }} style={{cursor:'pointer', verticalAlign:'top'}}>
-                          <div style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
-                            <div style={{fontWeight:700, opacity:isToday?1:0.9, color:'var(--text-primary)'}}>{cell.date.getDate()}</div>
-                            {t.all>0 && <div style={{fontSize:'0.75rem', fontWeight:700, padding:'2px 8px', borderRadius:9999, background:'rgba(139, 21, 56, 0.12)', color:'var(--text-primary)'}}>{t.all}</div>}
+                        <td key={'c'+ci} className={`calendar-day${isToday?' is-today':''}${isSelected?' is-selected':''}`} onClick={()=>setSelectedDate(k)}>
+                          <div className="day-head">
+                            <div className="day-num">{cell.date.getDate()}</div>
+                            {t.all>0 && <span className="count-pill">{t.all}</span>}
                           </div>
-                          {t.all>0 && (
-                            <div style={{marginTop:6, display:'grid', gap:4}}>
-                              {t.students>0 && <div style={{fontSize:12, color:'var(--text-secondary)'}}>Students: <strong style={{color:'var(--text-primary)'}}>{t.students}</strong></div>}
-                              {t.faculties>0 && <div style={{fontSize:12, color:'var(--text-secondary)'}}>Faculty: <strong style={{color:'var(--text-primary)'}}>{t.faculties}</strong></div>}
-                              {t.offerings>0 && <div style={{fontSize:12, color:'var(--text-secondary)'}}>Offerings: <strong style={{color:'var(--text-primary)'}}>{t.offerings}</strong></div>}
-                              {t.logins>0 && <div style={{fontSize:12, color:'var(--text-secondary)'}}>Logins: <strong style={{color:'var(--text-primary)'}}>{t.logins}</strong></div>}
-                            </div>
-                          )}
-                          {isSelected && <div style={{marginTop:6, height:3, background:'var(--text-secondary)', opacity:.4, borderRadius:9999}} />}
                         </td>
                       );
                     })}
@@ -142,35 +149,40 @@ export default function ActiveCourse() {
           </div>
         </div>
 
-        <div className="table-card" style={{marginTop:12}}>
-          <div className="page-header" style={{padding:'8px 12px'}}>
-            <h2 style={{margin:0, fontSize:'1rem'}}>Details {selectedDate ? '• ' + selectedDate : ''}</h2>
+        {viewOpen && (
+          <div className="student-view-modal" onClick={(e)=>{ if(e.target===e.currentTarget) setViewOpen(false); }}>
+            <div className="student-view-card">
+              <div className="page-header">
+                <h2>Activity • {selectedDate || '—'}</h2>
+                <button type="button" className="btn" onClick={()=>setViewOpen(false)}>Close</button>
+              </div>
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Type</th>
+                    <th>Label</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dayItems.length === 0 && (
+                    <tr><td colSpan="3" style={{color:'var(--text-secondary)'}}>No activity for this day.</td></tr>
+                  )}
+                  {dayItems.map((it, idx) => (
+                    <tr key={idx}>
+                      <td>{new Date(it.time).toLocaleTimeString()}</td>
+                      <td>{String(it.type || '').replace(/_/g,' ')}</td>
+                      <td>{it.label}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="form-actions">
+                <button type="button" className="btn btn-secondary" onClick={()=>setViewOpen(false)}>Close</button>
+              </div>
+            </div>
           </div>
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Time</th>
-                <th>Type</th>
-                <th>Label</th>
-              </tr>
-            </thead>
-            <tbody>
-              {!selectedDate && (
-                <tr><td colSpan="3" style={{color:'var(--text-secondary)'}}>Select a day to view activity.</td></tr>
-              )}
-              {selectedDate && dayItems.length === 0 && (
-                <tr><td colSpan="3" style={{color:'var(--text-secondary)'}}>No activity for this day.</td></tr>
-              )}
-              {selectedDate && dayItems.map((it, idx) => (
-                <tr key={idx}>
-                  <td>{new Date(it.time).toLocaleTimeString()}</td>
-                  <td>{String(it.type || '').replace(/_/g,' ')}</td>
-                  <td>{it.label}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        )}
       </div>
     </div>
   );

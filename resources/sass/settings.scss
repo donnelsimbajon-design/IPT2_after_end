@@ -144,6 +144,54 @@
     .btn-danger { background: rgba($danger-color,.12); color: $danger-color; border-color: rgba($danger-color,.35); }
     .btn-danger:hover { background: rgba($danger-color,.18); }
   }
+
+  // Ensure forms inside .sy-card look like other module forms
+  .sy-card {
+    .module-form {
+      .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: $spacing-md;
+        margin-bottom: $spacing-md;
+
+        input, select, textarea {
+          padding: $spacing-sm $spacing-md;
+          border: 1px solid var(--border-color);
+          border-radius: $radius-md;
+          background: var(--bg-secondary);
+          color: var(--text-primary);
+          font-size: 0.9rem;
+          transition: all 0.2s ease;
+
+          &:focus {
+            outline: none;
+            border-color: $primary-color;
+            box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+          }
+
+          &::placeholder { color: var(--text-secondary); }
+        }
+
+        textarea { resize: vertical; min-height: 100px; }
+      }
+
+      .form-actions {
+        display: flex; gap: $spacing-md; margin-top: $spacing-lg;
+
+        button {
+          padding: $spacing-sm $spacing-lg;
+          border: none;
+          border-radius: $radius-md;
+          cursor: pointer;
+          font-weight: 500;
+          transition: all 0.2s ease;
+
+          &.btn-primary { background: $primary-color; color: white; &:hover { background: $primary-hover; } }
+          &.btn-secondary { background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color); &:hover { background: var(--sidebar-active); } }
+        }
+      }
+    }
+  }
 }
 
 @media (max-width: 768px) {

@@ -9,6 +9,9 @@ export default function SchoolYear() {
   const [editForm, setEditForm] = useState({ label: '', start_date: '', end_date: '', status: 'Active' });
   const [showCreate, setShowCreate] = useState(false);
   const [createForm, setCreateForm] = useState({ label: '', start_date: '', end_date: '', status: 'Active' });
+  const TARGET_YEAR = 2025;
+  const [stats2025, setStats2025] = useState(null);
+  const [semesters2025, setSemesters2025] = useState(['1st Semester', '2nd Semester']);
 
   useEffect(() => {
     fetchYears();
@@ -32,6 +35,70 @@ export default function SchoolYear() {
       setLoading(false);
     }
   };
+
+  // Derive 2025 counts (students enrolled in 2025, total faculty, total courses) and enforce two-semester view
+  useEffect(() => {
+    if (loading) return;
+    const compute = async () => {
+      try {
+        // decide semesters from school-year record, fallback to two fixed semester labels
+        const matchYear = (y) => {
+          const lbl = String(y.label || '');
+          if (lbl.includes(String(TARGET_YEAR))) return true;
+          const sd = y.start_date ? new Date(y.start_date) : null;
+          const ed = y.end_date ? new Date(y.end_date) : null;
+          return (sd && sd.getFullYear() === TARGET_YEAR) || (ed && ed.getFullYear() === TARGET_YEAR);
+        };
+        const y2025 = years.find(matchYear);
+        if (y2025 && Array.isArray(y2025.semesters) && y2025.semesters.length === 2) {
+          setSemesters2025(y2025.semesters.map(s => s.name || s));
+        } else {
+          setSemesters2025(['1st Semester', '2nd Semester']);
+        }
+
+        // Students count for 2025
+        let studentsCount = 0;
+        try {
+          const resStudents = await axios.get('/api/students', { params: { school_year: TARGET_YEAR } });
+          const arr = Array.isArray(resStudents.data) ? resStudents.data : [];
+          studentsCount = arr.length;
+        } catch (_) {
+          try {
+            const resAll = await axios.get('/api/students');
+            const arrAll = Array.isArray(resAll.data) ? resAll.data : [];
+            studentsCount = arrAll.filter(s => {
+              const d = s.enrollment_date ? new Date(s.enrollment_date) : null;
+              return d && d.getFullYear() === TARGET_YEAR;
+            }).length;
+          } catch (_) { studentsCount = 0; }
+        }
+
+        // Total faculty
+        let facultyCount = 0;
+        try {
+          const resFac = await axios.get('/api/faculties');
+          facultyCount = Array.isArray(resFac.data) ? resFac.data.length : (Array.isArray(resFac.data?.faculties) ? resFac.data.faculties.length : 0);
+        } catch (_) { facultyCount = 0; }
+
+        // Total courses (from settings)
+        let coursesCount = 0;
+        try {
+          const resCourses = await axios.get('/api/settings/key/courses');
+          const raw = resCourses.data?.setting_value;
+          try {
+            const parsed = JSON.parse(raw || '[]');
+            coursesCount = Array.isArray(parsed) ? parsed.length : 0;
+          } catch { coursesCount = 0; }
+        } catch (_) { coursesCount = 0; }
+
+        setStats2025({ students: studentsCount, faculty: facultyCount, courses: coursesCount });
+      } catch (e) {
+        // Non-fatal: just omit stats
+        setStats2025({ students: 0, faculty: 0, courses: 0 });
+      }
+    };
+    compute();
+  }, [loading, years]);
 
   const current = useMemo(() => {
     if (!years.length) return null;
@@ -124,13 +191,14 @@ export default function SchoolYear() {
   );
 
   return (
+    <div className="students-page">
     <div className="module-page school-year-page">
       <div className="page-header">
         <div>
           <h1>School Year Management</h1>
           <p className="page-subtitle">Manage academic school years and their configurations</p>
         </div>
-        <button className="btn btn-primary" onClick={() => setShowCreate(v => !v)}>
+        <button className={`btn ${showCreate ? 'btn-secondary' : 'btn-primary'}`} onClick={() => setShowCreate(v => !v)}>
           {showCreate ? 'Cancel' : '+ Add School Year'}
         </button>
       </div>
@@ -199,6 +267,31 @@ export default function SchoolYear() {
           </div>
         </div>
       )}
+
+      {/* School Year 2025 Overview */}
+      <div className="sy-card">
+        <div className="sy-card-header">
+          <h2>School Year 2025 Overview</h2>
+          <StatusBadge status="active">2025</StatusBadge>
+        </div>
+        <div className="stats-grid">
+          <Stat value={2} label="Total Semesters" />
+          <Stat value={stats2025?.students || 0} label="Total Students" />
+          <Stat value={stats2025?.faculty || 0} label="Total Faculty" />
+          <Stat value={stats2025?.courses || 0} label="Total Courses" />
+        </div>
+        <div className="sy-semesters">
+          <div className="section-title">Semesters</div>
+          <div className="semester-list">
+            {semesters2025.map((name, idx) => (
+              <div key={name + idx} className="semester-item">
+                <div className="sem-name">{name}</div>
+                <div className="sem-range">—</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {/* School Year Management List */}
       <div className="sy-section">
@@ -291,6 +384,7 @@ export default function SchoolYear() {
           </div>
         ))}
       </div>
+    </div>
     </div>
   );
 }

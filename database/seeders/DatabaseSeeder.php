@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Database\Seeders\SchoolYearSeeder;
+use Database\Seeders\DepartmentCourseSeeder;
+use Database\Seeders\ExampleOfferingsSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,6 +19,8 @@ class DatabaseSeeder extends Seeder
         // \App\Models\User::factory(10)->create();
         $this->call([
             SchoolYearSeeder::class,
+            DepartmentCourseSeeder::class,
+            ExampleOfferingsSeeder::class,
         ]);
     }
 }

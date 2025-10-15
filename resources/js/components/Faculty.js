@@ -230,21 +230,31 @@ export default function Faculty() {
 
             {message && <div className="alert alert-info">{message}</div>}
 
-            <div className="filters-card">
-                <h3>Filters</h3>
-                <div className="form-row">
-                    <select name="department" value={filters.department} onChange={handleFilterChange}>
-                        <option value="">All Departments</option>
-                        {DEPARTMENTS.map(d => (
-                            <option key={d.code} value={d.code}>{d.code} - {d.name}</option>
-                        ))}
-                    </select>
-                    <input
-                        name="search"
-                        placeholder="Search by name, email or ID"
-                        value={filters.search}
-                        onChange={handleFilterChange}
-                    />
+            <div className="students-panel">
+                <div className="panel-header">
+                    <h2>Faculty Management</h2>
+                    <div className="panel-controls">
+                        <input
+                            className="search-input"
+                            name="search"
+                            placeholder="Search"
+                            value={filters.search}
+                            onChange={handleFilterChange}
+                        />
+                        <div className="filters">
+                            <select
+                                className="filter"
+                                name="department"
+                                value={filters.department}
+                                onChange={handleFilterChange}
+                            >
+                                <option value="">All Departments</option>
+                                {DEPARTMENTS.map(d => (
+                                    <option key={d.code} value={d.code}>{d.code} - {d.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -366,12 +376,12 @@ export default function Faculty() {
                                 <td>{faculty.employment_type}</td>
                                 <td><span className={`badge badge-${faculty.status.toLowerCase().replace(' ', '-')}`}>{faculty.status}</span></td>
                                 <td className="actions">
-                                    <button className="btn-icon btn-edit" onClick={() => handleEdit(faculty)}>Edit</button>
-                                    <button className="btn-icon btn-delete" onClick={() => handleDelete(faculty.id)}>Delete</button>
+                                    <button className="btn-chip btn-edit" onClick={() => handleEdit(faculty)}>Edit</button>
+                                    <button className="btn-chip btn-delete" onClick={() => handleDelete(faculty.id)}>Delete</button>
                                     {faculty.status !== 'Archived' ? (
-                                        <button className="btn-icon" onClick={() => handleArchive(faculty)}>Archive</button>
+                                        <button className="btn-chip" onClick={() => handleArchive(faculty)}>Archive</button>
                                     ) : (
-                                        <button className="btn-icon" onClick={() => handleUnarchive(faculty)}>Unarchive</button>
+                                        <button className="btn-chip" onClick={() => handleUnarchive(faculty)}>Unarchive</button>
                                     )}
                                 </td>
                             </tr>

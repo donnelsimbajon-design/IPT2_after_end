@@ -69280,32 +69280,40 @@ function Faculty() {
       }), message && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
         className: "alert alert-info",
         children: message
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-        className: "filters-card",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h3", {
-          children: "Filters"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-          className: "form-row",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("select", {
-            name: "department",
-            value: filters.department,
-            onChange: handleFilterChange,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
-              value: "",
-              children: "All Departments"
-            }), DEPARTMENTS.map(function (d) {
-              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("option", {
-                value: d.code,
-                children: [d.code, " - ", d.name]
-              }, d.code);
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "students-panel",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+          className: "panel-header",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
+            children: "Faculty Management"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+            className: "panel-controls",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+              className: "search-input",
+              name: "search",
+              placeholder: "Search",
+              value: filters.search,
+              onChange: handleFilterChange
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+              className: "filters",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("select", {
+                className: "filter",
+                name: "department",
+                value: filters.department,
+                onChange: handleFilterChange,
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                  value: "",
+                  children: "All Departments"
+                }), DEPARTMENTS.map(function (d) {
+                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("option", {
+                    value: d.code,
+                    children: [d.code, " - ", d.name]
+                  }, d.code);
+                })]
+              })
             })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
-            name: "search",
-            placeholder: "Search by name, email or ID",
-            value: filters.search,
-            onChange: handleFilterChange
           })]
-        })]
+        })
       }), showForm && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
         className: "form-card",
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
@@ -69583,25 +69591,25 @@ function Faculty() {
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("td", {
                   className: "actions",
                   children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-                    className: "btn-icon btn-edit",
+                    className: "btn-chip btn-edit",
                     onClick: function onClick() {
                       return handleEdit(faculty);
                     },
                     children: "Edit"
                   }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-                    className: "btn-icon btn-delete",
+                    className: "btn-chip btn-delete",
                     onClick: function onClick() {
                       return handleDelete(faculty.id);
                     },
                     children: "Delete"
                   }), faculty.status !== 'Archived' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-                    className: "btn-icon",
+                    className: "btn-chip",
                     onClick: function onClick() {
                       return handleArchive(faculty);
                     },
                     children: "Archive"
                   }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-                    className: "btn-icon",
+                    className: "btn-chip",
                     onClick: function onClick() {
                       return handleUnarchive(faculty);
                     },
@@ -70368,7 +70376,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_Departments__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./settings/Departments */ "./resources/js/components/settings/Departments.js");
 /* harmony import */ var _settings_Courses__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./settings/Courses */ "./resources/js/components/settings/Courses.js");
 /* harmony import */ var _settings_Subjects__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./settings/Subjects */ "./resources/js/components/settings/Subjects.js");
-/* harmony import */ var _settings_ActiveCourse__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./settings/ActiveCourse */ "./resources/js/components/settings/ActiveCourse.js");
+/* harmony import */ var _settings_Calendar__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./settings/Calendar */ "./resources/js/components/settings/Calendar.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
 
@@ -70463,10 +70471,17 @@ function Routers() {
               })
             })
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_3__.Route, {
+            path: "/settings/calendar",
+            element: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_ProtectedRoute__WEBPACK_IMPORTED_MODULE_5__["default"], {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_Layout__WEBPACK_IMPORTED_MODULE_6__["default"], {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_settings_Calendar__WEBPACK_IMPORTED_MODULE_20__["default"], {})
+              })
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_3__.Route, {
             path: "/settings/active-course",
             element: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_ProtectedRoute__WEBPACK_IMPORTED_MODULE_5__["default"], {
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_Layout__WEBPACK_IMPORTED_MODULE_6__["default"], {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_settings_ActiveCourse__WEBPACK_IMPORTED_MODULE_20__["default"], {})
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_settings_Calendar__WEBPACK_IMPORTED_MODULE_20__["default"], {})
               })
             })
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_3__.Route, {
@@ -70531,9 +70546,9 @@ function Settings() {
     label: 'Subjects',
     to: '/settings/subjects'
   }, {
-    key: 'activeCourse',
-    label: 'Active Course',
-    to: '/settings/active-course'
+    key: 'calendar',
+    label: 'Calendar',
+    to: '/settings/calendar'
   }];
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
     className: "module-page",
@@ -71383,40 +71398,440 @@ function Login() {
 
 /***/ }),
 
-/***/ "./resources/js/components/settings/ActiveCourse.js":
-/*!**********************************************************!*\
-  !*** ./resources/js/components/settings/ActiveCourse.js ***!
-  \**********************************************************/
+/***/ "./resources/js/components/settings/Calendar.js":
+/*!******************************************************!*\
+  !*** ./resources/js/components/settings/Calendar.js ***!
+  \******************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ ActiveCourse)
+/* harmony export */   "default": () => (/* binding */ Calendar)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
-function ActiveCourse() {
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-    className: "module-page",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-      className: "page-header",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("h1", {
-        children: "Active Course"
-      })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-      className: "form-card",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("h2", {
-        children: "Manage Active Course"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("p", {
+
+function Calendar() {
+  var _React$useState = react__WEBPACK_IMPORTED_MODULE_0__.useState(''),
+    _React$useState2 = _slicedToArray(_React$useState, 2),
+    message = _React$useState2[0],
+    setMessage = _React$useState2[1];
+  var _React$useState3 = react__WEBPACK_IMPORTED_MODULE_0__.useState(function () {
+      var d = new Date();
+      return new Date(d.getFullYear(), d.getMonth(), 1);
+    }),
+    _React$useState4 = _slicedToArray(_React$useState3, 2),
+    monthCursor = _React$useState4[0],
+    setMonthCursor = _React$useState4[1];
+  var _React$useState5 = react__WEBPACK_IMPORTED_MODULE_0__.useState([]),
+    _React$useState6 = _slicedToArray(_React$useState5, 2),
+    summary = _React$useState6[0],
+    setSummary = _React$useState6[1];
+  var _React$useState7 = react__WEBPACK_IMPORTED_MODULE_0__.useState(false),
+    _React$useState8 = _slicedToArray(_React$useState7, 2),
+    loading = _React$useState8[0],
+    setLoading = _React$useState8[1];
+  var _React$useState9 = react__WEBPACK_IMPORTED_MODULE_0__.useState(''),
+    _React$useState0 = _slicedToArray(_React$useState9, 2),
+    selectedDate = _React$useState0[0],
+    setSelectedDate = _React$useState0[1];
+  var _React$useState1 = react__WEBPACK_IMPORTED_MODULE_0__.useState([]),
+    _React$useState10 = _slicedToArray(_React$useState1, 2),
+    dayItems = _React$useState10[0],
+    setDayItems = _React$useState10[1];
+  var _React$useState11 = react__WEBPACK_IMPORTED_MODULE_0__.useState(false),
+    _React$useState12 = _slicedToArray(_React$useState11, 2),
+    viewOpen = _React$useState12[0],
+    setViewOpen = _React$useState12[1];
+  var fmtMonthKey = function fmtMonthKey(d) {
+    return "".concat(d.getFullYear(), "-").concat(String(d.getMonth() + 1).padStart(2, '0'));
+  };
+  var fmtISO = function fmtISO(d) {
+    return "".concat(d.getFullYear(), "-").concat(String(d.getMonth() + 1).padStart(2, '0'), "-").concat(String(d.getDate()).padStart(2, '0'));
+  };
+  var weekdayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  var fetchSummary = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+    var _yield$axios$get, data, _t;
+    return _regenerator().w(function (_context) {
+      while (1) switch (_context.p = _context.n) {
+        case 0:
+          setLoading(true);
+          setMessage('');
+          _context.p = 1;
+          _context.n = 2;
+          return axios__WEBPACK_IMPORTED_MODULE_1___default().get('/api/activities/summary', {
+            params: {
+              month: fmtMonthKey(monthCursor)
+            }
+          });
+        case 2:
+          _yield$axios$get = _context.v;
+          data = _yield$axios$get.data;
+          setSummary(Array.isArray(data) ? data : []);
+          _context.n = 4;
+          break;
+        case 3:
+          _context.p = 3;
+          _t = _context.v;
+          setSummary([]);
+          setMessage('Unable to load activities');
+        case 4:
+          _context.p = 4;
+          setLoading(false);
+          return _context.f(4);
+        case 5:
+          return _context.a(2);
+      }
+    }, _callee, null, [[1, 3, 4, 5]]);
+  })), [monthCursor]);
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () {
+    fetchSummary();
+  }, [fetchSummary]);
+  var fetchDay = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(/*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(dateStr) {
+      var _yield$axios$get2, data, _t2;
+      return _regenerator().w(function (_context2) {
+        while (1) switch (_context2.p = _context2.n) {
+          case 0:
+            _context2.p = 0;
+            _context2.n = 1;
+            return axios__WEBPACK_IMPORTED_MODULE_1___default().get('/api/activities/day', {
+              params: {
+                date: dateStr
+              }
+            });
+          case 1:
+            _yield$axios$get2 = _context2.v;
+            data = _yield$axios$get2.data;
+            setDayItems(Array.isArray(data === null || data === void 0 ? void 0 : data.items) ? data.items : []);
+            _context2.n = 3;
+            break;
+          case 2:
+            _context2.p = 2;
+            _t2 = _context2.v;
+            setDayItems([]);
+          case 3:
+            return _context2.a(2);
+        }
+      }, _callee2, null, [[0, 2]]);
+    }));
+    return function (_x) {
+      return _ref2.apply(this, arguments);
+    };
+  }(), []);
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () {
+    var t = setInterval(function () {
+      fetchSummary();
+    }, 20000);
+    return function () {
+      return clearInterval(t);
+    };
+  }, [fetchSummary]);
+  var mapByDate = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () {
+    var m = new Map();
+    var _iterator = _createForOfIteratorHelper(summary),
+      _step;
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var r = _step.value;
+        m.set(r.date, r);
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+    return m;
+  }, [summary]);
+  var gridDays = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () {
+    var year = monthCursor.getFullYear();
+    var month = monthCursor.getMonth();
+    var firstDay = new Date(year, month, 1);
+    var lastDay = new Date(year, month + 1, 0);
+    var leading = firstDay.getDay();
+    var total = leading + lastDay.getDate();
+    var rows = Math.ceil(total / 7);
+    var out = [];
+    for (var r = 0; r < rows; r++) {
+      var row = [];
+      for (var c = 0; c < 7; c++) {
+        var idx = r * 7 + c;
+        var dayNum = idx - leading + 1;
+        if (dayNum < 1 || dayNum > lastDay.getDate()) {
+          row.push(null);
+          continue;
+        }
+        var d = new Date(year, month, dayNum);
+        row.push({
+          date: d,
+          key: fmtISO(d)
+        });
+      }
+      out.push(row);
+    }
+    return out;
+  }, [monthCursor]);
+  var totalsFor = function totalsFor(key) {
+    var r = mapByDate.get(key);
+    if (!r) return {
+      all: 0,
+      students: 0,
+      faculties: 0,
+      offerings: 0,
+      logins: 0
+    };
+    var all = (r.students || 0) + (r.faculties || 0) + (r.offerings || 0) + (r.logins || 0);
+    return {
+      all: all,
+      students: r.students || 0,
+      faculties: r.faculties || 0,
+      offerings: r.offerings || 0,
+      logins: r.logins || 0
+    };
+  };
+  var monthTotals = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () {
+    return summary.reduce(function (acc, r) {
+      acc.students += r.students || 0;
+      acc.faculties += r.faculties || 0;
+      acc.offerings += r.offerings || 0;
+      acc.logins += r.logins || 0;
+      return acc;
+    }, {
+      students: 0,
+      faculties: 0,
+      offerings: 0,
+      logins: 0
+    });
+  }, [summary]);
+  var todayISO = fmtISO(new Date());
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+    className: "students-page calendar-page",
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+      className: "module-page",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "page-header",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h1", {
+          children: "Calendar"
+        })
+      }), message && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "alert alert-info",
         style: {
-          color: 'var(--text-secondary)'
+          marginTop: 8
         },
-        children: "Placeholder module. Define current/active course mapping here."
+        children: message
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        className: "form-card",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
+          children: "Monthly Overview"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+          className: "module-form",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+            className: "form-row calendar-toolbar",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+              className: "btn btn-secondary",
+              type: "button",
+              onClick: function onClick() {
+                return setMonthCursor(new Date(monthCursor.getFullYear(), monthCursor.getMonth() - 1, 1));
+              },
+              children: "Prev"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+              className: "month-title",
+              children: [monthCursor.toLocaleString(undefined, {
+                month: 'long',
+                year: 'numeric'
+              }), " ", loading ? '•' : '']
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+              className: "btn btn-secondary",
+              type: "button",
+              onClick: function onClick() {
+                return setMonthCursor(new Date(monthCursor.getFullYear(), monthCursor.getMonth() + 1, 1));
+              },
+              children: "Next"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+              className: "btn btn-secondary",
+              type: "button",
+              onClick: function onClick() {
+                var d = new Date();
+                setMonthCursor(new Date(d.getFullYear(), d.getMonth(), 1));
+              },
+              children: "Today"
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+            className: "form-row calendar-stats",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+              className: "calendar-stat",
+              children: ["Students: ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("strong", {
+                children: monthTotals.students
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+              className: "calendar-stat",
+              children: ["Faculty: ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("strong", {
+                children: monthTotals.faculties
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+              className: "calendar-stat",
+              children: ["Offerings: ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("strong", {
+                children: monthTotals.offerings
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+              className: "calendar-stat",
+              children: ["Logins: ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("strong", {
+                children: monthTotals.logins
+              })]
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+            className: "form-actions",
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+              type: "button",
+              className: "btn btn-primary",
+              disabled: !selectedDate,
+              onClick: /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
+                var d;
+                return _regenerator().w(function (_context3) {
+                  while (1) switch (_context3.n) {
+                    case 0:
+                      d = selectedDate || fmtISO(new Date());
+                      setSelectedDate(d);
+                      _context3.n = 1;
+                      return fetchDay(d);
+                    case 1:
+                      setViewOpen(true);
+                    case 2:
+                      return _context3.a(2);
+                  }
+                }, _callee3);
+              })),
+              children: "View Day"
+            })
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+          className: "table-card calendar-grid",
+          style: {
+            marginTop: 12
+          },
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("table", {
+            className: "data-table",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("thead", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("tr", {
+                children: weekdayLabels.map(function (w) {
+                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                    children: w
+                  }, w);
+                })
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("tbody", {
+              children: gridDays.map(function (row, ri) {
+                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("tr", {
+                  children: row.map(function (cell, ci) {
+                    if (!cell) return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {}, 'c' + ci);
+                    var k = cell.key;
+                    var t = totalsFor(k);
+                    var isToday = k === todayISO;
+                    var isSelected = k === selectedDate;
+                    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                      className: "calendar-day".concat(isToday ? ' is-today' : '').concat(isSelected ? ' is-selected' : ''),
+                      onClick: function onClick() {
+                        return setSelectedDate(k);
+                      },
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                        className: "day-head",
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                          className: "day-num",
+                          children: cell.date.getDate()
+                        }), t.all > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
+                          className: "count-pill",
+                          children: t.all
+                        })]
+                      })
+                    }, 'c' + ci);
+                  })
+                }, 'r' + ri);
+              })
+            })]
+          })
+        })]
+      }), viewOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "student-view-modal",
+        onClick: function onClick(e) {
+          if (e.target === e.currentTarget) setViewOpen(false);
+        },
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+          className: "student-view-card",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+            className: "page-header",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("h2", {
+              children: ["Activity \u2022 ", selectedDate || '—']
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+              type: "button",
+              className: "btn",
+              onClick: function onClick() {
+                return setViewOpen(false);
+              },
+              children: "Close"
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("table", {
+            className: "data-table",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("thead", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("tr", {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                  children: "Time"
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                  children: "Type"
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                  children: "Label"
+                })]
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("tbody", {
+              children: [dayItems.length === 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("tr", {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                  colSpan: "3",
+                  style: {
+                    color: 'var(--text-secondary)'
+                  },
+                  children: "No activity for this day."
+                })
+              }), dayItems.map(function (it, idx) {
+                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("tr", {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                    children: new Date(it.time).toLocaleTimeString()
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                    children: String(it.type || '').replace(/_/g, ' ')
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                    children: it.label
+                  })]
+                }, idx);
+              })]
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+            className: "form-actions",
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+              type: "button",
+              className: "btn btn-secondary",
+              onClick: function onClick() {
+                return setViewOpen(false);
+              },
+              children: "Close"
+            })
+          })]
+        })
       })]
-    })]
+    })
   });
 }
 
@@ -71599,123 +72014,139 @@ function Courses() {
   var visible = filter ? list.filter(function (c) {
     return c.toLowerCase().includes(filter.toLowerCase());
   }) : list;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-    className: "module-page",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-      className: "page-header",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h1", {
-        children: "Courses"
-      })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-      className: "form-card",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
-        children: "Manage Courses"
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+    className: "students-page",
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+      className: "module-page",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "page-header",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h1", {
+          children: "Courses"
+        })
       }), message && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
         className: "alert alert-info",
         style: {
           marginTop: 8
         },
         children: message
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-        className: "module-form",
-        style: {
-          gap: 12
-        },
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-          className: "form-row",
-          style: {
-            gridTemplateColumns: '1fr auto auto'
-          },
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
-            placeholder: "Add a course",
-            onKeyDown: function onKeyDown(e) {
-              if (e.key === 'Enter') {
-                addCourse(e.target.value);
-                e.target.value = '';
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "students-panel",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+          className: "panel-header",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
+            children: "Course Management"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+            className: "panel-controls",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+              className: "search-input",
+              placeholder: "Filter courses",
+              value: filter,
+              onChange: function onChange(e) {
+                return setFilter(e.target.value);
               }
-            }
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-            type: "button",
-            className: "btn btn-secondary",
-            onClick: function onClick(e) {
-              var el = e.currentTarget.previousSibling;
-              addCourse(el.value || '');
-              el.value = '';
-            },
-            children: "Add"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-            type: "button",
-            className: "btn btn-secondary",
-            onClick: resetToDefault,
-            children: "Use Default List"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+              className: "filters",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+                type: "button",
+                className: "btn btn-primary",
+                onClick: saveCourses,
+                children: "Save"
+              })
+            })]
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-          className: "form-row",
-          style: {
-            gridTemplateColumns: '1fr auto'
-          },
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
-            placeholder: "Filter courses",
-            value: filter,
-            onChange: function onChange(e) {
-              return setFilter(e.target.value);
-            }
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-            type: "button",
-            className: "btn btn-primary",
-            onClick: saveCourses,
-            children: "Save"
-          })]
-        })]
-      })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-      className: "form-card",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("h2", {
-        children: ["Course List ", loading ? '(Loading...)' : "(".concat(visible.length, ")")]
+        })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-        className: "module-list",
-        style: {
-          maxHeight: '50vh',
-          overflow: 'auto',
-          border: '1px solid var(--border-color)',
-          borderRadius: 8
-        },
-        children: [visible.length === 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "form-card",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
+          children: "Manage Courses"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+          className: "module-form",
           style: {
-            padding: 12,
-            color: 'var(--text-secondary)'
+            gap: 12
           },
-          children: "No courses to show."
-        }), visible.map(function (c, idx) {
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-            className: "list-row",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+            className: "form-row",
             style: {
-              display: 'grid',
-              gridTemplateColumns: '1fr auto',
-              gap: 8,
-              padding: '8px 12px',
-              borderBottom: '1px solid var(--border-color)'
+              gridTemplateColumns: '1fr auto auto'
             },
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-              style: {
-                minWidth: 0,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap'
-              },
-              children: c
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+              placeholder: "Add a course",
+              onKeyDown: function onKeyDown(e) {
+                if (e.key === 'Enter') {
+                  addCourse(e.target.value);
+                  e.target.value = '';
+                }
+              }
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
               type: "button",
               className: "btn btn-secondary",
-              onClick: function onClick() {
-                return removeCourse(list.indexOf(c));
+              onClick: function onClick(e) {
+                var el = e.currentTarget.previousSibling;
+                addCourse(el.value || '');
+                el.value = '';
               },
-              children: "Remove"
+              children: "Add"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+              type: "button",
+              className: "btn btn-secondary",
+              onClick: resetToDefault,
+              children: "Use Default List"
             })]
-          }, c + idx);
+          })
         })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "table-card",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("table", {
+          className: "data-table",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("thead", {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("tr", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                children: "Course"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                children: "Actions"
+              })]
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("tbody", {
+            children: [loading && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("tr", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                colSpan: "2",
+                children: "Loading..."
+              })
+            }), !loading && visible.length === 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("tr", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                colSpan: "2",
+                style: {
+                  color: 'var(--text-secondary)'
+                },
+                children: "No courses to show."
+              })
+            }), !loading && visible.map(function (c, idx) {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("tr", {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                  style: {
+                    minWidth: 0,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
+                  },
+                  children: c
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                  className: "actions",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+                    type: "button",
+                    className: "btn-chip btn-delete",
+                    onClick: function onClick() {
+                      return removeCourse(list.indexOf(c));
+                    },
+                    children: "Remove"
+                  })
+                })]
+              }, c + idx);
+            })]
+          })]
+        })
       })]
-    })]
+    })
   });
 }
 
@@ -71733,28 +72164,403 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ Departments)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
 
 
 function Departments() {
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-    className: "module-page",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-      className: "page-header",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("h1", {
-        children: "Departments"
-      })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-      className: "form-card",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("h2", {
-        children: "Manage Departments"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("p", {
-        style: {
-          color: 'var(--text-secondary)'
-        },
-        children: "Placeholder module. Define CRUD for departments here."
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState2 = _slicedToArray(_useState, 2),
+    departments = _useState2[0],
+    setDepartments = _useState2[1];
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+    _useState4 = _slicedToArray(_useState3, 2),
+    loading = _useState4[0],
+    setLoading = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState6 = _slicedToArray(_useState5, 2),
+    message = _useState6[0],
+    setMessage = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState8 = _slicedToArray(_useState7, 2),
+    showForm = _useState8[0],
+    setShowForm = _useState8[1];
+  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState0 = _slicedToArray(_useState9, 2),
+    editingId = _useState0[0],
+    setEditingId = _useState0[1];
+  var _useState1 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+      search: '',
+      status: ''
+    }),
+    _useState10 = _slicedToArray(_useState1, 2),
+    filters = _useState10[0],
+    setFilters = _useState10[1];
+  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+      code: '',
+      name: '',
+      chair: '',
+      email: '',
+      status: 'Active'
+    }),
+    _useState12 = _slicedToArray(_useState11, 2),
+    formData = _useState12[0],
+    setFormData = _useState12[1];
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    fetchDepartments();
+  }, []);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    if (message) {
+      var t = setTimeout(function () {
+        return setMessage(null);
+      }, 3500);
+      return function () {
+        return clearTimeout(t);
+      };
+    }
+  }, [message]);
+  var fetchDepartments = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+      var _res$data, res, _t;
+      return _regenerator().w(function (_context) {
+        while (1) switch (_context.p = _context.n) {
+          case 0:
+            _context.p = 0;
+            _context.n = 1;
+            return axios__WEBPACK_IMPORTED_MODULE_1___default().get('/api/departments');
+          case 1:
+            res = _context.v;
+            setDepartments(Array.isArray(res.data) ? res.data : ((_res$data = res.data) === null || _res$data === void 0 ? void 0 : _res$data.departments) || []);
+            _context.n = 3;
+            break;
+          case 2:
+            _context.p = 2;
+            _t = _context.v;
+            setMessage('Departments API not available. Using empty list.');
+            setDepartments([]);
+          case 3:
+            _context.p = 3;
+            setLoading(false);
+            return _context.f(3);
+          case 4:
+            return _context.a(2);
+        }
+      }, _callee, null, [[0, 2, 3, 4]]);
+    }));
+    return function fetchDepartments() {
+      return _ref.apply(this, arguments);
+    };
+  }();
+  var filtered = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () {
+    var q = filters.search.trim().toLowerCase();
+    var st = filters.status;
+    return departments.filter(function (d) {
+      var okSearch = q ? String(d.code || '').toLowerCase().includes(q) || String(d.name || '').toLowerCase().includes(q) || String(d.chair || '').toLowerCase().includes(q) || String(d.email || '').toLowerCase().includes(q) : true;
+      var okStatus = st ? String(d.status || 'Active') === st : true;
+      return okSearch && okStatus;
+    });
+  }, [departments, filters]);
+  var handleFilterChange = function handleFilterChange(e) {
+    return setFilters(_objectSpread(_objectSpread({}, filters), {}, _defineProperty({}, e.target.name, e.target.value)));
+  };
+  var handleChange = function handleChange(e) {
+    return setFormData(_objectSpread(_objectSpread({}, formData), {}, _defineProperty({}, e.target.name, e.target.value)));
+  };
+  var resetForm = function resetForm() {
+    setFormData({
+      code: '',
+      name: '',
+      chair: '',
+      email: '',
+      status: 'Active'
+    });
+    setEditingId(null);
+    setShowForm(false);
+  };
+  var handleEdit = function handleEdit(dept) {
+    setFormData({
+      code: dept.code || '',
+      name: dept.name || '',
+      chair: dept.chair || '',
+      email: dept.email || '',
+      status: dept.status || 'Active'
+    });
+    setEditingId(dept.id || dept.code || null);
+    setShowForm(true);
+  };
+  var handleSubmit = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(e) {
+      var _e$response, _t2;
+      return _regenerator().w(function (_context2) {
+        while (1) switch (_context2.p = _context2.n) {
+          case 0:
+            e.preventDefault();
+            _context2.p = 1;
+            if (!editingId) {
+              _context2.n = 3;
+              break;
+            }
+            _context2.n = 2;
+            return axios__WEBPACK_IMPORTED_MODULE_1___default().put("/api/departments/".concat(editingId), formData);
+          case 2:
+            setMessage('Department updated successfully');
+            _context2.n = 5;
+            break;
+          case 3:
+            _context2.n = 4;
+            return axios__WEBPACK_IMPORTED_MODULE_1___default().post('/api/departments', formData);
+          case 4:
+            setMessage('Department created successfully');
+          case 5:
+            _context2.n = 6;
+            return fetchDepartments();
+          case 6:
+            resetForm();
+            _context2.n = 8;
+            break;
+          case 7:
+            _context2.p = 7;
+            _t2 = _context2.v;
+            setMessage(((_e$response = _t2.response) === null || _e$response === void 0 || (_e$response = _e$response.data) === null || _e$response === void 0 ? void 0 : _e$response.message) || 'Error saving department');
+          case 8:
+            return _context2.a(2);
+        }
+      }, _callee2, null, [[1, 7]]);
+    }));
+    return function handleSubmit(_x) {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+  var handleDelete = /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(id) {
+      var _t3;
+      return _regenerator().w(function (_context3) {
+        while (1) switch (_context3.p = _context3.n) {
+          case 0:
+            if (confirm('Delete this department?')) {
+              _context3.n = 1;
+              break;
+            }
+            return _context3.a(2);
+          case 1:
+            _context3.p = 1;
+            _context3.n = 2;
+            return axios__WEBPACK_IMPORTED_MODULE_1___default()["delete"]("/api/departments/".concat(id));
+          case 2:
+            setMessage('Department deleted successfully');
+            fetchDepartments();
+            _context3.n = 4;
+            break;
+          case 3:
+            _context3.p = 3;
+            _t3 = _context3.v;
+            setMessage('Error deleting department');
+          case 4:
+            return _context3.a(2);
+        }
+      }, _callee3, null, [[1, 3]]);
+    }));
+    return function handleDelete(_x2) {
+      return _ref3.apply(this, arguments);
+    };
+  }();
+  if (loading) return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+    className: "loading",
+    children: "Loading departments..."
+  });
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+    className: "students-page",
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+      className: "module-page",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        className: "page-header",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h1", {
+          children: "Departments"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+          className: "btn btn-primary",
+          onClick: function onClick() {
+            return setShowForm(function (v) {
+              return !v;
+            });
+          },
+          children: showForm ? 'Cancel' : '+ Add Department'
+        })]
+      }), message && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "alert alert-info",
+        children: message
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "students-panel",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+          className: "panel-header",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
+            children: "Department Management"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+            className: "panel-controls",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+              className: "search-input",
+              name: "search",
+              placeholder: "Search",
+              value: filters.search,
+              onChange: handleFilterChange
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+              className: "filters",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("select", {
+                className: "filter",
+                name: "status",
+                value: filters.status,
+                onChange: handleFilterChange,
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                  value: "",
+                  children: "Any Status"
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                  value: "Active",
+                  children: "Active"
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                  value: "Inactive",
+                  children: "Inactive"
+                })]
+              })
+            })]
+          })]
+        })
+      }), showForm && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        className: "form-card",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
+          children: editingId ? 'Edit Department' : 'Add Department'
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("form", {
+          onSubmit: handleSubmit,
+          className: "module-form",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+            className: "form-row",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+              name: "code",
+              placeholder: "Code *",
+              value: formData.code,
+              onChange: handleChange,
+              required: true,
+              "data-uppercase": "true"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+              name: "name",
+              placeholder: "Name *",
+              value: formData.name,
+              onChange: handleChange,
+              required: true
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+              name: "chair",
+              placeholder: "Chair",
+              value: formData.chair,
+              onChange: handleChange
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+            className: "form-row",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+              name: "email",
+              type: "email",
+              placeholder: "Email",
+              value: formData.email,
+              onChange: handleChange
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("select", {
+              name: "status",
+              value: formData.status,
+              onChange: handleChange,
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                value: "Active",
+                children: "Active"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                value: "Inactive",
+                children: "Inactive"
+              })]
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+            className: "form-actions",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("button", {
+              type: "submit",
+              className: "btn btn-primary",
+              children: [editingId ? 'Update' : 'Create', " Department"]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+              type: "button",
+              className: "btn btn-secondary",
+              onClick: resetForm,
+              children: "Cancel"
+            })]
+          })]
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "table-card",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("table", {
+          className: "data-table",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("thead", {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("tr", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                children: "Code"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                children: "Name"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                children: "Chair"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                children: "Email"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                children: "Status"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                children: "Actions"
+              })]
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("tbody", {
+            children: filtered.map(function (d, idx) {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("tr", {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                  children: d.code
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                  children: d.name
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                  children: d.chair || ''
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                  children: d.email || ''
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
+                    className: "badge badge-".concat(String(d.status || 'Active').toLowerCase().replace(' ', '-')),
+                    children: d.status || 'Active'
+                  })
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("td", {
+                  className: "actions",
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+                    className: "btn-chip btn-edit",
+                    onClick: function onClick() {
+                      return handleEdit(d);
+                    },
+                    children: "Edit"
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+                    className: "btn-chip btn-delete",
+                    onClick: function onClick() {
+                      return handleDelete(d.id || d.code);
+                    },
+                    children: "Delete"
+                  })]
+                })]
+              }, d.id || d.code || idx);
+            })
+          })]
+        })
       })]
-    })]
+    })
   });
 }
 
@@ -71837,6 +72643,15 @@ function SchoolYear() {
     _useState12 = _slicedToArray(_useState11, 2),
     createForm = _useState12[0],
     setCreateForm = _useState12[1];
+  var TARGET_YEAR = 2025;
+  var _useState13 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState14 = _slicedToArray(_useState13, 2),
+    stats2025 = _useState14[0],
+    setStats2025 = _useState14[1];
+  var _useState15 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(['1st Semester', '2nd Semester']),
+    _useState16 = _slicedToArray(_useState15, 2),
+    semesters2025 = _useState16[0],
+    setSemesters2025 = _useState16[1];
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     fetchYears();
   }, []);
@@ -71882,6 +72697,132 @@ function SchoolYear() {
       return _ref.apply(this, arguments);
     };
   }();
+
+  // Derive 2025 counts (students enrolled in 2025, total faculty, total courses) and enforce two-semester view
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    if (loading) return;
+    var compute = /*#__PURE__*/function () {
+      var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+        var matchYear, y2025, studentsCount, resStudents, arr, resAll, arrAll, facultyCount, _resFac$data, resFac, coursesCount, _resCourses$data, resCourses, raw, parsed, _t2, _t3, _t4, _t5, _t6;
+        return _regenerator().w(function (_context2) {
+          while (1) switch (_context2.p = _context2.n) {
+            case 0:
+              _context2.p = 0;
+              // decide semesters from school-year record, fallback to two fixed semester labels
+              matchYear = function matchYear(y) {
+                var lbl = String(y.label || '');
+                if (lbl.includes(String(TARGET_YEAR))) return true;
+                var sd = y.start_date ? new Date(y.start_date) : null;
+                var ed = y.end_date ? new Date(y.end_date) : null;
+                return sd && sd.getFullYear() === TARGET_YEAR || ed && ed.getFullYear() === TARGET_YEAR;
+              };
+              y2025 = years.find(matchYear);
+              if (y2025 && Array.isArray(y2025.semesters) && y2025.semesters.length === 2) {
+                setSemesters2025(y2025.semesters.map(function (s) {
+                  return s.name || s;
+                }));
+              } else {
+                setSemesters2025(['1st Semester', '2nd Semester']);
+              }
+
+              // Students count for 2025
+              studentsCount = 0;
+              _context2.p = 1;
+              _context2.n = 2;
+              return axios__WEBPACK_IMPORTED_MODULE_1___default().get('/api/students', {
+                params: {
+                  school_year: TARGET_YEAR
+                }
+              });
+            case 2:
+              resStudents = _context2.v;
+              arr = Array.isArray(resStudents.data) ? resStudents.data : [];
+              studentsCount = arr.length;
+              _context2.n = 7;
+              break;
+            case 3:
+              _context2.p = 3;
+              _t2 = _context2.v;
+              _context2.p = 4;
+              _context2.n = 5;
+              return axios__WEBPACK_IMPORTED_MODULE_1___default().get('/api/students');
+            case 5:
+              resAll = _context2.v;
+              arrAll = Array.isArray(resAll.data) ? resAll.data : [];
+              studentsCount = arrAll.filter(function (s) {
+                var d = s.enrollment_date ? new Date(s.enrollment_date) : null;
+                return d && d.getFullYear() === TARGET_YEAR;
+              }).length;
+              _context2.n = 7;
+              break;
+            case 6:
+              _context2.p = 6;
+              _t3 = _context2.v;
+              studentsCount = 0;
+            case 7:
+              // Total faculty
+              facultyCount = 0;
+              _context2.p = 8;
+              _context2.n = 9;
+              return axios__WEBPACK_IMPORTED_MODULE_1___default().get('/api/faculties');
+            case 9:
+              resFac = _context2.v;
+              facultyCount = Array.isArray(resFac.data) ? resFac.data.length : Array.isArray((_resFac$data = resFac.data) === null || _resFac$data === void 0 ? void 0 : _resFac$data.faculties) ? resFac.data.faculties.length : 0;
+              _context2.n = 11;
+              break;
+            case 10:
+              _context2.p = 10;
+              _t4 = _context2.v;
+              facultyCount = 0;
+            case 11:
+              // Total courses (from settings)
+              coursesCount = 0;
+              _context2.p = 12;
+              _context2.n = 13;
+              return axios__WEBPACK_IMPORTED_MODULE_1___default().get('/api/settings/key/courses');
+            case 13:
+              resCourses = _context2.v;
+              raw = (_resCourses$data = resCourses.data) === null || _resCourses$data === void 0 ? void 0 : _resCourses$data.setting_value;
+              try {
+                parsed = JSON.parse(raw || '[]');
+                coursesCount = Array.isArray(parsed) ? parsed.length : 0;
+              } catch (_unused) {
+                coursesCount = 0;
+              }
+              _context2.n = 15;
+              break;
+            case 14:
+              _context2.p = 14;
+              _t5 = _context2.v;
+              coursesCount = 0;
+            case 15:
+              setStats2025({
+                students: studentsCount,
+                faculty: facultyCount,
+                courses: coursesCount
+              });
+              _context2.n = 17;
+              break;
+            case 16:
+              _context2.p = 16;
+              _t6 = _context2.v;
+              // Non-fatal: just omit stats
+              setStats2025({
+                students: 0,
+                faculty: 0,
+                courses: 0
+              });
+            case 17:
+              return _context2.a(2);
+          }
+        }, _callee2, null, [[12, 14], [8, 10], [4, 6], [1, 3], [0, 16]]);
+      }));
+      return function compute() {
+        return _ref2.apply(this, arguments);
+      };
+    }();
+    compute();
+  }, [loading, years]);
   var current = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () {
     if (!years.length) return null;
     var actives = years.filter(function (y) {
@@ -71914,105 +72855,105 @@ function SchoolYear() {
     setEditingId(null);
   };
   var saveEdit = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(id) {
-      var _e$response, _t2;
-      return _regenerator().w(function (_context2) {
-        while (1) switch (_context2.p = _context2.n) {
+    var _ref3 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(id) {
+      var _e$response, _t7;
+      return _regenerator().w(function (_context3) {
+        while (1) switch (_context3.p = _context3.n) {
           case 0:
-            _context2.p = 0;
-            _context2.n = 1;
+            _context3.p = 0;
+            _context3.n = 1;
             return axios__WEBPACK_IMPORTED_MODULE_1___default().put("/api/school-years/".concat(id), editForm);
           case 1:
             setMessage('School year updated');
             setEditingId(null);
             fetchYears();
-            _context2.n = 3;
+            _context3.n = 3;
             break;
           case 2:
-            _context2.p = 2;
-            _t2 = _context2.v;
-            console.error('Failed to update', _t2);
-            setMessage(((_e$response = _t2.response) === null || _e$response === void 0 || (_e$response = _e$response.data) === null || _e$response === void 0 ? void 0 : _e$response.message) || 'Error updating');
+            _context3.p = 2;
+            _t7 = _context3.v;
+            console.error('Failed to update', _t7);
+            setMessage(((_e$response = _t7.response) === null || _e$response === void 0 || (_e$response = _e$response.data) === null || _e$response === void 0 ? void 0 : _e$response.message) || 'Error updating');
           case 3:
-            return _context2.a(2);
+            return _context3.a(2);
         }
-      }, _callee2, null, [[0, 2]]);
+      }, _callee3, null, [[0, 2]]);
     }));
     return function saveEdit(_x) {
-      return _ref2.apply(this, arguments);
+      return _ref3.apply(this, arguments);
     };
   }();
   var archiveYear = /*#__PURE__*/function () {
-    var _ref3 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(id) {
-      var _t3;
-      return _regenerator().w(function (_context3) {
-        while (1) switch (_context3.p = _context3.n) {
+    var _ref4 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(id) {
+      var _t8;
+      return _regenerator().w(function (_context4) {
+        while (1) switch (_context4.p = _context4.n) {
           case 0:
             if (confirm('Archive this school year?')) {
-              _context3.n = 1;
+              _context4.n = 1;
               break;
             }
-            return _context3.a(2);
+            return _context4.a(2);
           case 1:
-            _context3.p = 1;
-            _context3.n = 2;
+            _context4.p = 1;
+            _context4.n = 2;
             return axios__WEBPACK_IMPORTED_MODULE_1___default().post("/api/school-years/".concat(id, "/archive"));
           case 2:
             setMessage('Archived successfully');
             fetchYears();
-            _context3.n = 4;
+            _context4.n = 4;
             break;
           case 3:
-            _context3.p = 3;
-            _t3 = _context3.v;
-            console.error('Archive failed', _t3);
+            _context4.p = 3;
+            _t8 = _context4.v;
+            console.error('Archive failed', _t8);
             setMessage('Archive failed');
           case 4:
-            return _context3.a(2);
+            return _context4.a(2);
         }
-      }, _callee3, null, [[1, 3]]);
+      }, _callee4, null, [[1, 3]]);
     }));
     return function archiveYear(_x2) {
-      return _ref3.apply(this, arguments);
+      return _ref4.apply(this, arguments);
     };
   }();
   var unarchiveYear = /*#__PURE__*/function () {
-    var _ref4 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(id) {
-      var _t4;
-      return _regenerator().w(function (_context4) {
-        while (1) switch (_context4.p = _context4.n) {
+    var _ref5 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(id) {
+      var _t9;
+      return _regenerator().w(function (_context5) {
+        while (1) switch (_context5.p = _context5.n) {
           case 0:
-            _context4.p = 0;
-            _context4.n = 1;
+            _context5.p = 0;
+            _context5.n = 1;
             return axios__WEBPACK_IMPORTED_MODULE_1___default().post("/api/school-years/".concat(id, "/unarchive"));
           case 1:
             setMessage('Unarchived successfully');
             fetchYears();
-            _context4.n = 3;
+            _context5.n = 3;
             break;
           case 2:
-            _context4.p = 2;
-            _t4 = _context4.v;
-            console.error('Unarchive failed', _t4);
+            _context5.p = 2;
+            _t9 = _context5.v;
+            console.error('Unarchive failed', _t9);
             setMessage('Unarchive failed');
           case 3:
-            return _context4.a(2);
+            return _context5.a(2);
         }
-      }, _callee4, null, [[0, 2]]);
+      }, _callee5, null, [[0, 2]]);
     }));
     return function unarchiveYear(_x3) {
-      return _ref4.apply(this, arguments);
+      return _ref5.apply(this, arguments);
     };
   }();
   var createYear = /*#__PURE__*/function () {
-    var _ref5 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(e) {
-      var _err$response, _t5;
-      return _regenerator().w(function (_context5) {
-        while (1) switch (_context5.p = _context5.n) {
+    var _ref6 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(e) {
+      var _err$response, _t0;
+      return _regenerator().w(function (_context6) {
+        while (1) switch (_context6.p = _context6.n) {
           case 0:
             e.preventDefault();
-            _context5.p = 1;
-            _context5.n = 2;
+            _context6.p = 1;
+            _context6.n = 2;
             return axios__WEBPACK_IMPORTED_MODULE_1___default().post('/api/school-years', createForm);
           case 2:
             setMessage('School year created');
@@ -72024,25 +72965,25 @@ function SchoolYear() {
               status: 'Active'
             });
             fetchYears();
-            _context5.n = 4;
+            _context6.n = 4;
             break;
           case 3:
-            _context5.p = 3;
-            _t5 = _context5.v;
-            console.error('Create failed', _t5);
-            setMessage(((_err$response = _t5.response) === null || _err$response === void 0 || (_err$response = _err$response.data) === null || _err$response === void 0 ? void 0 : _err$response.message) || 'Error creating school year');
+            _context6.p = 3;
+            _t0 = _context6.v;
+            console.error('Create failed', _t0);
+            setMessage(((_err$response = _t0.response) === null || _err$response === void 0 || (_err$response = _err$response.data) === null || _err$response === void 0 ? void 0 : _err$response.message) || 'Error creating school year');
           case 4:
-            return _context5.a(2);
+            return _context6.a(2);
         }
-      }, _callee5, null, [[1, 3]]);
+      }, _callee6, null, [[1, 3]]);
     }));
     return function createYear(_x4) {
-      return _ref5.apply(this, arguments);
+      return _ref6.apply(this, arguments);
     };
   }();
-  var Stat = function Stat(_ref6) {
-    var value = _ref6.value,
-      label = _ref6.label;
+  var Stat = function Stat(_ref7) {
+    var value = _ref7.value,
+      label = _ref7.label;
     return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
       className: "sy-stat",
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
@@ -72054,350 +72995,399 @@ function SchoolYear() {
       })]
     });
   };
-  var StatusBadge = function StatusBadge(_ref7) {
-    var status = _ref7.status,
-      children = _ref7.children;
+  var StatusBadge = function StatusBadge(_ref8) {
+    var status = _ref8.status,
+      children = _ref8.children;
     return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
       className: "status-badge ".concat(status.toLowerCase()),
       children: children || status
     });
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-    className: "module-page school-year-page",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-      className: "page-header",
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+    className: "students-page",
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+      className: "module-page school-year-page",
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h1", {
-          children: "School Year Management"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
-          className: "page-subtitle",
-          children: "Manage academic school years and their configurations"
-        })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-        className: "btn btn-primary",
-        onClick: function onClick() {
-          return setShowCreate(function (v) {
-            return !v;
-          });
-        },
-        children: showCreate ? 'Cancel' : '+ Add School Year'
-      })]
-    }), message && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-      className: "alert alert-info",
-      children: message
-    }), loading && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-      className: "loading",
-      children: "Loading..."
-    }), showCreate && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-      className: "sy-card",
-      style: {
-        marginBottom: '16px'
-      },
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
-        style: {
-          marginTop: 0
-        },
-        children: "Add School Year"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("form", {
-        className: "module-form",
-        onSubmit: createYear,
+        className: "page-header",
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-          className: "form-row",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
-            name: "label",
-            placeholder: "Label (e.g., 2024\u20132025)",
-            value: createForm.label,
-            onChange: function onChange(e) {
-              return setCreateForm(_objectSpread(_objectSpread({}, createForm), {}, {
-                label: e.target.value
-              }));
-            },
-            required: true
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
-            type: "date",
-            name: "start_date",
-            placeholder: "Start Date",
-            value: createForm.start_date,
-            onChange: function onChange(e) {
-              return setCreateForm(_objectSpread(_objectSpread({}, createForm), {}, {
-                start_date: e.target.value
-              }));
-            }
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
-            type: "date",
-            name: "end_date",
-            placeholder: "End Date",
-            value: createForm.end_date,
-            onChange: function onChange(e) {
-              return setCreateForm(_objectSpread(_objectSpread({}, createForm), {}, {
-                end_date: e.target.value
-              }));
-            }
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h1", {
+            children: "School Year Management"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
+            className: "page-subtitle",
+            children: "Manage academic school years and their configurations"
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-          className: "form-row",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("select", {
-            name: "status",
-            value: createForm.status,
-            onChange: function onChange(e) {
-              return setCreateForm(_objectSpread(_objectSpread({}, createForm), {}, {
-                status: e.target.value
-              }));
-            },
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
-              value: "Active",
-              children: "Active"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
-              value: "Completed",
-              children: "Completed"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
-              value: "Archived",
-              children: "Archived"
-            })]
-          })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-          className: "form-actions",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-            type: "submit",
-            className: "btn btn-primary",
-            children: "Create"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-            type: "button",
-            className: "btn btn-secondary",
-            onClick: function onClick() {
-              return setShowCreate(false);
-            },
-            children: "Cancel"
-          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+          className: "btn ".concat(showCreate ? 'btn-secondary' : 'btn-primary'),
+          onClick: function onClick() {
+            return setShowCreate(function (v) {
+              return !v;
+            });
+          },
+          children: showCreate ? 'Cancel' : '+ Add School Year'
         })]
-      })]
-    }), current && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-      className: "sy-card current-year",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-        className: "sy-card-header",
+      }), message && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "alert alert-info",
+        children: message
+      }), loading && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "loading",
+        children: "Loading..."
+      }), showCreate && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        className: "sy-card",
+        style: {
+          marginBottom: '16px'
+        },
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
-          children: "Current Academic Year"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(StatusBadge, {
-          status: "active",
-          children: current.label
-        })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-        className: "stats-grid",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Stat, {
-          value: current.stats.semesters,
-          label: "Total Semesters"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Stat, {
-          value: current.stats.students,
-          label: "Total Students"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Stat, {
-          value: current.stats.faculty,
-          label: "Total Faculty"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Stat, {
-          value: current.stats.courses,
-          label: "Total Courses"
-        })]
-      })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-      className: "sy-section",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h3", {
-        children: "School Year Management"
-      }), years.map(function (y) {
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-          className: "sy-year-card",
+          style: {
+            marginTop: 0
+          },
+          children: "Add School Year"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("form", {
+          className: "module-form",
+          onSubmit: createYear,
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-            className: "sy-year-header",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-              className: "title-row",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h4", {
-                children: y.label
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(StatusBadge, {
-                status: y.status,
-                children: y.status
-              })]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-              className: "meta-grid",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                  className: "meta-label",
-                  children: "Start Date"
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                  className: "meta-value",
-                  children: y.start_date ? new Date(y.start_date).toLocaleDateString() : '-'
-                })]
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                  className: "meta-label",
-                  children: "End Date"
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                  className: "meta-value",
-                  children: y.end_date ? new Date(y.end_date).toLocaleDateString() : '-'
-                })]
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                  className: "meta-label",
-                  children: "Total Students"
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                  className: "meta-value",
-                  children: (y.students_count || 0).toLocaleString()
-                })]
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                  className: "meta-label",
-                  children: "Total Faculty"
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                  className: "meta-value",
-                  children: 0
-                })]
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                  className: "meta-label",
-                  children: "Total Courses"
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                  className: "meta-value",
-                  children: 0
-                })]
-              })]
-            })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-            className: "sy-semesters",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-              className: "section-title",
-              children: "Semesters"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-              className: "semester-list",
-              children: (y.semesters || []).map(function (s) {
-                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-                  className: "semester-item",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                    className: "sem-name",
-                    children: s.name
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                    className: "sem-range",
-                    children: "".concat(s.start_date ? new Date(s.start_date).toLocaleDateString() : '-', " \u2014 ").concat(s.end_date ? new Date(s.end_date).toLocaleDateString() : '-')
-                  })]
-                }, s.id || s.name);
-              })
+            className: "form-row",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+              name: "label",
+              placeholder: "Label (e.g., 2024\u20132025)",
+              value: createForm.label,
+              onChange: function onChange(e) {
+                return setCreateForm(_objectSpread(_objectSpread({}, createForm), {}, {
+                  label: e.target.value
+                }));
+              },
+              required: true
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+              type: "date",
+              name: "start_date",
+              placeholder: "Start Date",
+              value: createForm.start_date,
+              onChange: function onChange(e) {
+                return setCreateForm(_objectSpread(_objectSpread({}, createForm), {}, {
+                  start_date: e.target.value
+                }));
+              }
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+              type: "date",
+              name: "end_date",
+              placeholder: "End Date",
+              value: createForm.end_date,
+              onChange: function onChange(e) {
+                return setCreateForm(_objectSpread(_objectSpread({}, createForm), {}, {
+                  end_date: e.target.value
+                }));
+              }
             })]
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-            className: "sy-actions",
-            children: editingId === y.id ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-                className: "btn btn-primary",
-                onClick: function onClick() {
-                  return saveEdit(y.id);
-                },
-                children: "Save"
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-                className: "btn btn-secondary",
-                onClick: cancelEdit,
-                children: "Cancel"
-              })]
-            }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-                className: "btn btn-secondary",
-                onClick: function onClick() {
-                  return startEdit(y);
-                },
-                children: "Edit"
-              }), String(y.status).toLowerCase() === 'archived' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-                className: "btn",
-                onClick: function onClick() {
-                  return unarchiveYear(y.id);
-                },
-                children: "Unarchive"
-              }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-                className: "btn btn-danger",
-                onClick: function onClick() {
-                  return archiveYear(y.id);
-                },
-                children: "Archive"
+            className: "form-row",
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("select", {
+              name: "status",
+              value: createForm.status,
+              onChange: function onChange(e) {
+                return setCreateForm(_objectSpread(_objectSpread({}, createForm), {}, {
+                  status: e.target.value
+                }));
+              },
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                value: "Active",
+                children: "Active"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                value: "Completed",
+                children: "Completed"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                value: "Archived",
+                children: "Archived"
               })]
             })
-          }), editingId === y.id && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-            className: "form-card",
-            style: {
-              marginTop: '12px'
-            },
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
-              children: "Edit School Year"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("form", {
-              className: "module-form",
-              onSubmit: function onSubmit(e) {
-                e.preventDefault();
-                saveEdit(y.id);
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+            className: "form-actions",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+              type: "submit",
+              className: "btn btn-primary",
+              children: "Create"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+              type: "button",
+              className: "btn btn-secondary",
+              onClick: function onClick() {
+                return setShowCreate(false);
               },
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-                className: "form-row",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
-                  name: "label",
-                  placeholder: "Label (e.g., 2024\u20132025)",
-                  value: editForm.label,
-                  onChange: function onChange(e) {
-                    return setEditForm(_objectSpread(_objectSpread({}, editForm), {}, {
-                      label: e.target.value
-                    }));
-                  },
-                  required: true
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
-                  type: "date",
-                  name: "start_date",
-                  placeholder: "Start Date",
-                  value: editForm.start_date,
-                  onChange: function onChange(e) {
-                    return setEditForm(_objectSpread(_objectSpread({}, editForm), {}, {
-                      start_date: e.target.value
-                    }));
-                  }
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
-                  type: "date",
-                  name: "end_date",
-                  placeholder: "End Date",
-                  value: editForm.end_date,
-                  onChange: function onChange(e) {
-                    return setEditForm(_objectSpread(_objectSpread({}, editForm), {}, {
-                      end_date: e.target.value
-                    }));
-                  }
+              children: "Cancel"
+            })]
+          })]
+        })]
+      }), current && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        className: "sy-card current-year",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+          className: "sy-card-header",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
+            children: "Current Academic Year"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(StatusBadge, {
+            status: "active",
+            children: current.label
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+          className: "stats-grid",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Stat, {
+            value: current.stats.semesters,
+            label: "Total Semesters"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Stat, {
+            value: current.stats.students,
+            label: "Total Students"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Stat, {
+            value: current.stats.faculty,
+            label: "Total Faculty"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Stat, {
+            value: current.stats.courses,
+            label: "Total Courses"
+          })]
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        className: "sy-card",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+          className: "sy-card-header",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
+            children: "School Year 2025 Overview"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(StatusBadge, {
+            status: "active",
+            children: "2025"
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+          className: "stats-grid",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Stat, {
+            value: 2,
+            label: "Total Semesters"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Stat, {
+            value: (stats2025 === null || stats2025 === void 0 ? void 0 : stats2025.students) || 0,
+            label: "Total Students"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Stat, {
+            value: (stats2025 === null || stats2025 === void 0 ? void 0 : stats2025.faculty) || 0,
+            label: "Total Faculty"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Stat, {
+            value: (stats2025 === null || stats2025 === void 0 ? void 0 : stats2025.courses) || 0,
+            label: "Total Courses"
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+          className: "sy-semesters",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+            className: "section-title",
+            children: "Semesters"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+            className: "semester-list",
+            children: semesters2025.map(function (name, idx) {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                className: "semester-item",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                  className: "sem-name",
+                  children: name
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                  className: "sem-range",
+                  children: "\u2014"
                 })]
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                className: "form-row",
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("select", {
-                  name: "status",
-                  value: editForm.status,
-                  onChange: function onChange(e) {
-                    return setEditForm(_objectSpread(_objectSpread({}, editForm), {}, {
-                      status: e.target.value
-                    }));
-                  },
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
-                    value: "Active",
-                    children: "Active"
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
-                    value: "Completed",
-                    children: "Completed"
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
-                    value: "Archived",
-                    children: "Archived"
-                  })]
-                })
+              }, name + idx);
+            })
+          })]
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        className: "sy-section",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h3", {
+          children: "School Year Management"
+        }), years.map(function (y) {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+            className: "sy-year-card",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+              className: "sy-year-header",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                className: "title-row",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h4", {
+                  children: y.label
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(StatusBadge, {
+                  status: y.status,
+                  children: y.status
+                })]
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-                className: "form-actions",
+                className: "meta-grid",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                    className: "meta-label",
+                    children: "Start Date"
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                    className: "meta-value",
+                    children: y.start_date ? new Date(y.start_date).toLocaleDateString() : '-'
+                  })]
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                    className: "meta-label",
+                    children: "End Date"
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                    className: "meta-value",
+                    children: y.end_date ? new Date(y.end_date).toLocaleDateString() : '-'
+                  })]
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                    className: "meta-label",
+                    children: "Total Students"
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                    className: "meta-value",
+                    children: (y.students_count || 0).toLocaleString()
+                  })]
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                    className: "meta-label",
+                    children: "Total Faculty"
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                    className: "meta-value",
+                    children: 0
+                  })]
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                    className: "meta-label",
+                    children: "Total Courses"
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                    className: "meta-value",
+                    children: 0
+                  })]
+                })]
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+              className: "sy-semesters",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                className: "section-title",
+                children: "Semesters"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                className: "semester-list",
+                children: (y.semesters || []).map(function (s) {
+                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                    className: "semester-item",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                      className: "sem-name",
+                      children: s.name
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                      className: "sem-range",
+                      children: "".concat(s.start_date ? new Date(s.start_date).toLocaleDateString() : '-', " \u2014 ").concat(s.end_date ? new Date(s.end_date).toLocaleDateString() : '-')
+                    })]
+                  }, s.id || s.name);
+                })
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+              className: "sy-actions",
+              children: editingId === y.id ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
                 children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-                  type: "submit",
                   className: "btn btn-primary",
+                  onClick: function onClick() {
+                    return saveEdit(y.id);
+                  },
                   children: "Save"
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-                  type: "button",
                   className: "btn btn-secondary",
                   onClick: cancelEdit,
                   children: "Cancel"
                 })]
+              }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+                  className: "btn btn-secondary",
+                  onClick: function onClick() {
+                    return startEdit(y);
+                  },
+                  children: "Edit"
+                }), String(y.status).toLowerCase() === 'archived' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+                  className: "btn",
+                  onClick: function onClick() {
+                    return unarchiveYear(y.id);
+                  },
+                  children: "Unarchive"
+                }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+                  className: "btn btn-danger",
+                  onClick: function onClick() {
+                    return archiveYear(y.id);
+                  },
+                  children: "Archive"
+                })]
+              })
+            }), editingId === y.id && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+              className: "form-card",
+              style: {
+                marginTop: '12px'
+              },
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
+                children: "Edit School Year"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("form", {
+                className: "module-form",
+                onSubmit: function onSubmit(e) {
+                  e.preventDefault();
+                  saveEdit(y.id);
+                },
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                  className: "form-row",
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+                    name: "label",
+                    placeholder: "Label (e.g., 2024\u20132025)",
+                    value: editForm.label,
+                    onChange: function onChange(e) {
+                      return setEditForm(_objectSpread(_objectSpread({}, editForm), {}, {
+                        label: e.target.value
+                      }));
+                    },
+                    required: true
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+                    type: "date",
+                    name: "start_date",
+                    placeholder: "Start Date",
+                    value: editForm.start_date,
+                    onChange: function onChange(e) {
+                      return setEditForm(_objectSpread(_objectSpread({}, editForm), {}, {
+                        start_date: e.target.value
+                      }));
+                    }
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+                    type: "date",
+                    name: "end_date",
+                    placeholder: "End Date",
+                    value: editForm.end_date,
+                    onChange: function onChange(e) {
+                      return setEditForm(_objectSpread(_objectSpread({}, editForm), {}, {
+                        end_date: e.target.value
+                      }));
+                    }
+                  })]
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                  className: "form-row",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("select", {
+                    name: "status",
+                    value: editForm.status,
+                    onChange: function onChange(e) {
+                      return setEditForm(_objectSpread(_objectSpread({}, editForm), {}, {
+                        status: e.target.value
+                      }));
+                    },
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                      value: "Active",
+                      children: "Active"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                      value: "Completed",
+                      children: "Completed"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                      value: "Archived",
+                      children: "Archived"
+                    })]
+                  })
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                  className: "form-actions",
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+                    type: "submit",
+                    className: "btn btn-primary",
+                    children: "Save"
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+                    type: "button",
+                    className: "btn btn-secondary",
+                    onClick: cancelEdit,
+                    children: "Cancel"
+                  })]
+                })]
               })]
             })]
-          })]
-        }, y.id || y.label);
+          }, y.id || y.label);
+        })]
       })]
-    })]
+    })
   });
 }
 
@@ -72418,6 +73408,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
@@ -72452,38 +73447,575 @@ function Subjects() {
     _useState0 = _slicedToArray(_useState9, 2),
     loading = _useState0[0],
     setLoading = _useState0[1];
+  var YEAR_LEVELS = ['FIRST YEAR', 'SECOND YEAR', 'THIRD YEAR', 'FOURTH YEAR', 'FIFTH YEAR'];
+  var _useState1 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+    _useState10 = _slicedToArray(_useState1, 2),
+    browseDeptId = _useState10[0],
+    setBrowseDeptId = _useState10[1];
+  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState12 = _slicedToArray(_useState11, 2),
+    browseDepts = _useState12[0],
+    setBrowseDepts = _useState12[1];
+  var _useState13 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+    _useState14 = _slicedToArray(_useState13, 2),
+    browseCourse = _useState14[0],
+    setBrowseCourse = _useState14[1];
+  var _useState15 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState16 = _slicedToArray(_useState15, 2),
+    browseCourses = _useState16[0],
+    setBrowseCourses = _useState16[1];
+  var _useState17 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState18 = _slicedToArray(_useState17, 2),
+    browseResults = _useState18[0],
+    setBrowseResults = _useState18[1];
+  var _useState19 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState20 = _slicedToArray(_useState19, 2),
+    browseLoading = _useState20[0],
+    setBrowseLoading = _useState20[1];
+  var _useState21 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+    _useState22 = _slicedToArray(_useState21, 2),
+    browseError = _useState22[0],
+    setBrowseError = _useState22[1];
+  var _useState23 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+    _useState24 = _slicedToArray(_useState23, 2),
+    browseSection = _useState24[0],
+    setBrowseSection = _useState24[1];
+  var _useState25 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+    _useState26 = _slicedToArray(_useState25, 2),
+    browseQuery = _useState26[0],
+    setBrowseQuery = _useState26[1];
+  var CACHE_KEY = 'subject_offerings_cache';
+  var SAMPLE_TEXT = "FIRST YEAR\nSECTION : A11\nSubject Code\tDescription\tSection Code\tLec\tLab\tUnits\tRoom\tSchedule\nGE 106\tArts Appreciation\tBSA 1-A11\t3\t0\t3\t\tT/F 07:30AM-09:00AM/07:30AM-09:00AM\nTOTAL\t3\t0\t3";
+  var handleFileUpload = function handleFileUpload(e) {
+    var file = e.target.files && e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function (ev) {
+      try {
+        var _ev$target;
+        setRaw(String(((_ev$target = ev.target) === null || _ev$target === void 0 ? void 0 : _ev$target.result) || ''));
+        setMessage('Loaded text from file');
+      } catch (_unused) {
+        setMessage('Unable to read file');
+      }
+    };
+    reader.readAsText(file);
+    // reset input to allow re-uploading the same file if needed
+    e.target.value = '';
+  };
+  var useSample = function useSample() {
+    setRaw(SAMPLE_TEXT);
+    setMessage('Loaded sample text');
+  };
+  var clearAll = function clearAll() {
+    setRaw('');
+    setItems([]);
+    setMessage('Cleared');
+  };
+  var pasteFromClipboard = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+      var text, _t;
+      return _regenerator().w(function (_context) {
+        while (1) switch (_context.p = _context.n) {
+          case 0:
+            _context.p = 0;
+            _context.n = 1;
+            return navigator.clipboard.readText();
+          case 1:
+            text = _context.v;
+            setRaw(text || '');
+            setMessage(text ? 'Pasted from clipboard' : 'Clipboard was empty');
+            _context.n = 3;
+            break;
+          case 2:
+            _context.p = 2;
+            _t = _context.v;
+            setMessage('Clipboard access is blocked. Paste manually (Ctrl/Cmd+V).');
+          case 3:
+            return _context.a(2);
+        }
+      }, _callee, null, [[0, 2]]);
+    }));
+    return function pasteFromClipboard() {
+      return _ref.apply(this, arguments);
+    };
+  }();
   var parsedStats = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () {
     return {
       count: items.length
     };
   }, [items]);
+  var deriveCourseCode = function deriveCourseCode(s) {
+    var t = String(s || '').trim();
+    var token = t.split(/[\s-]+/)[0] || '';
+    return token.toUpperCase();
+  };
+  var loadBrowseCourses = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+      var out, _rc$data, rc, arr, _iterator, _step, c, code, name, _r2$data, r2, _raw, list, seen, _iterator2, _step2, _name, _code, codes, _i, _codes, _c, prefer, _t2, _t3, _t4, _t5;
+      return _regenerator().w(function (_context2) {
+        while (1) switch (_context2.p = _context2.n) {
+          case 0:
+            _context2.p = 0;
+            out = [];
+            _context2.p = 1;
+            _context2.n = 2;
+            return axios__WEBPACK_IMPORTED_MODULE_1___default().get('/api/courses', {
+              params: browseDeptId ? {
+                department_id: browseDeptId
+              } : {}
+            });
+          case 2:
+            rc = _context2.v;
+            arr = Array.isArray(rc.data) ? rc.data : Array.isArray((_rc$data = rc.data) === null || _rc$data === void 0 ? void 0 : _rc$data.courses) ? rc.data.courses : [];
+            _iterator = _createForOfIteratorHelper(arr);
+            _context2.p = 3;
+            _iterator.s();
+          case 4:
+            if ((_step = _iterator.n()).done) {
+              _context2.n = 7;
+              break;
+            }
+            c = _step.value;
+            code = String(c.code || '').toUpperCase();
+            name = String(c.name || code).toUpperCase();
+            if (code) {
+              _context2.n = 5;
+              break;
+            }
+            return _context2.a(3, 6);
+          case 5:
+            out.push({
+              code: code,
+              label: "".concat(code, " - ").concat(name)
+            });
+          case 6:
+            _context2.n = 4;
+            break;
+          case 7:
+            _context2.n = 9;
+            break;
+          case 8:
+            _context2.p = 8;
+            _t2 = _context2.v;
+            _iterator.e(_t2);
+          case 9:
+            _context2.p = 9;
+            _iterator.f();
+            return _context2.f(9);
+          case 10:
+            _context2.n = 22;
+            break;
+          case 11:
+            _context2.p = 11;
+            _t3 = _context2.v;
+            _context2.n = 12;
+            return axios__WEBPACK_IMPORTED_MODULE_1___default().get('/api/settings/key/courses');
+          case 12:
+            r2 = _context2.v;
+            _raw = (_r2$data = r2.data) === null || _r2$data === void 0 ? void 0 : _r2$data.setting_value;
+            list = [];
+            try {
+              list = JSON.parse(_raw || '[]');
+            } catch (_unused4) {
+              list = [];
+            }
+            seen = new Set();
+            _iterator2 = _createForOfIteratorHelper(Array.isArray(list) ? list : []);
+            _context2.p = 13;
+            _iterator2.s();
+          case 14:
+            if ((_step2 = _iterator2.n()).done) {
+              _context2.n = 18;
+              break;
+            }
+            _name = _step2.value;
+            _code = deriveCourseCode(_name);
+            if (_code) {
+              _context2.n = 15;
+              break;
+            }
+            return _context2.a(3, 17);
+          case 15:
+            if (!seen.has(_code)) {
+              _context2.n = 16;
+              break;
+            }
+            return _context2.a(3, 17);
+          case 16:
+            seen.add(_code);
+            out.push({
+              code: _code,
+              label: "".concat(_code, " - ").concat(String(_name).toUpperCase())
+            });
+          case 17:
+            _context2.n = 14;
+            break;
+          case 18:
+            _context2.n = 20;
+            break;
+          case 19:
+            _context2.p = 19;
+            _t4 = _context2.v;
+            _iterator2.e(_t4);
+          case 20:
+            _context2.p = 20;
+            _iterator2.f();
+            return _context2.f(20);
+          case 21:
+            if (out.length === 0 && items.length) {
+              codes = Array.from(new Set(items.map(function (i) {
+                return String(i.course_code || '').toUpperCase();
+              }).filter(Boolean)));
+              for (_i = 0, _codes = codes; _i < _codes.length; _i++) {
+                _c = _codes[_i];
+                out.push({
+                  code: _c,
+                  label: _c
+                });
+              }
+            }
+          case 22:
+            out.sort(function (a, b) {
+              return a.code.localeCompare(b.code);
+            });
+            setBrowseCourses(out);
+            if (!browseCourse && out.length) {
+              prefer = out.find(function (o) {
+                return o.code === 'BSIT';
+              }) || out[0];
+              setBrowseCourse(prefer.code);
+            }
+            _context2.n = 24;
+            break;
+          case 23:
+            _context2.p = 23;
+            _t5 = _context2.v;
+            setBrowseCourses([]);
+          case 24:
+            return _context2.a(2);
+        }
+      }, _callee2, null, [[13, 19, 20, 21], [3, 8, 9, 10], [1, 11], [0, 23]]);
+    }));
+    return function loadBrowseCourses() {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+  var loadDepartments = /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
+      var _rd$data, rd, arr, mapped, _t6;
+      return _regenerator().w(function (_context3) {
+        while (1) switch (_context3.p = _context3.n) {
+          case 0:
+            _context3.p = 0;
+            _context3.n = 1;
+            return axios__WEBPACK_IMPORTED_MODULE_1___default().get('/api/departments');
+          case 1:
+            rd = _context3.v;
+            arr = Array.isArray(rd.data) ? rd.data : Array.isArray((_rd$data = rd.data) === null || _rd$data === void 0 ? void 0 : _rd$data.departments) ? rd.data.departments : [];
+            mapped = arr.map(function (d) {
+              return {
+                id: d.id,
+                code: String(d.code || '').toUpperCase(),
+                name: String(d.name || '').toUpperCase()
+              };
+            });
+            setBrowseDepts(mapped);
+            if (!browseDeptId && mapped.length) setBrowseDeptId(String(mapped[0].id));
+            _context3.n = 3;
+            break;
+          case 2:
+            _context3.p = 2;
+            _t6 = _context3.v;
+            setBrowseDepts([]);
+          case 3:
+            return _context3.a(2);
+        }
+      }, _callee3, null, [[0, 2]]);
+    }));
+    return function loadDepartments() {
+      return _ref3.apply(this, arguments);
+    };
+  }();
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () {
+    loadDepartments();
+  }, []);
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () {
+    loadBrowseCourses();
+  }, [browseDeptId]);
+
+  // Load cached offerings for preview/browse fallback
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () {
+    try {
+      var _raw2 = localStorage.getItem(CACHE_KEY);
+      if (_raw2) {
+        var parsed = JSON.parse(_raw2);
+        if (Array.isArray(parsed) && parsed.length && items.length === 0) {
+          setItems(parsed);
+        }
+      }
+    } catch (_unused7) {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () {
+    if (browseCourse) {
+      fetchOfferings();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [browseCourse]);
+
+  // If selected course looks IT/CS-related, auto-select CSP department when available
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () {
+    var code = String(browseCourse || '').toUpperCase();
+    if (!code) return;
+    var isIT = /^(BSIT|BSCS|BSEMC|DIT|IT|CS)/.test(code);
+    if (isIT && browseDepts && browseDepts.length) {
+      var csp = browseDepts.find(function (d) {
+        return String(d.code).toUpperCase() === 'CSP';
+      });
+      if (csp && String(browseDeptId) !== String(csp.id)) {
+        setBrowseDeptId(String(csp.id));
+      }
+    }
+  }, [browseCourse, browseDepts]);
+  var fetchOfferings = /*#__PURE__*/function () {
+    var _ref4 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
+      var _res$data, params, res, rawArr, arr, source, _raw3, parsed, _arr, _t7;
+      return _regenerator().w(function (_context4) {
+        while (1) switch (_context4.p = _context4.n) {
+          case 0:
+            if (browseCourse) {
+              _context4.n = 1;
+              break;
+            }
+            return _context4.a(2);
+          case 1:
+            setBrowseLoading(true);
+            setBrowseError('');
+            _context4.p = 2;
+            params = {
+              course_code: browseCourse
+            };
+            if (browseQuery) params.q = browseQuery;
+            _context4.n = 3;
+            return axios__WEBPACK_IMPORTED_MODULE_1___default().get('/api/offerings', {
+              params: params
+            });
+          case 3:
+            res = _context4.v;
+            rawArr = Array.isArray(res.data) ? res.data : Array.isArray((_res$data = res.data) === null || _res$data === void 0 ? void 0 : _res$data.items) ? res.data.items : [];
+            arr = rawArr.map(function (o) {
+              var _o$section, _o$section2, _o$section3, _o$section4, _o$subject, _o$subject2, _o$lec, _o$lab, _o$units;
+              return {
+                year_level: (o === null || o === void 0 || (_o$section = o.section) === null || _o$section === void 0 ? void 0 : _o$section.year_level) || '',
+                course_code: (o === null || o === void 0 || (_o$section2 = o.section) === null || _o$section2 === void 0 || (_o$section2 = _o$section2.course) === null || _o$section2 === void 0 ? void 0 : _o$section2.code) || browseCourse,
+                section_label: (o === null || o === void 0 || (_o$section3 = o.section) === null || _o$section3 === void 0 ? void 0 : _o$section3.label) || '',
+                section_code: (o === null || o === void 0 || (_o$section4 = o.section) === null || _o$section4 === void 0 ? void 0 : _o$section4.code) || '',
+                subject_code: (o === null || o === void 0 || (_o$subject = o.subject) === null || _o$subject === void 0 ? void 0 : _o$subject.code) || '',
+                subject_description: (o === null || o === void 0 || (_o$subject2 = o.subject) === null || _o$subject2 === void 0 ? void 0 : _o$subject2.description) || '',
+                lec: (_o$lec = o === null || o === void 0 ? void 0 : o.lec) !== null && _o$lec !== void 0 ? _o$lec : 0,
+                lab: (_o$lab = o === null || o === void 0 ? void 0 : o.lab) !== null && _o$lab !== void 0 ? _o$lab : 0,
+                units: (_o$units = o === null || o === void 0 ? void 0 : o.units) !== null && _o$units !== void 0 ? _o$units : 0,
+                room: (o === null || o === void 0 ? void 0 : o.room) || null,
+                schedule: (o === null || o === void 0 ? void 0 : o.schedule) || null
+              };
+            });
+            setBrowseResults(arr);
+            if (arr.length === 0) setBrowseError('No subject offerings found for the selected course.');
+            _context4.n = 5;
+            break;
+          case 4:
+            _context4.p = 4;
+            _t7 = _context4.v;
+            source = items;
+            if (!source || source.length === 0) {
+              try {
+                _raw3 = localStorage.getItem(CACHE_KEY);
+                parsed = JSON.parse(_raw3 || '[]');
+                if (Array.isArray(parsed)) source = parsed;
+              } catch (_unused9) {
+                source = [];
+              }
+            }
+            _arr = source.filter(function (it) {
+              var okCourse = String(it.course_code || '').toUpperCase() === String(browseCourse).toUpperCase();
+              if (!okCourse) return false;
+              if (!browseQuery) return true;
+              var q = browseQuery.toLowerCase();
+              return String(it.subject_code || '').toLowerCase().includes(q) || String(it.subject_description || '').toLowerCase().includes(q) || String(it.section_code || '').toLowerCase().includes(q) || String(it.schedule || '').toLowerCase().includes(q);
+            });
+            setBrowseResults(_arr);
+            if (_arr.length === 0) setBrowseError('No subject offerings found. Import data first, then search again.');
+          case 5:
+            _context4.p = 5;
+            setBrowseLoading(false);
+            return _context4.f(5);
+          case 6:
+            return _context4.a(2);
+        }
+      }, _callee4, null, [[2, 4, 5, 6]]);
+    }));
+    return function fetchOfferings() {
+      return _ref4.apply(this, arguments);
+    };
+  }();
+  var groupedByYear = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () {
+    var yearMap = new Map();
+    var q = String(browseSection || '').trim().toUpperCase();
+    var _iterator3 = _createForOfIteratorHelper(browseResults),
+      _step3;
+    try {
+      for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+        var it = _step3.value;
+        var year = String(it.year_level || '').trim();
+        var section = it.section_label || it.section_code || '';
+        if (q && !String(section || '').toUpperCase().includes(q)) continue;
+        if (!yearMap.has(year)) yearMap.set(year, new Map());
+        var secMap = yearMap.get(year);
+        if (!secMap.has(section)) secMap.set(section, []);
+        secMap.get(section).push(it);
+      }
+    } catch (err) {
+      _iterator3.e(err);
+    } finally {
+      _iterator3.f();
+    }
+    var out = Array.from(yearMap.entries()).map(function (_ref5) {
+      var _ref6 = _slicedToArray(_ref5, 2),
+        yr = _ref6[0],
+        secMap = _ref6[1];
+      var secs = Array.from(secMap.entries());
+      secs.sort(function (a, b) {
+        return String(a[0]).localeCompare(String(b[0]));
+      });
+      return [yr, secs];
+    });
+    out.sort(function (a, b) {
+      var ay = String(a[0] || '').toUpperCase();
+      var by = String(b[0] || '').toUpperCase();
+      var ia = YEAR_LEVELS.indexOf(ay);
+      var ib = YEAR_LEVELS.indexOf(by);
+      if (ia !== -1 && ib !== -1) return ia - ib;
+      return ay.localeCompare(by);
+    });
+    return out;
+  }, [browseResults, browseSection]);
+  var resultSummary = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () {
+    var sections = 0;
+    var subjects = 0;
+    var _iterator4 = _createForOfIteratorHelper(groupedByYear),
+      _step4;
+    try {
+      for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+        var _step4$value = _slicedToArray(_step4.value, 2),
+          secList = _step4$value[1];
+        sections += secList.length;
+        var _iterator5 = _createForOfIteratorHelper(secList),
+          _step5;
+        try {
+          for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+            var _step5$value = _slicedToArray(_step5.value, 2),
+              rows = _step5$value[1];
+            subjects += rows.length;
+          }
+        } catch (err) {
+          _iterator5.e(err);
+        } finally {
+          _iterator5.f();
+        }
+      }
+    } catch (err) {
+      _iterator4.e(err);
+    } finally {
+      _iterator4.f();
+    }
+    return {
+      sections: sections,
+      subjects: subjects
+    };
+  }, [groupedByYear]);
+  var flatExport = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () {
+    return browseResults.map(function (it) {
+      var _it$lec, _it$lab, _it$units;
+      return {
+        year_level: it.year_level || '',
+        course_code: it.course_code || '',
+        section_label: it.section_label || '',
+        section_code: it.section_code || '',
+        subject_code: it.subject_code || '',
+        subject_description: it.subject_description || '',
+        lec: (_it$lec = it.lec) !== null && _it$lec !== void 0 ? _it$lec : 0,
+        lab: (_it$lab = it.lab) !== null && _it$lab !== void 0 ? _it$lab : 0,
+        units: (_it$units = it.units) !== null && _it$units !== void 0 ? _it$units : 0,
+        room: it.room || '',
+        schedule: it.schedule || ''
+      };
+    });
+  }, [browseResults]);
+  var exportCSV = function exportCSV() {
+    if (!flatExport.length) {
+      setMessage('Nothing to export');
+      return;
+    }
+    var headers = ['Year', 'Course', 'Section', 'Section Code', 'Subject Code', 'Description', 'Lec', 'Lab', 'Units', 'Room', 'Schedule'];
+    var rows = flatExport.map(function (r) {
+      return [r.year_level, r.course_code, r.section_label, r.section_code, r.subject_code, r.subject_description, r.lec, r.lab, r.units, r.room, r.schedule];
+    });
+    var escape = function escape(v) {
+      var s = String(v !== null && v !== void 0 ? v : '');
+      if (/[",\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+      return s;
+    };
+    var csv = [headers.map(escape).join(',')].concat(_toConsumableArray(rows.map(function (r) {
+      return r.map(escape).join(',');
+    }))).join('\n');
+    var blob = new Blob([csv], {
+      type: 'text/csv;charset=utf-8;'
+    });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = "offerings_".concat(browseCourse || 'course', ".csv");
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+  var printResults = function printResults() {
+    window.print();
+  };
   var parse = function parse() {
     var lines = raw.split(/\r?\n/);
     var out = [];
     var year = '';
     var sectionLabel = '';
-    var _loop = function _loop(_i) {
-        var line = lines[_i].trim();
+    var _loop = function _loop(_i2) {
+        var line = lines[_i2].trim();
         if (!line) {
-          i = _i;
+          i = _i2;
           return 0;
         } // continue
         var upper = line.toUpperCase();
         // Year headers (FIRST YEAR, SECOND YEAR, etc.)
         if (/^(FIRST|SECOND|THIRD|FOURTH|FIFTH)\s+YEAR$/.test(upper)) {
           year = line;
-          i = _i;
+          i = _i2;
           return 0; // continue
         }
         // SECTION : XYZ
         var sec = line.match(/^SECTION\s*:\s*(.+)$/i);
         if (sec) {
           sectionLabel = (sec[1] || '').trim();
-          i = _i;
+          i = _i2;
           return 0; // continue
         }
-        if (upper.startsWith('SUBJECT CODE') || upper.startsWith('TOTAL')) {
-          i = _i;
+        // Ignore column header tokens and totals
+        if (upper.startsWith('TOTAL')) {
+          i = _i2;
+          return 0;
+        } // continue
+        if (upper === 'SUBJECT CODE' || upper === 'DESCRIPTION' || upper === 'SECTION CODE' || upper === 'LEC' || upper === 'LAB' || upper === 'UNITS' || upper === 'ROOM NO.' || upper === 'ROOM' || upper === 'SCHEDULE') {
+          i = _i2;
           return 0;
         } // continue
 
@@ -72491,9 +74023,73 @@ function Subjects() {
         var cols = line.split('\t');
         if (cols.length < 3) cols = line.split(/\s{2,}/);
         if (cols.length < 3) {
-          i = _i;
-          return 0;
-        } // continue
+          // Attempt vertical per-field format:
+          //   0: subject_code
+          //   1: subject_description
+          //   2: section_code
+          //   3: lec
+          //   4: lab
+          //   5: units
+          //   6: [optional room]
+          //   7: schedule (or 6 if room omitted)
+          if (_i2 + 5 < lines.length) {
+            var descL = (lines[_i2 + 1] || '').trim();
+            var secL = (lines[_i2 + 2] || '').trim();
+            var lecL = (lines[_i2 + 3] || '').trim();
+            var labL = (lines[_i2 + 4] || '').trim();
+            var unitsL = (lines[_i2 + 5] || '').trim();
+            var lecN = parseInt(lecL, 10);
+            var labN = parseInt(labL, 10);
+            var unitsN = parseInt(unitsL, 10);
+            if (!Number.isNaN(lecN) && !Number.isNaN(labN) && !Number.isNaN(unitsN)) {
+              var roomVal = '';
+              var schedVal = '';
+              var j = _i2 + 6;
+              var timeRe = /(\d{1,2}:\d{2})\s*(AM|PM)/i;
+              if (j < lines.length) {
+                var maybe = (lines[j] || '').trim();
+                if (maybe && (timeRe.test(maybe) || /[MTWFS]|TH|\//i.test(maybe))) {
+                  schedVal = maybe;
+                } else if (maybe) {
+                  roomVal = maybe;
+                  if (j + 1 < lines.length) {
+                    var maybe2 = (lines[j + 1] || '').trim();
+                    if (timeRe.test(maybe2) || /[MTWFS]|TH|\//i.test(maybe2)) {
+                      schedVal = maybe2;
+                      j++;
+                    }
+                  }
+                }
+              }
+              var _section_code = secL;
+              var _subject_code = line.replace(/^\*/, '').trim();
+              var _subject_description = descL;
+              var _course_code = function () {
+                var sc = _section_code || '';
+                var m = sc.match(/^(.*)\s+\d+\s*-/);
+                return (m ? m[1] : sc).trim();
+              }();
+              out.push({
+                year_level: year || '',
+                course_code: _course_code,
+                section_label: sectionLabel || '',
+                section_code: _section_code,
+                subject_code: _subject_code,
+                subject_description: _subject_description,
+                lec: lecN,
+                lab: labN,
+                units: unitsN,
+                room: roomVal || null,
+                schedule: schedVal || null
+              });
+              _i2 = j; // advance to the last consumed line of this record
+              i = _i2;
+              return 0; // continue
+            }
+          }
+          i = _i2;
+          return 0; // continue
+        }
 
         // Normalize
         var _cols = cols,
@@ -72516,9 +74112,9 @@ function Subjects() {
         schedule = (schedule || '').trim();
 
         // If schedule spilled to next line(s) without columns, capture subsequent lines until blank or new header
-        while (_i + 1 < lines.length && lines[_i + 1] && !/^SECTION\s*:/i.test(lines[_i + 1]) && !/^(FIRST|SECOND|THIRD|FOURTH|FIFTH)\s+YEAR$/i.test(lines[_i + 1]) && !/^SUBJECT CODE/i.test(lines[_i + 1]) && !/^TOTAL/i.test(lines[_i + 1]) && lines[_i + 1].split(/\s{2,}|\t/).length < 3) {
-          schedule = (schedule ? schedule + ' ' : '') + lines[_i + 1].trim();
-          _i++;
+        while (_i2 + 1 < lines.length && lines[_i2 + 1] && !/^SECTION\s*:/i.test(lines[_i2 + 1]) && !/^(FIRST|SECOND|THIRD|FOURTH|FIFTH)\s+YEAR$/i.test(lines[_i2 + 1]) && !/^SUBJECT CODE/i.test(lines[_i2 + 1]) && !/^TOTAL/i.test(lines[_i2 + 1]) && lines[_i2 + 1].split(/\s{2,}|\t/).length < 3) {
+          schedule = (schedule ? schedule + ' ' : '') + lines[_i2 + 1].trim();
+          _i2++;
         }
         var course_code = function () {
           var sc = section_code || '';
@@ -72538,7 +74134,7 @@ function Subjects() {
           room: room || null,
           schedule: schedule || null
         });
-        i = _i;
+        i = _i2;
       },
       _ret;
     for (var i = 0; i < lines.length; i++) {
@@ -72546,205 +74142,348 @@ function Subjects() {
       if (_ret === 0) continue;
     }
     setItems(out);
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify(out));
+    } catch (_unused0) {}
     setMessage("Parsed ".concat(out.length, " rows"));
   };
   var importAll = /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
-      var _data$count, _yield$axios$post, data, _e$response, _t;
-      return _regenerator().w(function (_context) {
-        while (1) switch (_context.p = _context.n) {
+    var _ref7 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
+      var _data$count, _data, data, _yield$axios$post, _yield$axios$post2, _e$response, _t8, _t9;
+      return _regenerator().w(function (_context5) {
+        while (1) switch (_context5.p = _context5.n) {
           case 0:
             if (!(items.length === 0)) {
-              _context.n = 1;
+              _context5.n = 1;
               break;
             }
             setMessage('Nothing to import');
-            return _context.a(2);
+            return _context5.a(2);
           case 1:
             setLoading(true);
-            _context.p = 2;
-            _context.n = 3;
+            _context5.p = 2;
+            _context5.p = 3;
+            _context5.n = 4;
+            return axios__WEBPACK_IMPORTED_MODULE_1___default().post('/api/offerings/import', {
+              items: items,
+              replace: replace
+            });
+          case 4:
+            _yield$axios$post = _context5.v;
+            data = _yield$axios$post.data;
+            _context5.n = 7;
+            break;
+          case 5:
+            _context5.p = 5;
+            _t8 = _context5.v;
+            _context5.n = 6;
             return axios__WEBPACK_IMPORTED_MODULE_1___default().post('/api/subject-offerings/import', {
               items: items,
               replace: replace
             });
-          case 3:
-            _yield$axios$post = _context.v;
-            data = _yield$axios$post.data;
-            setMessage("Imported ".concat((_data$count = data === null || data === void 0 ? void 0 : data.count) !== null && _data$count !== void 0 ? _data$count : items.length, " subject offerings"));
-            _context.n = 5;
-            break;
-          case 4:
-            _context.p = 4;
-            _t = _context.v;
-            setMessage(((_e$response = _t.response) === null || _e$response === void 0 || (_e$response = _e$response.data) === null || _e$response === void 0 ? void 0 : _e$response.message) || 'Import failed');
-          case 5:
-            _context.p = 5;
-            setLoading(false);
-            return _context.f(5);
           case 6:
-            return _context.a(2);
+            _yield$axios$post2 = _context5.v;
+            data = _yield$axios$post2.data;
+          case 7:
+            setMessage("Imported ".concat((_data$count = (_data = data) === null || _data === void 0 ? void 0 : _data.count) !== null && _data$count !== void 0 ? _data$count : items.length, " subject offerings"));
+            try {
+              localStorage.setItem(CACHE_KEY, JSON.stringify(items));
+            } catch (_unused1) {}
+            _context5.n = 9;
+            break;
+          case 8:
+            _context5.p = 8;
+            _t9 = _context5.v;
+            setMessage(((_e$response = _t9.response) === null || _e$response === void 0 || (_e$response = _e$response.data) === null || _e$response === void 0 ? void 0 : _e$response.message) || 'Import failed');
+          case 9:
+            _context5.p = 9;
+            setLoading(false);
+            return _context5.f(9);
+          case 10:
+            return _context5.a(2);
         }
-      }, _callee, null, [[2, 4, 5, 6]]);
+      }, _callee5, null, [[3, 5], [2, 8, 9, 10]]);
     }));
     return function importAll() {
-      return _ref.apply(this, arguments);
+      return _ref7.apply(this, arguments);
     };
   }();
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-    className: "module-page",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-      className: "page-header",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h1", {
-        children: "Subjects"
-      })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-      className: "form-card",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
-        children: "Bulk Import Subject Offerings"
-      }), message && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-        className: "alert alert-info",
-        style: {
-          marginTop: 8
-        },
-        children: message
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+    className: "students-page subjects-page",
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+      className: "module-page subjects-page",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "page-header",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h1", {
+          children: "Subjects"
+        })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-        className: "module-form",
-        style: {
-          gap: 12
-        },
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
-            style: {
-              display: 'block',
-              color: 'var(--text-secondary)',
-              fontSize: '0.9rem'
-            },
-            children: "Paste subject offerings text"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("textarea", {
-            value: raw,
-            onChange: function onChange(e) {
-              return setRaw(e.target.value);
-            },
-            rows: 12,
-            style: {
-              width: '100%'
-            },
-            placeholder: "Paste the subject offerings list here..."
-          })]
+        className: "form-card",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
+          children: "Browse Subject Offerings"
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-          className: "form-row",
-          style: {
-            gridTemplateColumns: 'auto auto 1fr auto'
-          },
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("label", {
-            className: "checkbox",
-            style: {
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8
-            },
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
-              type: "checkbox",
-              checked: replace,
-              onChange: function onChange(e) {
-                return setReplace(e.target.checked);
-              }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
-              children: "Replace existing rows for the same Year/Course/Section"
+          className: "module-form sticky subjects-filters",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+            className: "form-row layout-search-over",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+              className: "field-dept",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
+                children: "Department"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("select", {
+                value: browseDeptId,
+                onChange: function onChange(e) {
+                  return setBrowseDeptId(e.target.value);
+                },
+                children: browseDepts.map(function (d) {
+                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                    value: d.id,
+                    children: "".concat(d.code, " - ").concat(d.name)
+                  }, d.id);
+                })
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+              className: "field-course",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
+                children: "Course"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("select", {
+                value: browseCourse,
+                onChange: function onChange(e) {
+                  return setBrowseCourse(e.target.value);
+                },
+                children: browseCourses.map(function (opt) {
+                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                    value: opt.code,
+                    children: opt.label
+                  }, opt.code);
+                })
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+              className: "field-section",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
+                children: "Section (optional)"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+                placeholder: "e.g., IT11",
+                value: browseSection,
+                onChange: function onChange(e) {
+                  return setBrowseSection(e.target.value);
+                }
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+              className: "field-search",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
+                children: "Search"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+                placeholder: "Search",
+                value: browseQuery,
+                onChange: function onChange(e) {
+                  return setBrowseQuery(e.target.value);
+                }
+              })]
             })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-            type: "button",
-            className: "btn btn-secondary",
-            onClick: parse,
-            children: "Parse"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-            type: "button",
-            className: "btn btn-primary",
-            disabled: loading || items.length === 0,
-            onClick: importAll,
-            children: loading ? 'Importing…' : 'Import'
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+            className: "form-actions",
+            style: {
+              justifyContent: 'flex-end'
+            },
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+              type: "button",
+              className: "btn btn-secondary",
+              onClick: exportCSV,
+              disabled: !browseResults.length,
+              children: "Export CSV"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+              type: "button",
+              className: "btn btn-secondary",
+              onClick: printResults,
+              disabled: !browseResults.length,
+              children: "Print"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+              type: "button",
+              className: "btn btn-primary",
+              onClick: fetchOfferings,
+              disabled: !browseCourse || browseLoading,
+              children: browseLoading ? 'Loading…' : 'View Sections'
+            })]
           })]
+        }), browseError && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+          className: "alert alert-info",
+          style: {
+            marginTop: 8
+          },
+          children: browseError
+        })]
+      }), browseLoading && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        className: "table-card",
+        style: {
+          padding: '16px'
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+          className: "skeleton-row",
+          style: {
+            height: 12,
+            background: 'var(--bg-secondary)',
+            marginBottom: 8,
+            borderRadius: 6
+          }
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+          className: "skeleton-row",
+          style: {
+            height: 12,
+            background: 'var(--bg-secondary)',
+            marginBottom: 8,
+            borderRadius: 6,
+            width: '80%'
+          }
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+          className: "skeleton-row",
+          style: {
+            height: 12,
+            background: 'var(--bg-secondary)',
+            marginBottom: 8,
+            borderRadius: 6,
+            width: '60%'
+          }
+        })]
+      }), !browseLoading && groupedByYear.length === 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        className: "table-card",
+        style: {
+          textAlign: 'center',
+          padding: '24px'
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+          style: {
+            fontWeight: 600,
+            marginBottom: 6
+          },
+          children: "No offerings yet"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+          style: {
+            color: 'var(--text-secondary)'
+          },
+          children: "Select a course or adjust filters to view subject offerings."
+        })]
+      }), !browseLoading && groupedByYear.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        style: {
+          marginTop: '12px'
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+          className: "page-header summary-bar",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("h2", {
+            children: [browseCourse, " \u2022 ", resultSummary.sections, " sections \u2022 ", resultSummary.subjects, " subjects"]
+          })
+        }), groupedByYear.map(function (_ref8) {
+          var _ref9 = _slicedToArray(_ref8, 2),
+            yr = _ref9[0],
+            sections = _ref9[1];
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+            className: "table-card",
+            style: {
+              marginBottom: '16px'
+            },
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+              className: "page-header year-header",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
+                children: String(yr || '').toUpperCase()
+              })
+            }), sections.map(function (_ref0) {
+              var _ref1 = _slicedToArray(_ref0, 2),
+                section = _ref1[0],
+                rows = _ref1[1];
+              var totals = rows.reduce(function (acc, r) {
+                acc.lec += Number(r.lec || 0);
+                acc.lab += Number(r.lab || 0);
+                acc.units += Number(r.units || 0);
+                return acc;
+              }, {
+                lec: 0,
+                lab: 0,
+                units: 0
+              });
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                style: {
+                  marginTop: '8px'
+                },
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                  className: "page-header section-header",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("h2", {
+                    children: ["Section: ", section]
+                  })
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("table", {
+                  className: "data-table",
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("thead", {
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("tr", {
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                        children: "Subject Code"
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                        children: "Description"
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                        children: "Section Code"
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                        children: "Lec"
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                        children: "Lab"
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                        children: "Units"
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                        children: "Room No."
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
+                        children: "Schedule"
+                      })]
+                    })
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("tbody", {
+                    children: [rows.map(function (it, idx) {
+                      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("tr", {
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                          children: it.subject_code
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                          style: {
+                            minWidth: 260
+                          },
+                          children: it.subject_description
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                          children: it.section_code
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                          children: it.lec
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                          children: it.lab
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                          children: it.units
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                          children: it.room || ''
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                          style: {
+                            minWidth: 260
+                          },
+                          children: it.schedule || ''
+                        })]
+                      }, section + '-' + idx);
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("tr", {
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("strong", {
+                          children: "TOTAL"
+                        })
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("strong", {
+                          children: totals.lec
+                        })
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("strong", {
+                          children: totals.lab
+                        })
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("strong", {
+                          children: totals.units
+                        })
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {})]
+                    })]
+                  })]
+                })]
+              }, section);
+            })]
+          }, String(yr));
         })]
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-      className: "form-card",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("h2", {
-        children: ["Preview (", parsedStats.count, ")"]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-        className: "table-wrap",
-        style: {
-          maxHeight: '45vh',
-          overflow: 'auto'
-        },
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("table", {
-          className: "data-table",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("thead", {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("tr", {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
-                children: "Year"
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
-                children: "Section"
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
-                children: "Section Code"
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
-                children: "Subject Code"
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
-                children: "Description"
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
-                children: "Lec"
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
-                children: "Lab"
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
-                children: "Units"
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
-                children: "Room"
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
-                children: "Schedule"
-              })]
-            })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("tbody", {
-            children: items.slice(0, 300).map(function (it, idx) {
-              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("tr", {
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
-                  children: it.year_level
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
-                  children: it.section_label
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
-                  children: it.section_code
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
-                  children: it.subject_code
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
-                  style: {
-                    minWidth: 260
-                  },
-                  children: it.subject_description
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
-                  children: it.lec
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
-                  children: it.lab
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
-                  children: it.units
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
-                  children: it.room || ''
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
-                  style: {
-                    minWidth: 260
-                  },
-                  children: it.schedule || ''
-                })]
-              }, idx);
-            })
-          })]
-        })
-      }), items.length > 300 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-        style: {
-          color: 'var(--text-secondary)',
-          marginTop: 8
-        },
-        children: "Showing first 300 rows\u2026"
-      })]
-    })]
+    })
   });
 }
 

@@ -7,7 +7,7 @@ export default function Settings() {
         { key: 'departments', label: 'Departments', to: '/settings/departments' },
         { key: 'courses', label: 'Courses', to: '/settings/courses' },
         { key: 'subjects', label: 'Subjects', to: '/settings/subjects' },
-        { key: 'activeCourse', label: 'Active Course', to: '/settings/active-course' },
+        { key: 'calendar', label: 'Calendar', to: '/settings/calendar' },
     ];
 
     return (

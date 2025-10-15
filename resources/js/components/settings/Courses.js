@@ -219,39 +219,62 @@ export default function Courses() {
   const visible = filter ? list.filter(c => c.toLowerCase().includes(filter.toLowerCase())) : list;
 
   return (
-    <div className="module-page">
-      <div className="page-header">
-        <h1>Courses</h1>
-      </div>
+    <div className="students-page">
+      <div className="module-page">
+        <div className="page-header">
+          <h1>Courses</h1>
+        </div>
 
-      <div className="form-card">
-        <h2>Manage Courses</h2>
         {message && <div className="alert alert-info" style={{marginTop:8}}>{message}</div>}
-        <div className="module-form" style={{gap:12}}>
-          <div className="form-row" style={{gridTemplateColumns:'1fr auto auto'}}>
-            <input placeholder="Add a course" onKeyDown={(e)=>{ if(e.key==='Enter'){ addCourse(e.target.value); e.target.value=''; } }} />
-            <button type="button" className="btn btn-secondary" onClick={(e)=>{ const el = e.currentTarget.previousSibling; addCourse(el.value||''); el.value=''; }}>Add</button>
-            <button type="button" className="btn btn-secondary" onClick={resetToDefault}>Use Default List</button>
-          </div>
-          <div className="form-row" style={{gridTemplateColumns:'1fr auto'}}>
-            <input placeholder="Filter courses" value={filter} onChange={(e)=>setFilter(e.target.value)} />
-            <button type="button" className="btn btn-primary" onClick={saveCourses}>Save</button>
+
+        <div className="students-panel">
+          <div className="panel-header">
+            <h2>Course Management</h2>
+            <div className="panel-controls">
+              <input className="search-input" placeholder="Filter courses" value={filter} onChange={(e)=>setFilter(e.target.value)} />
+              <div className="filters">
+                <button type="button" className="btn btn-primary" onClick={saveCourses}>Save</button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="form-card">
-        <h2>Course List {loading ? '(Loading...)' : `(${visible.length})`}</h2>
-        <div className="module-list" style={{maxHeight: '50vh', overflow:'auto', border:'1px solid var(--border-color)', borderRadius:8}}>
-          {visible.length === 0 && (
-            <div style={{padding:12, color:'var(--text-secondary)'}}>No courses to show.</div>
-          )}
-          {visible.map((c, idx) => (
-            <div key={c + idx} className="list-row" style={{display:'grid', gridTemplateColumns:'1fr auto', gap:8, padding:'8px 12px', borderBottom:'1px solid var(--border-color)'}}>
-              <div style={{minWidth:0, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>{c}</div>
-              <button type="button" className="btn btn-secondary" onClick={()=>removeCourse(list.indexOf(c))}>Remove</button>
+        <div className="form-card">
+          <h2>Manage Courses</h2>
+          <div className="module-form" style={{gap:12}}>
+            <div className="form-row" style={{gridTemplateColumns:'1fr auto auto'}}>
+              <input placeholder="Add a course" onKeyDown={(e)=>{ if(e.key==='Enter'){ addCourse(e.target.value); e.target.value=''; } }} />
+              <button type="button" className="btn btn-secondary" onClick={(e)=>{ const el = e.currentTarget.previousSibling; addCourse(el.value||''); el.value=''; }}>Add</button>
+              <button type="button" className="btn btn-secondary" onClick={resetToDefault}>Use Default List</button>
             </div>
-          ))}
+          </div>
+        </div>
+
+        <div className="table-card">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Course</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading && (
+                <tr><td colSpan="2">Loading...</td></tr>
+              )}
+              {!loading && visible.length === 0 && (
+                <tr><td colSpan="2" style={{color:'var(--text-secondary)'}}>No courses to show.</td></tr>
+              )}
+              {!loading && visible.map((c, idx) => (
+                <tr key={c + idx}>
+                  <td style={{minWidth:0, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>{c}</td>
+                  <td className="actions">
+                    <button type="button" className="btn-chip btn-delete" onClick={()=>removeCourse(list.indexOf(c))}>Remove</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
