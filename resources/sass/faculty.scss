@@ -25,4 +25,74 @@
       align-items: center;
     }
   }
+
+  // Additional responsive adjustments specific to Faculty
+  .form-card {
+    overflow: hidden;
+  }
+
+  .module-form {
+    .form-row {
+      display: flex;
+      gap: $spacing-md;
+      flex-wrap: wrap;
+
+      // make inputs/selects flexible, but keep reasonable minimums
+      input, select, textarea, .avatar-input {
+        flex: 1 1 220px;
+        min-width: 160px;
+      }
+    }
+  }
+
+  .avatar-preview {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+
+    img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  }
+
+  .table-card {
+    // allow horizontal scrolling on small screens instead of breaking layout
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .data-table {
+    width: 100%;
+    min-width: 780px; // allow scroll when viewport is narrow
+    border-collapse: collapse;
+  }
+
+  .student-cell {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+
+    .avatar { width: 48px; height: 48px; border-radius: 50%; overflow: hidden; }
+    .info .name { font-weight: 600; }
+    .info .sub { color: var(--text-secondary); font-size: 0.85rem; }
+  }
+
+  // Responsive breakpoints
+  @media (max-width: 1024px) {
+    .module-form .form-row { flex-direction: row; }
+    .avatar-preview { width: 64px; height: 64px; }
+  }
+
+  @media (max-width: 768px) {
+    .panel-controls { flex-direction: column; align-items: stretch; gap: $spacing-sm; }
+    .module-form .form-row { flex-direction: column; }
+    .module-form .form-actions { display: flex; gap: $spacing-sm; flex-direction: column; }
+    .data-table { min-width: 640px; }
+  }
+
+  @media (max-width: 480px) {
+    .avatar-preview { width: 56px; height: 56px; }
+    .student-cell .avatar { width: 40px; height: 40px; }
+    .page-header { flex-direction: column; gap: $spacing-sm; }
+    .page-header h1 { font-size: 1.1rem; }
+  }
 }

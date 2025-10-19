@@ -74,44 +74,64 @@
     margin-top: $spacing-xl;
 
     .action-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: $radius-lg;
-      padding: $spacing-xl;
+  background: #17202a; /* darker card background to match reference */
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 18px;
+  padding: 24px 20px 32px;
       text-align: center;
-      transition: all 0.3s ease;
+      transition: transform 0.28s cubic-bezier(.2,.9,.2,1), box-shadow 0.28s;
+      min-height: 220px;
+      position: relative;
 
       &:hover {
-        transform: translateY(-4px);
-        box-shadow: $shadow-lg;
-        border-color: $primary-color;
+        transform: translateY(-6px);
+        box-shadow: 0 18px 40px rgba(11,18,30,0.45);
+        border-color: rgba($primary-color, 0.14);
       }
 
-      .action-icon {
-        width: 64px;
-        height: 64px;
-        border-radius: $radius-lg;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2rem;
-        margin: 0 auto $spacing-lg;
-        background: rgba($primary-color, 0.1);
-        color: $primary-color;
+      .action-image {
+        width: 100%;
+        border-radius: 14px;
+        overflow: hidden;
+        display: block;
+        margin: 0 0 18px 0;
+        img {
+          width: 100%;
+          height: 160px;
+          object-fit: cover;
+          display: block;
+        }
       }
 
-      h3 {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: var(--text-primary);
-        margin-bottom: $spacing-sm;
+      .action-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin: 8px 0 8px;
       }
 
-      p {
-        font-size: 0.85rem;
-        color: var(--text-secondary);
-        line-height: 1.5;
+      .action-desc {
+        font-size: 0.95rem;
+        color: #9fb0c7; /* light bluish description */
+        line-height: 1.6;
+        max-width: 420px;
+        margin: 0 auto;
       }
+    }
+  }
+}
+
+.dashboard-page {
+  .action-cards {
+    .link-card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .link-card:focus {
+      outline: 3px solid rgba($primary-color, 0.12);
+      outline-offset: 4px;
     }
   }
 }

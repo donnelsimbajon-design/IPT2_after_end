@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import ArchiveViewModal from './archive/ArchiveViewModal';
 
 export default function Archive() {
     const [archives, setArchives] = useState([]);
@@ -31,6 +32,8 @@ export default function Archive() {
         tags: '',
         notes: ''
     });
+    const [viewing, setViewing] = useState(null);
+    const [modalMode, setModalMode] = useState(null); // 'view'
 
     useEffect(() => {
         fetchArchives();
@@ -78,21 +81,49 @@ export default function Archive() {
     };
 
     const handleEdit = (archive) => {
-        setFormData({
-            ...archive,
-            document_date: archive.document_date ? archive.document_date.split('T')[0] : '',
-            archived_date: archive.archived_date ? archive.archived_date.split('T')[0] : '',
-        });
+        // Populate form for editing an archive
         setEditingId(archive.id);
+        setFormData({
+            archive_id: archive.archive_id || '',
+            title: archive.title || '',
+            description: archive.description || '',
+            document_type: archive.document_type || 'Report',
+            category: archive.category || '',
+            document_date: archive.document_date || '',
+            archived_date: archive.archived_date || '',
+            archived_by: archive.archived_by || '',
+            department: archive.department || '',
+            reference_number: archive.reference_number || '',
+            status: archive.status || 'Active',
+            tags: archive.tags || '',
+            notes: archive.notes || ''
+        });
         setShowForm(true);
+    };
+    const handleModalDelete = async (id) => {
+        // delete archive on server and remove from list, then close modal
+        try {
+            await axios.delete(`/api/archives/${id}`);
+            setArchives(prev => prev.filter(a => a.id !== id));
+            setMessage('Archive deleted successfully');
+        } catch (error) {
+            console.error('Error deleting archive:', error);
+            setMessage('Error deleting archive');
+        }
+        closeView();
+    };
+
+    const handleModalUnarchive = async (archive) => {
+        // reuse existing unarchive flow but close modal after
+        await handleUnarchive(archive);
+        closeView();
     };
 
     const handleDelete = async (id) => {
-        if (!confirm('Are you sure you want to delete this archive?')) return;
         try {
             await axios.delete(`/api/archives/${id}`);
+            setArchives(prev => prev.filter(a => a.id !== id));
             setMessage('Archive deleted successfully');
-            fetchArchives();
         } catch (error) {
             console.error('Error deleting archive:', error);
             setMessage('Error deleting archive');
@@ -101,31 +132,44 @@ export default function Archive() {
 
     const handleUnarchive = async (archive) => {
         try {
+            // Determine target and perform unarchive action
+            let targetRoute = null;
             if (archive.document_type === 'SchoolYear' && archive.reference_number) {
                 await axios.post(`/api/school-years/${archive.reference_number}/unarchive`);
                 setMessage('School year unarchived');
-                fetchArchives();
-                return;
-            }
-            if (archive.document_type === 'Student' && archive.reference_number) {
+                targetRoute = '/settings/school-year';
+            } else if (archive.document_type === 'Student' && archive.reference_number) {
                 const id = parseInt(archive.reference_number, 10);
                 if (Number.isFinite(id)) {
                     await axios.post(`/api/students/${id}/unarchive`);
                     setMessage('Student unarchived');
-                    fetchArchives();
-                    return;
+                    targetRoute = '/students';
                 }
-            }
-            if (archive.document_type === 'Faculty' && archive.reference_number) {
+            } else if (archive.document_type === 'Faculty' && archive.reference_number) {
                 const id = parseInt(archive.reference_number, 10);
                 if (Number.isFinite(id)) {
                     await axios.post(`/api/faculties/${id}/unarchive`);
                     setMessage('Faculty unarchived');
-                    fetchArchives();
-                    return;
+                    targetRoute = '/faculty';
                 }
+            } else {
+                setMessage('Unarchive is not available for this item.');
             }
-            setMessage('Unarchive is not available for this item.');
+
+            // Delete the archive record on the server so it is removed from Archive module
+            try {
+                await axios.delete(`/api/archives/${archive.id}`);
+            } catch (e) {
+                console.error('Failed to delete archive record:', e);
+            }
+
+            // Remove the unarchived item from local list so it disappears immediately
+            setArchives(prev => prev.filter(a => a.id !== archive.id));
+
+            // If there's a target module, navigate there after a short delay (allow message to show)
+            if (targetRoute) {
+                setTimeout(() => navigate(targetRoute), 600);
+            }
         } catch (error) {
             console.error('Error unarchiving:', error);
             setMessage('Error unarchiving');
@@ -133,18 +177,14 @@ export default function Archive() {
     };
 
     const handleView = (archive) => {
-        if (archive.document_type === 'Student') {
-            navigate('/students');
-            return;
-        }
-        if (archive.document_type === 'Faculty') {
-            navigate('/faculty');
-            return;
-        }
-        if (archive.document_type === 'SchoolYear') {
-            navigate('/settings/school-year');
-            return;
-        }
+        // Open modal view for archive details
+        setViewing(archive);
+        setModalMode('view');
+    };
+
+    const closeView = () => {
+        setViewing(null);
+        setModalMode(null);
     };
 
     const resetForm = () => {
@@ -196,10 +236,32 @@ export default function Archive() {
         <div className="module-page">
             <div className="page-header">
                 <h1>Archive Management</h1>
-                <button className="btn btn-primary" onClick={() => setShowForm(!showForm)}>
-                    {showForm ? 'Cancel' : '+ Add Archive'}
-                </button>
+                {/* Add Archive button removed per request */}
             </div>
+            {modalMode && (
+                <ArchiveViewModal
+                    initialData={viewing || undefined}
+                    onClose={closeView}
+                    onDelete={(id) => { handleDelete(id); closeView(); }}
+                    onUnarchive={async (archive) => {
+                        await handleUnarchive(archive);
+                        // After unarchive, close the modal
+                        closeView();
+                    }}
+                    onSave={async (id, updates) => {
+                        try {
+                            await axios.put(`/api/archives/${id}`, updates);
+                            // refresh list
+                            fetchArchives();
+                            setMessage('Archive updated');
+                        } catch (e) {
+                            console.error('Failed to save archive:', e);
+                            setMessage('Failed to save archive');
+                            throw e;
+                        }
+                    }}
+                />
+            )}
 
             {message && <div className="alert alert-info">{message}</div>}
 
@@ -360,14 +422,8 @@ export default function Archive() {
                                         </span>
                                     </td>
                                     <td className="actions">
-                                        <button className="btn-icon btn-edit" onClick={() => handleEdit(archive)} title="Edit">Edit</button>
-                                        {archive.status === 'Archived' && (
-                                            (archive.document_type === 'SchoolYear' || archive.document_type === 'Student' || archive.document_type === 'Faculty') && (
-                                                <button className="btn-icon" onClick={() => handleUnarchive(archive)} title="Unarchive">Unarchive</button>
-                                            )
-                                        )}
-                                        <button className="btn-icon" onClick={() => handleView(archive)} title="View">View</button>
-                                        <button className="btn-icon btn-delete" onClick={() => handleDelete(archive.id)} title="Delete">Delete</button>
+                                            {/* Actions: only View remains in list. Edit/Delete removed per request. */}
+                                            <button className="btn-chip" onClick={() => handleView(archive)} title="View">View</button>
                                     </td>
                                 </tr>
                             ))
@@ -375,6 +431,8 @@ export default function Archive() {
                     </tbody>
                 </table>
             </div>
+
+            
         </div>
         </div>
     );

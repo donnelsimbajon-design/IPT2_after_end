@@ -2,6 +2,15 @@ import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 
 export default function Departments() {
+  const DEFAULT_DEPARTMENTS = [
+    { code: 'CSP', name: 'Computer Science Program' },
+    { code: 'AP', name: 'Accountancy Program' },
+    { code: 'BAP', name: 'Business Administration Program' },
+    { code: 'NP', name: 'Nursing Program' },
+    { code: 'ICJ', name: 'Criminology Program' },
+    { code: 'TEP', name: 'Teacher Education Program' },
+    { code: 'ETP', name: 'Engineering Program' },
+  ];
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState(null);
@@ -92,6 +101,27 @@ export default function Departments() {
     }
   };
 
+  const importDefaults = async () => {
+    if (!confirm('Import default departments? This will add any missing departments.')) return;
+    try {
+      // build a set of existing codes
+      const existing = new Set(departments.map(d => String(d.code).toUpperCase()));
+      const toCreate = DEFAULT_DEPARTMENTS.filter(d => !existing.has(d.code.toUpperCase()));
+      for (const dept of toCreate) {
+        await axios.post('/api/departments', { code: dept.code, name: dept.name, status: 'Active' });
+      }
+      if (toCreate.length === 0) {
+        setMessage('All default departments already exist.');
+      } else {
+        setMessage(`Imported ${toCreate.length} departments.`);
+      }
+      await fetchDepartments();
+    } catch (e) {
+      console.error('Failed to import defaults', e);
+      setMessage('Failed to import default departments');
+    }
+  };
+
   if (loading) return <div className="loading">Loading departments...</div>;
 
   return (
@@ -99,7 +129,10 @@ export default function Departments() {
       <div className="module-page">
         <div className="page-header">
           <h1>Departments</h1>
-          <button className="btn btn-primary" onClick={() => setShowForm(v => !v)}>{showForm ? 'Cancel' : '+ Add Department'}</button>
+          <div style={{display:'flex', gap: '8px', alignItems: 'center'}}>
+            <button className="btn btn-primary" onClick={() => setShowForm(v => !v)}>{showForm ? 'Cancel' : '+ Add Department'}</button>
+            <button className="btn btn-secondary" onClick={importDefaults}>Import Default Departments</button>
+          </div>
         </div>
 
         {message && <div className="alert alert-info">{message}</div>}

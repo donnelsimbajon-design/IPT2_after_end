@@ -13041,40 +13041,56 @@ body {
   margin-top: 2rem;
 }
 .dashboard-page .action-cards .action-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 2rem;
+  background: #17202a; /* darker card background to match reference */
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 18px;
+  padding: 24px 20px 32px;
   text-align: center;
-  transition: all 0.3s ease;
+  transition: transform 0.28s cubic-bezier(0.2, 0.9, 0.2, 1), box-shadow 0.28s;
+  min-height: 220px;
+  position: relative;
 }
 .dashboard-page .action-cards .action-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  border-color: #8B1538;
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(11, 18, 30, 0.45);
+  border-color: rgba(139, 21, 56, 0.14);
 }
-.dashboard-page .action-cards .action-card .action-icon {
-  width: 64px;
-  height: 64px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  margin: 0 auto 1.5rem;
-  background: rgba(139, 21, 56, 0.1);
-  color: #8B1538;
+.dashboard-page .action-cards .action-card .action-image {
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  display: block;
+  margin: 0 0 18px 0;
 }
-.dashboard-page .action-cards .action-card h3, .dashboard-page .action-cards .action-card .h3 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 0.75rem;
+.dashboard-page .action-cards .action-card .action-image img {
+  width: 100%;
+  height: 160px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  display: block;
 }
-.dashboard-page .action-cards .action-card p {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  line-height: 1.5;
+.dashboard-page .action-cards .action-card .action-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 8px 0 8px;
+}
+.dashboard-page .action-cards .action-card .action-desc {
+  font-size: 0.95rem;
+  color: #9fb0c7; /* light bluish description */
+  line-height: 1.6;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.dashboard-page .action-cards .link-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+.dashboard-page .action-cards .link-card:focus {
+  outline: 3px solid rgba(139, 21, 56, 0.12);
+  outline-offset: 4px;
 }
 
 .settings-landing .lead {
@@ -14701,6 +14717,102 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
   align-items: center;
+}
+.faculty-page .form-card {
+  overflow: hidden;
+}
+.faculty-page .module-form .form-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.faculty-page .module-form .form-row input, .faculty-page .module-form .form-row select, .faculty-page .module-form .form-row textarea, .faculty-page .module-form .form-row .avatar-input {
+  flex: 1 1 220px;
+  min-width: 160px;
+}
+.faculty-page .avatar-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.faculty-page .avatar-preview img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  display: block;
+}
+.faculty-page .table-card {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.faculty-page .data-table {
+  width: 100%;
+  min-width: 780px;
+  border-collapse: collapse;
+}
+.faculty-page .student-cell {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.faculty-page .student-cell .avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.faculty-page .student-cell .info .name {
+  font-weight: 600;
+}
+.faculty-page .student-cell .info .sub {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+@media (max-width: 1024px) {
+  .faculty-page .module-form .form-row {
+    flex-direction: row;
+  }
+  .faculty-page .avatar-preview {
+    width: 64px;
+    height: 64px;
+  }
+}
+@media (max-width: 768px) {
+  .faculty-page .panel-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  .faculty-page .module-form .form-row {
+    flex-direction: column;
+  }
+  .faculty-page .module-form .form-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-direction: column;
+  }
+  .faculty-page .data-table {
+    min-width: 640px;
+  }
+}
+@media (max-width: 480px) {
+  .faculty-page .avatar-preview {
+    width: 56px;
+    height: 56px;
+  }
+  .faculty-page .student-cell .avatar {
+    width: 40px;
+    height: 40px;
+  }
+  .faculty-page .page-header {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .faculty-page .page-header h1, .faculty-page .page-header .h1 {
+    font-size: 1.1rem;
+  }
 }
 
 .reports-page .page-header {

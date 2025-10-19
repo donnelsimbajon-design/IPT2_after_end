@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
+import FacultyViewModal from './faculty/FacultyViewModal';
+import FacultyEditModal from './faculty/FacultyEditModal';
 
 const DEPARTMENTS = [
     { code: 'CSP', name: 'Computer Science Program' },
@@ -14,33 +16,15 @@ const DEPARTMENTS = [
 export default function Faculty() {
     const [faculties, setFaculties] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [showForm, setShowForm] = useState(false);
-    const [editingId, setEditingId] = useState(null);
     const [message, setMessage] = useState(null);
+
+    // modal / view state (match Students pattern)
+    const [viewing, setViewing] = useState(null);
+    const [modalMode, setModalMode] = useState(null); // 'view' | 'edit'
+    const [showForm, setShowForm] = useState(false);
+    const [editingData, setEditingData] = useState(null);
+
     const [filters, setFilters] = useState({ department: '', search: '' });
-    const [formData, setFormData] = useState({
-        faculty_id: '',
-        first_name: '',
-        last_name: '',
-        middle_name: '',
-        email: '',
-        phone: '',
-        date_of_birth: '',
-        gender: '',
-        address: '',
-        city: '',
-        state: '',
-        zip_code: '',
-        country: 'Philippines',
-        department: '',
-        position: '',
-        specialization: '',
-        hire_date: '',
-        employment_type: 'Full-time',
-        status: 'Active'
-    });
-    const [avatarFile, setAvatarFile] = useState(null);
-    const [avatarPreview, setAvatarPreview] = useState(null);
 
     useEffect(() => {
         fetchFaculties();
@@ -53,9 +37,19 @@ export default function Faculty() {
         }
     }, [message]);
 
+    useEffect(() => {
+        fetchFaculties();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [filters]);
+
     const fetchFaculties = async () => {
         try {
-            const response = await axios.get('/api/faculties');
+            const response = await axios.get('/api/faculties', {
+                params: {
+                    q: filters.search || undefined,
+                    department: filters.department || undefined,
+                }
+            });
             setFaculties(response.data);
         } catch (error) {
             console.error('Error fetching faculties:', error);
@@ -65,44 +59,28 @@ export default function Faculty() {
         }
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            let saved;
-            if (editingId) {
-                const res = await axios.put(`/api/faculties/${editingId}`, formData);
-                saved = res.data.faculty ?? res.data;
-                setMessage('Faculty updated successfully');
-            } else {
-                const res = await axios.post('/api/faculties', formData);
-                saved = res.data.faculty ?? res.data;
-                setMessage('Faculty created successfully');
-            }
-
-            if (avatarFile && saved?.id) {
-                const fd = new FormData();
-                fd.append('avatar', avatarFile);
-                await axios.post(`/api/faculties/${saved.id}/avatar`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
-            }
-
-            await fetchFaculties();
-            resetForm();
-        } catch (error) {
-            console.error('Error saving faculty:', error);
-            setMessage(error.response?.data?.message || 'Error saving faculty');
-        }
+    const openAdd = () => {
+        setEditingData(null);
+        setShowForm(true);
+        setViewing(null);
+        setModalMode(null);
     };
 
     const handleEdit = (faculty) => {
-        setFormData(faculty);
-        setEditingId(faculty.id);
+        setEditingData(faculty || null);
         setShowForm(true);
-        setAvatarFile(null);
-        if (faculty.avatar_path) {
-            setAvatarPreview(faculty.avatar_path.startsWith('http') ? faculty.avatar_path : `/${faculty.avatar_path}`);
-        } else {
-            setAvatarPreview(null);
-        }
+        setViewing(null);
+        setModalMode(null);
+    };
+
+    const openView = (faculty) => {
+        setViewing(faculty);
+        setModalMode('view');
+    };
+
+    const closeView = () => {
+        setViewing(null);
+        setModalMode(null);
     };
 
     const handleDelete = async (id) => {
@@ -115,50 +93,6 @@ export default function Faculty() {
             console.error('Error deleting faculty:', error);
             setMessage('Error deleting faculty');
         }
-    };
-
-    const resetForm = () => {
-        setFormData({
-            faculty_id: '',
-            first_name: '',
-            last_name: '',
-            middle_name: '',
-            email: '',
-            phone: '',
-            date_of_birth: '',
-            gender: '',
-            address: '',
-            city: '',
-            state: '',
-            zip_code: '',
-            country: 'Philippines',
-            department: '',
-            position: '',
-            specialization: '',
-            hire_date: '',
-            employment_type: 'Full-time',
-            status: 'Active'
-        });
-        setEditingId(null);
-        setShowForm(false);
-        setAvatarFile(null);
-        setAvatarPreview(null);
-    };
-
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
-    const handleAvatarChange = (e) => {
-        const file = e.target.files && e.target.files[0];
-        if (file) {
-            setAvatarFile(file);
-            try { setAvatarPreview(URL.createObjectURL(file)); } catch { setAvatarPreview(null); }
-        }
-    };
-
-    const handleFilterChange = (e) => {
-        setFilters({ ...filters, [e.target.name]: e.target.value });
     };
 
     const createArchiveFromFaculty = async (faculty) => {
@@ -205,11 +139,13 @@ export default function Faculty() {
         }
     };
 
+    const departments = useMemo(() => DEPARTMENTS.map(d => d.code), []);
+
     if (loading) return <div className="loading">Loading faculty...</div>;
 
     const filteredFaculties = faculties.filter(f => {
         const matchesDept = filters.department ? String(f.department).toLowerCase() === String(filters.department).toLowerCase() : true;
-        const q = filters.search.trim().toLowerCase();
+        const q = (filters.search || '').trim().toLowerCase();
         const matchesSearch = q
             ? (`${f.first_name} ${f.last_name}`.toLowerCase().includes(q)
                || String(f.email || '').toLowerCase().includes(q)
@@ -223,9 +159,7 @@ export default function Faculty() {
         <div className="module-page">
             <div className="page-header">
                 <h1>Faculty Management</h1>
-                <button className="btn btn-primary" onClick={() => setShowForm(!showForm)}>
-                    {showForm ? 'Cancel' : '+ Add Faculty'}
-                </button>
+                <button className="btn btn-primary" onClick={openAdd}>+ Add Faculty</button>
             </div>
 
             {message && <div className="alert alert-info">{message}</div>}
@@ -239,14 +173,14 @@ export default function Faculty() {
                             name="search"
                             placeholder="Search"
                             value={filters.search}
-                            onChange={handleFilterChange}
+                            onChange={(e)=>setFilters({...filters, search: e.target.value})}
                         />
                         <div className="filters">
                             <select
                                 className="filter"
                                 name="department"
                                 value={filters.department}
-                                onChange={handleFilterChange}
+                                onChange={(e)=>setFilters({...filters, department: e.target.value})}
                             >
                                 <option value="">All Departments</option>
                                 {DEPARTMENTS.map(d => (
@@ -259,82 +193,16 @@ export default function Faculty() {
             </div>
 
             {showForm && (
-                <div className="form-card">
-                    <h2>{editingId ? 'Edit Faculty' : 'Add New Faculty'}</h2>
-                    <form onSubmit={handleSubmit} className="module-form">
-                        <div className="form-row">
-                            <div className="avatar-input">
-                                <div className="avatar-preview">
-                                    {avatarPreview ? (
-                                        <img src={avatarPreview} alt="Faculty avatar preview" />
-                                    ) : (
-                                        <div className="placeholder">{(formData.first_name || formData.last_name || 'F').toString().charAt(0).toUpperCase()}</div>
-                                    )}
-                                </div>
-                                <label className="btn btn-secondary" style={{marginTop: '8px'}}>
-                                    Upload Photo
-                                    <input type="file" accept="image/*" onChange={handleAvatarChange} style={{display:'none'}} />
-                                </label>
-                            </div>
-                            <input name="faculty_id" placeholder="Faculty ID *" value={formData.faculty_id} onChange={handleChange} required />
-                            <input name="first_name" placeholder="First Name *" value={formData.first_name} onChange={handleChange} required />
-                            <input name="last_name" placeholder="Last Name *" value={formData.last_name} onChange={handleChange} required />
-                        </div>
-                        <div className="form-row">
-                            <input name="middle_name" placeholder="Middle Name" value={formData.middle_name} onChange={handleChange} />
-                            <input name="email" type="email" placeholder="Email *" value={formData.email} onChange={handleChange} required />
-                            <input name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange} />
-                        </div>
-                        <div className="form-row">
-                            <input name="date_of_birth" type="date" placeholder="Date of Birth" value={formData.date_of_birth} onChange={handleChange} />
-                            <select name="gender" value={formData.gender} onChange={handleChange}>
-                                <option value="">Select Gender</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                                <option value="Other">Other</option>
-                            </select>
-                            <input name="hire_date" type="date" placeholder="Hire Date" value={formData.hire_date} onChange={handleChange} />
-                        </div>
-                        <div className="form-row">
-                            <select name="department" value={formData.department} onChange={handleChange}>
-                                <option value="">Select Department</option>
-                                {DEPARTMENTS.map(d => (
-                                    <option key={d.code} value={d.code}>{d.code} - {d.name}</option>
-                                ))}
-                            </select>
-                            <input name="position" placeholder="Position" value={formData.position} onChange={handleChange} />
-                            <input name="specialization" placeholder="Specialization" value={formData.specialization} onChange={handleChange} />
-                        </div>
-                        <div className="form-row">
-                            <select name="employment_type" value={formData.employment_type} onChange={handleChange}>
-                                <option value="Full-time">Full-time</option>
-                                <option value="Part-time">Part-time</option>
-                                <option value="Contract">Contract</option>
-                            </select>
-                            <select name="status" value={formData.status} onChange={handleChange}>
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                                <option value="On Leave">On Leave</option>
-                                <option value="Archived">Archived</option>
-                            </select>
-                        </div>
-                        <div className="form-row">
-                            <input name="address" placeholder="Address" value={formData.address} onChange={handleChange} />
-                            <input name="city" placeholder="City" value={formData.city} onChange={handleChange} />
-                        </div>
-                        <div className="form-row">
-                            <input name="state" placeholder="State" value={formData.state} onChange={handleChange} />
-                            <input name="zip_code" placeholder="Zip Code" value={formData.zip_code} onChange={handleChange} />
-                            <input name="country" placeholder="Country" value={formData.country} onChange={handleChange} />
-                        </div>
-                        <div className="form-actions">
-                            <button type="submit" className="btn btn-primary">
-                                {editingId ? 'Update' : 'Create'} Faculty
-                            </button>
-                            <button type="button" className="btn btn-secondary" onClick={resetForm}>Cancel</button>
-                        </div>
-                    </form>
-                </div>
+                <FacultyEditModal
+                    initialData={editingData || undefined}
+                    onClose={() => { setShowForm(false); setEditingData(null); }}
+                    onSaved={(saved) => {
+                        setMessage(editingData ? 'Faculty updated successfully' : 'Faculty created successfully');
+                        setShowForm(false);
+                        setEditingData(null);
+                        fetchFaculties();
+                    }}
+                />
             )}
 
             <div className="table-card">
@@ -374,21 +242,26 @@ export default function Faculty() {
                                 <td>{faculty.department}</td>
                                 <td>{faculty.position}</td>
                                 <td>{faculty.employment_type}</td>
-                                <td><span className={`badge badge-${faculty.status.toLowerCase().replace(' ', '-')}`}>{faculty.status}</span></td>
+                                <td><span className={`badge badge-${(faculty.status || 'Active').toLowerCase().replace(' ', '-')}`}>{faculty.status || 'Active'}</span></td>
                                 <td className="actions">
-                                    <button className="btn-chip btn-edit" onClick={() => handleEdit(faculty)}>Edit</button>
-                                    <button className="btn-chip btn-delete" onClick={() => handleDelete(faculty.id)}>Delete</button>
-                                    {faculty.status !== 'Archived' ? (
-                                        <button className="btn-chip" onClick={() => handleArchive(faculty)}>Archive</button>
-                                    ) : (
-                                        <button className="btn-chip" onClick={() => handleUnarchive(faculty)}>Unarchive</button>
-                                    )}
+                                    <button className="btn-chip" onClick={() => openView(faculty)}>View</button>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
+
+            {modalMode && (
+                <FacultyViewModal
+                    initialData={viewing || undefined}
+                    onClose={closeView}
+                    onEdit={(faculty)=>{ handleEdit(faculty); }}
+                    onDelete={(id) => { handleDelete(id); closeView(); }}
+                    onArchive={(faculty) => { handleArchive(faculty); closeView(); }}
+                    onUnarchive={(faculty) => { handleUnarchive(faculty); closeView(); }}
+                />
+            )}
         </div>
         </div>
     );

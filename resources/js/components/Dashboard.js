@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 export default function Dashboard() {
@@ -58,21 +59,27 @@ export default function Dashboard() {
             </div>
 
             <div className="action-cards">
-                <div className="action-card">
-                    <div className="action-icon"></div>
-                    <h3>Manage Departments</h3>
-                    <p>Add, edit, or remove academic departments</p>
-                </div>
-                <div className="action-card">
-                    <div className="action-icon"></div>
-                    <h3>Manage Faculty</h3>
-                    <p>Add new faculty members and manage existing ones</p>
-                </div>
-                <div className="action-card">
-                    <div className="action-icon"></div>
-                    <h3>Manage Students</h3>
-                    <p>Add new students and manage student records</p>
-                </div>
+                <Link to="/settings/departments" className="action-card link-card">
+                    <div className="action-image">
+                        <img src="/images/Department.png" alt="Departments" />
+                    </div>
+                    <h3 className="action-title">Manage Departments</h3>
+                    <p className="action-desc">Add, edit, or remove academic departments</p>
+                </Link>
+                <Link to="/faculty" className="action-card link-card">
+                    <div className="action-image">
+                        <img src="/images/Faculty.png" alt="Faculty" />
+                    </div>
+                    <h3 className="action-title">Manage Faculty</h3>
+                    <p className="action-desc">Add new faculty members and manage existing ones</p>
+                </Link>
+                <Link to="/students" className="action-card link-card">
+                    <div className="action-image">
+                        <img src="/images/student.png" alt="Students" />
+                    </div>
+                    <h3 className="action-title">Manage Students</h3>
+                    <p className="action-desc">Add new students and manage student records</p>
+                </Link>
             </div>
         </div>
     );
