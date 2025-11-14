@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import axios from 'axios';
+import { FiDownload, FiPrinter, FiEye } from 'react-icons/fi';
 
 export default function Subjects() {
   const [raw, setRaw] = useState('');
@@ -457,9 +458,18 @@ export default function Subjects() {
               </div>
             </div>
             <div className="form-actions" style={{justifyContent:'flex-end'}}>
-              <button type="button" className="btn btn-secondary" onClick={exportCSV} disabled={!browseResults.length}>Export CSV</button>
-              <button type="button" className="btn btn-secondary" onClick={printResults} disabled={!browseResults.length}>Print</button>
-              <button type="button" className="btn btn-primary" onClick={fetchOfferings} disabled={!browseCourse || browseLoading}>{browseLoading ? 'Loading…' : 'View Sections'}</button>
+              <button type="button" className="btn btn-secondary" onClick={exportCSV} disabled={!browseResults.length}>
+                <FiDownload style={{ marginRight: '6px' }} />
+                Export CSV
+              </button>
+              <button type="button" className="btn btn-secondary" onClick={printResults} disabled={!browseResults.length}>
+                <FiPrinter style={{ marginRight: '6px' }} />
+                Print
+              </button>
+              <button type="button" className="btn btn-primary" onClick={fetchOfferings} disabled={!browseCourse || browseLoading}>
+                <FiEye style={{ marginRight: '6px' }} />
+                {browseLoading ? 'Loading…' : 'View Sections'}
+              </button>
             </div>
           </div>
           {browseError && <div className="alert alert-info" style={{marginTop:8}}>{browseError}</div>}

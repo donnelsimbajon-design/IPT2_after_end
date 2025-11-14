@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
+import { FiMapPin } from 'react-icons/fi';
 
 export default function AccountSettings() {
   const { checkAuth } = useAuth();
@@ -19,6 +20,13 @@ export default function AccountSettings() {
   const [showIpLayers, setShowIpLayers] = useState(true);
   const [history, setHistory] = useState([]);
   const [historyLoading, setHistoryLoading] = useState(false);
+  const [passwordForm, setPasswordForm] = useState({ 
+    current_password: '', 
+    new_password: '', 
+    new_password_confirmation: '' 
+  });
+  const [passwordMessage, setPasswordMessage] = useState(null);
+  const [passwordError, setPasswordError] = useState(null);
 
   const mapRef = useRef(null);
   const mapElRef = useRef(null);
@@ -265,6 +273,37 @@ export default function AccountSettings() {
       try { await checkAuth(); } catch {}
     } catch (e) {
       setMessage(e.response?.data?.message || 'Failed to clear background');
+    }
+  };
+
+  const onChangePassword = async (e) => {
+    e.preventDefault();
+    setPasswordMessage(null);
+    setPasswordError(null);
+
+    // Client-side validation
+    if (passwordForm.new_password !== passwordForm.new_password_confirmation) {
+      setPasswordError('New passwords do not match');
+      return;
+    }
+
+    if (passwordForm.new_password.length < 8) {
+      setPasswordError('New password must be at least 8 characters');
+      return;
+    }
+
+    try {
+      const response = await axios.post('/api/account/password', passwordForm);
+      setPasswordMessage(response.data.message);
+      setPasswordForm({ current_password: '', new_password: '', new_password_confirmation: '' });
+    } catch (e) {
+      const errorMsg = e.response?.data?.message || 'Failed to change password';
+      const errors = e.response?.data?.errors;
+      if (errors && errors.current_password) {
+        setPasswordError(errors.current_password[0]);
+      } else {
+        setPasswordError(errorMsg);
+      }
     }
   };
 
@@ -537,6 +576,56 @@ export default function AccountSettings() {
         </div>
 
         <div className="form-card">
+          <h2>Change Password</h2>
+          {passwordMessage && <div className="alert alert-success">{passwordMessage}</div>}
+          {passwordError && <div className="alert alert-error">{passwordError}</div>}
+          <form onSubmit={onChangePassword}>
+            <div className="form-row">
+              <div>
+                <label>Current Password</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  value={passwordForm.current_password}
+                  onChange={(e) => setPasswordForm({ ...passwordForm, current_password: e.target.value })}
+                  required
+                />
+              </div>
+            </div>
+            <div className="form-row">
+              <div>
+                <label>New Password</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  value={passwordForm.new_password}
+                  onChange={(e) => setPasswordForm({ ...passwordForm, new_password: e.target.value })}
+                  required
+                  minLength="8"
+                />
+                <small style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>
+                  Minimum 8 characters
+                </small>
+              </div>
+            </div>
+            <div className="form-row">
+              <div>
+                <label>Confirm New Password</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  value={passwordForm.new_password_confirmation}
+                  onChange={(e) => setPasswordForm({ ...passwordForm, new_password_confirmation: e.target.value })}
+                  required
+                  minLength="8"
+                />
+              </div>
+            </div>
+            <button type="submit" className="btn btn-primary">Change Password</button>
+          </form>
+        </div>
+
+        <div className="form-card">
           <h2>Security</h2>
           <div className="form-row" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}>
             <div>
@@ -618,7 +707,12 @@ export default function AccountSettings() {
                   <div className="when">{h.created_at ? new Date(h.created_at).toLocaleString() : ''}</div>
                   <div className="device">{h.device?.label || 'Unknown'}</div>
                   <div className="ip">{h.ip_address || 'N/A'}</div>
-                  <div className="actions"><button type="button" className="btn btn-secondary" onClick={() => viewHistoryOnMap(h)}>View on Map</button></div>
+                  <div className="actions">
+                    <button type="button" className="btn btn-secondary" onClick={() => viewHistoryOnMap(h)}>
+                      <FiMapPin />
+                      <span style={{ marginLeft: '6px' }}>View on Map</span>
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

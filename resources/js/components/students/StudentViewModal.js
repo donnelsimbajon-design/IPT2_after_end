@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 export default function StudentViewModal({
   initialData,
@@ -9,9 +9,25 @@ export default function StudentViewModal({
   onUnarchive,
 }) {
   const student = initialData || null;
+  const fmtDMY = (s) => {
+    if (!s) return '-';
+    try {
+      const d = new Date(s);
+      const dd = String(d.getDate()).padStart(2,'0');
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      const yyyy = d.getFullYear();
+      return `${dd}/${mm}/${yyyy}`;
+    } catch { return '-'; }
+  };
+
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape' && onClose) onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
 
   return (
-    <div className="student-view-modal">
+    <div className="student-view-modal" onMouseDown={(e)=>{ if (e.target === e.currentTarget && onClose) onClose(); }}>
       <div className="student-view-card">
         <div className="page-header">
           <h2>Student Details</h2>
@@ -30,13 +46,26 @@ export default function StudentViewModal({
             <div className="sub">{student?.email}</div>
           </div>
         </div>
+        <div className="meta-strip">
+          <div className="pill id-pill">ID: {student?.student_id || '-'}</div>
+          <div className="pill dept-pill">Department: {student?.department || student?.program || '-'}</div>
+          <div>
+            <span className={`badge badge-${String(student?.status || 'Active').toLowerCase().replace(' ', '-')}`}>{student?.status || 'Active'}</span>
+          </div>
+        </div>
         <div className="details">
           <div><strong>Student ID:</strong> {student?.student_id || '-'}</div>
           <div><strong>Status:</strong> {student?.status || 'Active'}</div>
           <div><strong>Department:</strong> {student?.department || student?.program || '-'}</div>
           <div><strong>Course:</strong> {student?.course || '-'}</div>
           <div><strong>Year Level:</strong> {student?.year_level || '-'}</div>
-          <div><strong>Enrollment Date:</strong> {student?.enrollment_date ? new Date(student.enrollment_date).toISOString().slice(0,10) : '-'}</div>
+          <div><strong>School Year(s):</strong> {
+            student?.school_years && student.school_years.length > 0 
+              ? student.school_years.map(sy => sy.label).join(', ')
+              : '-'
+          }</div>
+          <div><strong>Semester:</strong> {student?.semester?.name || '-'}</div>
+          <div><strong>Enrollment Date:</strong> {fmtDMY(student?.enrollment_date)}</div>
           <div><strong>Phone:</strong> {student?.phone || '-'}</div>
           <div><strong>Region:</strong> {student?.region || '-'}</div>
           <div><strong>Province:</strong> {student?.province || '-'}</div>

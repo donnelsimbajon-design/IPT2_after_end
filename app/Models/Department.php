@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Department extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'departments';
 
     protected $fillable = [
@@ -16,6 +19,8 @@ class Department extends Model
         'email',
         'status',
     ];
+
+    protected $dates = ['deleted_at'];
 
     public function courses(): HasMany
     {

@@ -2,6 +2,17 @@ import React, { useMemo, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { useTheme } from './ThemeContext';
+import { 
+    FiHome, 
+    FiUsers, 
+    FiUserCheck, 
+    FiFileText, 
+    FiArchive, 
+    FiSettings, 
+    FiLogOut,
+    FiMenu,
+    FiUser
+} from 'react-icons/fi';
 
 export default function Layout({ children }) {
     const { user, logout } = useAuth();
@@ -40,8 +51,10 @@ export default function Layout({ children }) {
         }
         if (user.bg_image_path) {
             document.documentElement.style.setProperty('--app-bg-image', `url('/${user.bg_image_path}')`);
+            document.documentElement.style.setProperty('--app-bg-opacity', '0.2'); // Show uploaded background
         } else {
-            document.documentElement.style.setProperty('--app-bg-image', `url('/images/image.png')`);
+            document.documentElement.style.setProperty('--app-bg-image', 'none');
+            document.documentElement.style.setProperty('--app-bg-opacity', '0'); // No background
         }
     }, [user]);
 
@@ -53,22 +66,40 @@ export default function Layout({ children }) {
                 </div>
                 <ul className="nav-menu">
                     <li className={isActive('/dashboard') ? 'active' : ''}>
-                        <Link to="/dashboard"><span className="label">Dashboard</span></Link>
+                        <Link to="/dashboard">
+                            <FiHome className="nav-icon" />
+                            <span className="label">Dashboard</span>
+                        </Link>
                     </li>
                     <li className={isActive('/faculty') ? 'active' : ''}>
-                        <Link to="/faculty"><span className="label">Faculty</span></Link>
+                        <Link to="/faculty">
+                            <FiUserCheck className="nav-icon" />
+                            <span className="label">Faculty</span>
+                        </Link>
                     </li>
                     <li className={isActive('/students') ? 'active' : ''}>
-                        <Link to="/students"><span className="label">Students</span></Link>
+                        <Link to="/students">
+                            <FiUsers className="nav-icon" />
+                            <span className="label">Students</span>
+                        </Link>
                     </li>
                     <li className={isActive('/reports') ? 'active' : ''}>
-                        <Link to="/reports"><span className="label">Report</span></Link>
+                        <Link to="/reports">
+                            <FiFileText className="nav-icon" />
+                            <span className="label">Report</span>
+                        </Link>
                     </li>
                     <li className={isActive('/archives') ? 'active' : ''}>
-                        <Link to="/archives"><span className="label">Archives</span></Link>
+                        <Link to="/archives">
+                            <FiArchive className="nav-icon" />
+                            <span className="label">Archives</span>
+                        </Link>
                     </li>
                     <li className={isSettingsSection ? 'active' : ''}>
-                        <Link to="/settings"><span className="label">System Settings</span></Link>
+                        <Link to="/settings">
+                            <FiSettings className="nav-icon" />
+                            <span className="label">System Settings</span>
+                        </Link>
                     </li>
                 </ul>
                 <div className="sidebar-footer">
@@ -90,6 +121,7 @@ export default function Layout({ children }) {
                         </div>
                     </div>
                     <button className="btn-logout" onClick={handleLogout}>
+                        <FiLogOut className="nav-icon" />
                         <span className="label">Logout</span>
                     </button>
                 </div>
@@ -104,7 +136,7 @@ export default function Layout({ children }) {
                             aria-label={navCollapsed ? 'Open navigation' : 'Close navigation'}
                             title={navCollapsed ? 'Open navigation' : 'Close navigation'}
                         >
-                            ☰
+                            <FiMenu />
                         </button>
                         <div className="brand" style={{display:'flex', alignItems:'center', gap:'12px'}}>
                             <img className="logo-small" src="/images/hcc-logo.png" alt="HCC" style={{width:32, height:32, borderRadius:8}}
@@ -155,10 +187,16 @@ export default function Layout({ children }) {
                                 </div>
                                 <ul className="dropdown-list">
                                     <li className="dropdown-item">
-                                        <Link to="/account" onClick={()=>setUserMenuOpen(false)}>Settings</Link>
+                                        <Link to="/account" onClick={()=>setUserMenuOpen(false)}>
+                                            <FiUser className="dropdown-icon" />
+                                            My Profile
+                                        </Link>
                                     </li>
                                     <li className="dropdown-item">
-                                        <button onClick={handleLogout}>Logout</button>
+                                        <button onClick={handleLogout}>
+                                            <FiLogOut className="dropdown-icon" />
+                                            Logout
+                                        </button>
                                     </li>
                                 </ul>
                             </div>

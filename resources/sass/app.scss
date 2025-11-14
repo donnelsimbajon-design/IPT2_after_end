@@ -12,8 +12,13 @@
 @import 'layout.scss';
 @import 'dashboard.scss';
 @import 'settings.scss';
+@import 'settings-tabbed.scss'; // Modern tabbed settings design
 @import 'students.scss';
 @import 'faculty.scss';
 @import 'reports.scss';
+@import 'reports-modern.scss'; // Modern minimalist reports design
+@import 'reports-modal-modern.scss'; // Modern minimalist report results modal
 @import 'archives.scss';
+@import 'archive-modern.scss'; // Modern minimalist archive design
+@import 'courses-modern.scss'; // Modern minimalist courses design with React icons
 @import 'account.scss';

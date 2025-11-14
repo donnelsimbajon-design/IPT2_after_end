@@ -4,57 +4,240 @@
 .faculty-page {
   @extend .students-page;
 
+  // Minimalist page header
+  .page-header {
+    margin-bottom: 2rem;
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+
+    .btn-primary {
+      height: 46px;
+      padding: 0 2rem;
+      border-radius: 50px;
+      font-weight: 500;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba($primary-color, 0.3), 0 0 0 3px rgba($secondary-color, 0.15);
+      }
+    }
+
+    .header-filter {
+      select {
+        height: 46px;
+        padding: 0 1.25rem;
+        border-radius: 50px;
+        border: 1.5px solid var(--border-color);
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 16px;
+        padding-right: 3rem;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+        &:focus {
+          border-color: $primary-color;
+          box-shadow: 0 0 0 4px rgba($primary-color, 0.06), 0 2px 8px rgba(0, 0, 0, 0.08);
+          transform: translateY(-1px);
+        }
+      }
+    }
+  }
+
+  // Minimalist filter card with pill-shaped inputs
   .filters-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: $radius-lg;
-    padding: $spacing-lg;
-    margin-bottom: $spacing-lg;
+    border-radius: 24px;
+    padding: 1.5rem 2rem;
+    margin-bottom: $spacing-xl;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
 
     h3 {
       font-size: 1rem;
       font-weight: 600;
       color: var(--text-primary);
-      margin-bottom: $spacing-md;
+      margin-bottom: 1.25rem;
     }
 
     .form-row {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: $spacing-md;
+      gap: 1rem;
       align-items: center;
-    }
-  }
 
-  // Additional responsive adjustments specific to Faculty
-  .form-card {
-    overflow: hidden;
-  }
+      > input,
+      > select {
+        padding: 0 1.25rem;
+        height: 46px;
+        border-radius: 50px;
+        border: 1.5px solid var(--border-color);
+        background: var(--bg-card);
+        color: var(--text-primary);
+        font-size: 0.9rem;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
-  .module-form {
-    .form-row {
-      display: flex;
-      gap: $spacing-md;
-      flex-wrap: wrap;
+        &::placeholder {
+          color: var(--text-secondary);
+        }
 
-      // make inputs/selects flexible, but keep reasonable minimums
-      input, select, textarea, .avatar-input {
-        flex: 1 1 220px;
-        min-width: 160px;
+        &:hover {
+          border-color: rgba($primary-color, 0.3);
+        }
+
+        &:focus {
+          outline: none;
+          border-color: $primary-color;
+          box-shadow: 0 0 0 4px rgba($primary-color, 0.06), 0 2px 8px rgba(0, 0, 0, 0.08);
+          transform: translateY(-1px);
+        }
+      }
+
+      > select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 16px;
+        padding-right: 3rem;
       }
     }
   }
 
-  .avatar-preview {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
+  // Additional responsive adjustments specific to Faculty
+  
+  // Minimalist form card
+  .form-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
     overflow: hidden;
 
-    img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    h2 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+    }
   }
 
+  .module-form:not(.student-add-form) {
+    .form-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      
+      input, select, textarea, .avatar-input { 
+        flex: 1 1 220px; 
+        min-width: 160px; 
+        height: 46px;
+        padding: 0 1.25rem;
+        border-radius: 50px;
+        border: 1.5px solid var(--border-color);
+        background: var(--bg-card);
+        color: var(--text-primary);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+        &::placeholder {
+          color: var(--text-secondary);
+        }
+
+        &:hover {
+          border-color: rgba($primary-color, 0.3);
+        }
+
+        &:focus {
+          outline: none;
+          border-color: $primary-color;
+          box-shadow: 0 0 0 4px rgba($primary-color, 0.06), 0 2px 8px rgba(0, 0, 0, 0.08);
+          transform: translateY(-1px);
+        }
+      }
+
+      textarea {
+        border-radius: 20px;
+        height: auto;
+        min-height: 100px;
+        padding: 1rem 1.25rem;
+      }
+
+      select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 16px;
+        padding-right: 3rem;
+      }
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      justify-content: flex-end;
+
+      button {
+        height: 46px;
+        padding: 0 2rem;
+        border-radius: 50px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1.5px solid transparent;
+
+        &.btn-primary {
+          background: $primary-color;
+          color: white;
+          border-color: $primary-color;
+
+          &:hover {
+            background: darken($primary-color, 5%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+          }
+        }
+
+        &.btn-secondary {
+          background: var(--bg-card);
+          color: var(--text-secondary);
+          border-color: var(--border-color);
+
+          &:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+          }
+        }
+      }
+    }
+  }
+
+  .avatar-preview { 
+    width: 120px; 
+    height: 120px; 
+    border-radius: 50%; 
+    overflow: hidden;
+    border: 3px solid var(--border-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  // Minimalist table card
   .table-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
     // allow horizontal scrolling on small screens instead of breaking layout
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -69,17 +252,90 @@
   .student-cell {
     display: flex;
     align-items: center;
-    gap: $spacing-md;
+    gap: 1rem;
 
-    .avatar { width: 48px; height: 48px; border-radius: 50%; overflow: hidden; }
-    .info .name { font-weight: 600; }
-    .info .sub { color: var(--text-secondary); font-size: 0.85rem; }
+    .avatar { 
+      width: 48px; 
+      height: 48px; 
+      border-radius: 50%; 
+      overflow: hidden;
+      border: 2px solid var(--border-color);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+    
+    .info {
+      .name { 
+        font-weight: 600; 
+        color: var(--text-primary);
+      }
+      .sub { 
+        color: var(--text-secondary); 
+        font-size: 0.85rem; 
+      }
+    }
+  }
+
+  // Minimalist panel controls
+  .students-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 1.5rem 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
+
+    .panel-controls {
+      input.search-input {
+        height: 46px;
+        padding: 0 1.25rem;
+        border-radius: 50px;
+        border: 1.5px solid var(--border-color);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+        &:focus {
+          border-color: $primary-color;
+          box-shadow: 0 0 0 4px rgba($primary-color, 0.06), 0 2px 8px rgba(0, 0, 0, 0.08);
+          transform: translateY(-1px);
+        }
+      }
+
+      select {
+        height: 46px;
+        padding: 0 1.25rem;
+        border-radius: 50px;
+        border: 1.5px solid var(--border-color);
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 16px;
+        padding-right: 3rem;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+        &:focus {
+          border-color: $primary-color;
+          box-shadow: 0 0 0 4px rgba($primary-color, 0.06), 0 2px 8px rgba(0, 0, 0, 0.08);
+          transform: translateY(-1px);
+        }
+      }
+
+      .btn-primary {
+        height: 46px;
+        padding: 0 2rem;
+        border-radius: 50px;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+        }
+      }
+    }
   }
 
   // Responsive breakpoints
   @media (max-width: 1024px) {
     .module-form .form-row { flex-direction: row; }
-    .avatar-preview { width: 64px; height: 64px; }
+    .avatar-preview { width: 100px; height: 100px; }
   }
 
   @media (max-width: 768px) {
@@ -90,7 +346,7 @@
   }
 
   @media (max-width: 480px) {
-    .avatar-preview { width: 56px; height: 56px; }
+    .avatar-preview { width: 80px; height: 80px; }
     .student-cell .avatar { width: 40px; height: 40px; }
     .page-header { flex-direction: column; gap: $spacing-sm; }
     .page-header h1 { font-size: 1.1rem; }

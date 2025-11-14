@@ -1,15 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 
-const DEPARTMENTS = [
-  { code: 'CSP', name: 'COMPUTER SCIENCE PROGRAM' },
-  { code: 'AP', name: 'ACCOUNTANCY PROGRAM' },
-  { code: 'BAP', name: 'BUSINESS ADMINISTRATION PROGRAM' },
-  { code: 'NP', name: 'NURSING PROGRAM' },
-  { code: 'ICJ', name: 'CRIMINOLOGY PROGRAM' },
-  { code: 'TEP', name: 'TEACHER ADMINISTRATION PROGRAM' },
-  { code: 'ETP', name: 'ENGINEERING PROGRAM' },
-];
+// Department options will be loaded from the API to ensure counts and choices match
 
 const YEAR_LEVELS = ['1st-Year', '2nd-Year', '3rd-Year', '4th-Year'];
 
@@ -62,9 +54,14 @@ export default function StudentForm({ initialData, onSaved, onCancel }) {
     department: '',
     course: '',
     year_level: '',
+    semester_id: '',
+    school_year_id: '',
     status: 'Active'
   });
+  const [deptOptions, setDeptOptions] = useState([]);
   const [courses, setCourses] = useState([]);
+  const [semesters, setSemesters] = useState([]);
+  const [schoolYears, setSchoolYears] = useState([]);
   const [avatarFile, setAvatarFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
   const editingId = initialData?.id || null;
@@ -72,6 +69,11 @@ export default function StudentForm({ initialData, onSaved, onCancel }) {
 
   useEffect(() => {
     if (initialData) {
+      // Get the first school year from the relationship, or use school_year_id if available
+      const schoolYearId = initialData.school_years && initialData.school_years.length > 0
+        ? initialData.school_years[0].id
+        : (initialData.school_year_id || '');
+      
       setFormData({
         student_id: initialData.student_id || '',
         first_name: initialData.first_name || '',
@@ -93,6 +95,8 @@ export default function StudentForm({ initialData, onSaved, onCancel }) {
         department: initialData.department || '',
         course: initialData.course || '',
         year_level: initialData.year_level || '',
+        semester_id: initialData.semester_id || '',
+        school_year_id: schoolYearId,
         status: initialData.status || 'Active'
       });
       if (initialData.avatar_path) {
@@ -112,7 +116,35 @@ export default function StudentForm({ initialData, onSaved, onCancel }) {
         if (mounted) setCourses(arr);
       } catch { if (mounted) setCourses([]); }
     };
+    const loadDepartments = async () => {
+      try {
+        const res = await axios.get('/api/departments');
+        const arr = Array.isArray(res.data) ? res.data : (res.data?.departments || []);
+        if (mounted) setDeptOptions(arr.map(d => ({ code: d.code, name: d.name })));
+      } catch { if (mounted) setDeptOptions([]); }
+    };
+    const loadSchoolYears = async () => {
+      try {
+        const res = await axios.get('/api/school-years');
+        const arr = Array.isArray(res.data) ? res.data : [];
+        if (mounted) setSchoolYears(arr);
+      } catch { if (mounted) setSchoolYears([]); }
+    };
+    const loadSemesters = async () => {
+      try {
+        const res = await axios.get('/api/semesters');
+        const arr = Array.isArray(res.data) ? res.data : [];
+        console.log('Semesters loaded:', arr);
+        if (mounted) setSemesters(arr);
+      } catch (error) { 
+        console.error('Error loading semesters:', error);
+        if (mounted) setSemesters([]); 
+      }
+    };
     loadCourses();
+    loadDepartments();
+    loadSchoolYears();
+    loadSemesters();
     return () => { mounted = false; };
   }, []);
 
@@ -159,8 +191,8 @@ export default function StudentForm({ initialData, onSaved, onCancel }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="module-form">
-      <div className="form-row">
+    <form onSubmit={handleSubmit} className="module-form student-add-form">
+      <div className="form-row top-row">
         <div className="avatar-input">
           <div className="avatar-preview">
             {avatarPreview ? (
@@ -174,34 +206,57 @@ export default function StudentForm({ initialData, onSaved, onCancel }) {
             <input type="file" accept="image/*" onChange={handleAvatarChange} style={{display:'none'}} />
           </label>
         </div>
-        <input data-uppercase="true" name="first_name" placeholder="First Name *" value={formData.first_name} onChange={handleChange} required />
-        <input data-uppercase="true" name="last_name" placeholder="Last Name *" value={formData.last_name} onChange={handleChange} required />
+        <div className="top-right">
+          <select name="department" value={formData.department} onChange={handleChange}>
+            <option value="">SELECT DEPARTMENT</option>
+            {deptOptions.map(d => (
+              <option key={d.code} value={d.code}>{d.code} - {d.name}</option>
+            ))}
+          </select>
+          <select name="course" value={formData.course} onChange={handleChange}>
+            <option value="">SELECT COURSE</option>
+            {courses.map(c => (<option key={c} value={c}>{c}</option>))}
+          </select>
+          <select name="school_year_id" value={formData.school_year_id} onChange={handleChange}>
+            <option value="">SELECT SCHOOL YEAR</option>
+            {schoolYears.map(sy => (
+              <option key={sy.id} value={sy.id}>{sy.label}</option>
+            ))}
+          </select>
+          <select name="semester_id" value={formData.semester_id} onChange={handleChange}>
+            <option value="">SELECT SEMESTER</option>
+            {semesters
+              .filter(sem => !formData.school_year_id || sem.school_year_id == formData.school_year_id)
+              .map(sem => (
+                <option key={sem.id} value={sem.id}>
+                  {sem.name}
+                </option>
+              ))}
+          </select>
+        </div>
       </div>
-      <div className="form-row">
-        <input data-uppercase="true" name="middle_name" placeholder="Middle Name" value={formData.middle_name} onChange={handleChange} />
-        <input name="email" type="email" placeholder="Email *" value={formData.email} onChange={handleChange} required />
-        <input name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange} />
+
+      <div className="form-row cols-2">
+        <input data-uppercase="true" name="first_name" placeholder="FIRST NAME" value={formData.first_name} onChange={handleChange} required />
+        <input data-uppercase="true" name="last_name" placeholder="LAST NAME" value={formData.last_name} onChange={handleChange} required />
       </div>
-      <div className="form-row">
-        <input name="date_of_birth" type="date" placeholder="Date of Birth" value={formData.date_of_birth} onChange={handleChange} />
+
+      <div className="form-row cols-2">
+        <input data-uppercase="true" name="middle_name" placeholder="MIDDLE NAME" value={formData.middle_name} onChange={handleChange} />
+        <input name="phone" placeholder="PHONE" value={formData.phone} onChange={handleChange} />
+      </div>
+
+      <div className="form-row cols-2">
+        <input name="email" type="email" placeholder="EMAIL" value={formData.email} onChange={handleChange} required />
+        <input name="date_of_birth" type="date" placeholder="mm/dd/yyyy" value={formData.date_of_birth} onChange={handleChange} />
+      </div>
+
+      <div className="form-row cols-3">
         <select name="gender" value={formData.gender} onChange={handleChange}>
           <option value="">SELECT GENDER</option>
           <option value="Male">MALE</option>
           <option value="Female">FEMALE</option>
           <option value="Other">OTHER</option>
-        </select>
-        <input name="enrollment_date" type="date" placeholder="Enrollment Date" value={formData.enrollment_date} onChange={handleChange} />
-      </div>
-      <div className="form-row">
-        <select name="department" value={formData.department} onChange={handleChange}>
-          <option value="">SELECT DEPARTMENT</option>
-          {DEPARTMENTS.map(d => (
-            <option key={d.code} value={d.code}>{d.code} - {d.name}</option>
-          ))}
-        </select>
-        <select name="year_level" value={formData.year_level} onChange={handleChange}>
-          <option value="">SELECT YEAR LEVEL</option>
-          {YEAR_LEVELS.map(y => (<option key={y} value={y}>{y}</option>))}
         </select>
         <select name="status" value={formData.status} onChange={handleChange}>
           <option value="Active">ACTIVE</option>
@@ -209,14 +264,13 @@ export default function StudentForm({ initialData, onSaved, onCancel }) {
           <option value="Graduated">GRADUATED</option>
           <option value="Suspended">SUSPENDED</option>
         </select>
-      </div>
-      <div className="form-row">
-        <select name="course" value={formData.course} onChange={handleChange}>
-          <option value="">SELECT COURSE</option>
-          {courses.map(c => (<option key={c} value={c}>{c}</option>))}
+        <select name="year_level" value={formData.year_level} onChange={handleChange}>
+          <option value="">SELECT YEAR LEVEL</option>
+          {YEAR_LEVELS.map(y => (<option key={y} value={y}>{y}</option>))}
         </select>
       </div>
-      <div className="form-row">
+
+      <div className="form-row cols-3">
         <select name="region" value={formData.region} onChange={handleRegionChange}>
           <option value="">SELECT REGION</option>
           {Object.keys(MINDANAO_REGIONS).map(r => (<option key={r} value={r}>{r}</option>))}
@@ -230,15 +284,18 @@ export default function StudentForm({ initialData, onSaved, onCancel }) {
           {(MINDANAO_REGIONS[formData.region]?.cities || []).map(c => (<option key={c} value={c}>{c}</option>))}
         </select>
       </div>
-      <div className="form-row">
-        <input data-uppercase="true" name="address" placeholder="Address" value={formData.address} onChange={handleChange} />
+
+      <div className="form-row cols-1">
+        <input data-uppercase="true" name="address" placeholder="ADDRESS" value={formData.address} onChange={handleChange} />
       </div>
-      <div className="form-row">
-        <input data-uppercase="true" name="state" placeholder="State" value={formData.state} onChange={handleChange} />
+
+      <div className="form-row cols-2-split">
+        <input data-uppercase="true" name="country" placeholder="PHILIPPINES" value={formData.country} onChange={handleChange} />
         <input name="zip_code" placeholder="Zip Code" value={formData.zip_code} onChange={handleChange} />
-        <input data-uppercase="true" name="country" placeholder="Country" value={formData.country} onChange={handleChange} />
       </div>
-      <div className="form-actions">
+
+      <div className="form-actions with-date">
+        <input name="enrollment_date" type="date" value={formData.enrollment_date} onChange={handleChange} />
         <button type="submit" className="btn btn-primary">{editingId ? 'Update' : 'Create'} STUDENT</button>
         <button type="button" className="btn btn-secondary" onClick={onCancel}>CANCEL</button>
       </div>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { FiEye, FiRotateCcw } from 'react-icons/fi';
 import ArchiveViewModal from './archive/ArchiveViewModal';
 
 export default function Archive() {
@@ -13,16 +14,15 @@ export default function Archive() {
     const [activeType, setActiveType] = useState(''); // '', 'Student', 'Faculty', 'Report'
     const [filters, setFilters] = useState({
         status: '',
-        category: '',
         document_type: '',
         search: ''
     });
     const [formData, setFormData] = useState({
         archive_id: '',
+        document_number: '',
         title: '',
         description: '',
         document_type: 'Report',
-        category: '',
         document_date: '',
         archived_date: '',
         archived_by: '',
@@ -85,10 +85,10 @@ export default function Archive() {
         setEditingId(archive.id);
         setFormData({
             archive_id: archive.archive_id || '',
+            document_number: archive.document_number || '',
             title: archive.title || '',
             description: archive.description || '',
             document_type: archive.document_type || 'Report',
-            category: archive.category || '',
             document_date: archive.document_date || '',
             archived_date: archive.archived_date || '',
             archived_by: archive.archived_by || '',
@@ -134,24 +134,22 @@ export default function Archive() {
         try {
             // Determine target and perform unarchive action
             let targetRoute = null;
-            if (archive.document_type === 'SchoolYear' && archive.reference_number) {
-                await axios.post(`/api/school-years/${archive.reference_number}/unarchive`);
+            if (archive.document_type === 'SchoolYear' && archive.archivable_id) {
+                await axios.post(`/api/school-years/${archive.archivable_id}/unarchive`);
                 setMessage('School year unarchived');
                 targetRoute = '/settings/school-year';
-            } else if (archive.document_type === 'Student' && archive.reference_number) {
-                const id = parseInt(archive.reference_number, 10);
-                if (Number.isFinite(id)) {
-                    await axios.post(`/api/students/${id}/unarchive`);
-                    setMessage('Student unarchived');
-                    targetRoute = '/students';
-                }
-            } else if (archive.document_type === 'Faculty' && archive.reference_number) {
-                const id = parseInt(archive.reference_number, 10);
-                if (Number.isFinite(id)) {
-                    await axios.post(`/api/faculties/${id}/unarchive`);
-                    setMessage('Faculty unarchived');
-                    targetRoute = '/faculty';
-                }
+            } else if (archive.document_type === 'Student' && archive.archivable_id) {
+                await axios.post(`/api/students/${archive.archivable_id}/unarchive`);
+                setMessage('Student unarchived and moved to Students module');
+                targetRoute = '/students';
+            } else if (archive.document_type === 'Faculty' && archive.archivable_id) {
+                await axios.post(`/api/faculties/${archive.archivable_id}/unarchive`);
+                setMessage('Faculty unarchived and moved to Faculty module');
+                targetRoute = '/faculty';
+            } else if (archive.document_type === 'Department' && archive.archivable_id) {
+                await axios.post(`/api/departments/${archive.archivable_id}/unarchive`);
+                setMessage('Department unarchived and moved to Departments module');
+                targetRoute = '/settings/departments';
             } else {
                 setMessage('Unarchive is not available for this item.');
             }
@@ -168,7 +166,7 @@ export default function Archive() {
 
             // If there's a target module, navigate there after a short delay (allow message to show)
             if (targetRoute) {
-                setTimeout(() => navigate(targetRoute), 600);
+                setTimeout(() => navigate(targetRoute), 1000);
             }
         } catch (error) {
             console.error('Error unarchiving:', error);
@@ -190,10 +188,10 @@ export default function Archive() {
     const resetForm = () => {
         setFormData({
             archive_id: '',
+            document_number: '',
             title: '',
             description: '',
             document_type: 'Report',
-            category: '',
             document_date: '',
             archived_date: '',
             archived_by: '',
@@ -297,8 +295,7 @@ export default function Archive() {
                     <select name="status" value={filters.status} onChange={handleFilterChange}>
                         <option value="">All Status</option>
                         <option value="Active">Active</option>
-                        <option value="Archived">Archived</option>
-                        <option value="Deleted">Deleted</option>
+                        <option value="Inactive">Inactive</option>
                     </select>
                     <select name="document_type" value={filters.document_type} onChange={handleFilterChange}>
                         <option value="">All Document Types</option>
@@ -308,12 +305,6 @@ export default function Archive() {
                         <option value="Certificate">Certificate</option>
                         <option value="Other">Other</option>
                     </select>
-                    <input
-                        name="category"
-                        placeholder="Category"
-                        value={filters.category}
-                        onChange={handleFilterChange}
-                    />
                     <button className="btn btn-secondary" onClick={clearFilters}>Clear Filters</button>
                 </div>
             </div>
@@ -335,7 +326,6 @@ export default function Archive() {
                                 <option value="Certificate">Certificate</option>
                                 <option value="Other">Other</option>
                             </select>
-                            <input name="category" placeholder="Category" value={formData.category} onChange={handleChange} />
                             <input name="department" placeholder="Department" value={formData.department} onChange={handleChange} />
                         </div>
                         <div className="form-row">
@@ -346,8 +336,7 @@ export default function Archive() {
                         <div className="form-row">
                             <select name="status" value={formData.status} onChange={handleChange}>
                                 <option value="Active">Active</option>
-                                <option value="Archived">Archived</option>
-                                <option value="Deleted">Deleted</option>
+                                <option value="Inactive">Inactive</option>
                             </select>
                             <input name="tags" placeholder="Tags (comma separated)" value={formData.tags} onChange={handleChange} />
                         </div>
@@ -389,12 +378,11 @@ export default function Archive() {
                     <thead>
                         <tr>
                             <th>Archive ID</th>
+                            <th>Document #</th>
+                            <th>Reference #</th>
                             <th>Title</th>
                             <th>Document Type</th>
-                            <th>Category</th>
                             <th>Department</th>
-                            <th>Document Date</th>
-                            <th>Reference #</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
@@ -402,7 +390,7 @@ export default function Archive() {
                     <tbody>
                         {archives.length === 0 ? (
                             <tr>
-                                <td colSpan="9" style={{textAlign: 'center', padding: '20px'}}>
+                                <td colSpan="8" style={{textAlign: 'center', padding: '20px'}}>
                                     No archives found
                                 </td>
                             </tr>
@@ -410,20 +398,23 @@ export default function Archive() {
                             archives.map(archive => (
                                 <tr key={archive.id}>
                                     <td>{archive.archive_id}</td>
+                                    <td>{archive.document_number || '-'}</td>
+                                    <td>{archive.reference_number || '-'}</td>
                                     <td>{archive.title}</td>
                                     <td>{archive.document_type}</td>
-                                    <td>{archive.category}</td>
                                     <td>{archive.department}</td>
-                                    <td>{archive.document_date ? new Date(archive.document_date).toLocaleDateString() : '-'}</td>
-                                    <td>{archive.reference_number || '-'}</td>
                                     <td>
-                                        <span className={`badge badge-${archive.status.toLowerCase()}`}>
-                                            {archive.status}
+                                        <span className={`badge badge-${archive.status?.toLowerCase() || 'archived'}`}>
+                                            {archive.status || 'Archived'}
                                         </span>
                                     </td>
                                     <td className="actions">
-                                            {/* Actions: only View remains in list. Edit/Delete removed per request. */}
-                                            <button className="btn-chip" onClick={() => handleView(archive)} title="View">View</button>
+                                        <button className="btn-icon btn-view" onClick={() => handleView(archive)} title="View">
+                                            <FiEye />
+                                        </button>
+                                        <button className="btn-icon btn-unarchive" onClick={() => handleUnarchive(archive)} title="Unarchive">
+                                            <FiRotateCcw />
+                                        </button>
                                     </td>
                                 </tr>
                             ))

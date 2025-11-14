@@ -50,4 +50,39 @@ class DepartmentController extends Controller
         $dept->delete();
         return response()->json(['message' => 'Department deleted']);
     }
+
+    public function archive($id)
+    {
+        $dept = Department::findOrFail($id);
+        
+        // Create archive record
+        $archive = \App\Models\Archive::create([
+            'archive_id' => 'DEPT-' . $dept->id . '-' . time(),
+            'document_type' => 'Department',
+            'document_number' => $dept->code,
+            'title' => $dept->name,
+            'department' => $dept->code,
+            'status' => 'Archived',
+            'archivable_type' => 'App\\Models\\Department',
+            'archivable_id' => $dept->id,
+            'archived_at' => now(),
+        ]);
+
+        // Delete the department
+        $dept->delete();
+
+        return response()->json(['message' => 'Department archived successfully', 'archive' => $archive]);
+    }
+
+    public function unarchive($id)
+    {
+        $dept = Department::withTrashed()->findOrFail($id);
+        
+        if ($dept->trashed()) {
+            $dept->restore();
+            return response()->json(['message' => 'Department unarchived successfully', 'department' => $dept]);
+        }
+
+        return response()->json(['message' => 'Department is not archived'], 400);
+    }
 }

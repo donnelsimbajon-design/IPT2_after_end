@@ -31,6 +31,7 @@ class Student extends Model
         'course',
         'year_level',
         'status',
+        'semester_id',
         'avatar_path',
     ];
 
@@ -45,5 +46,13 @@ class Student extends Model
     public function schoolYears(): BelongsToMany
     {
         return $this->belongsToMany(SchoolYear::class, 'student_school_years')->withTimestamps();
+    }
+
+    /**
+     * The semester this student is enrolled in.
+     */
+    public function semester()
+    {
+        return $this->belongsTo(Semester::class);
     }
 }

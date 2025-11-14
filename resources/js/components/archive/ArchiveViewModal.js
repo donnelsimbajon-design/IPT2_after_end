@@ -59,13 +59,31 @@ export default function ArchiveViewModal({ initialData, onClose, onDelete, onUna
           <button className="btn btn-secondary" onClick={onClose}>Close</button>
         </div>
 
+        {/* Archive Header with Avatar */}
+        <div className="archive-header">
+          <div className="avatar">
+            {archive?.avatar_path ? (
+              <img src={`/storage/${archive.avatar_path}`} alt={archive.title} />
+            ) : (
+              <span>{(archive?.title || 'A').charAt(0).toUpperCase()}</span>
+            )}
+          </div>
+          <div className="info">
+            <div className="title">{archive?.title || '-'}</div>
+            <div className="subtitle">{archive?.description || 'No description available'}</div>
+            <div className="meta-pills">
+              <span className="pill id-pill">{archive?.archive_id || '-'}</span>
+              {archive?.department && (
+                <span className="pill dept-pill">{archive.department}</span>
+              )}
+            </div>
+          </div>
+        </div>
+
         <div className="details">
-          <div><strong>Archive ID:</strong> {archive?.archive_id || '-'}</div>
-          <div><strong>Title:</strong> {archive?.title || '-'}</div>
-          <div><strong>Document Type:</strong> {archive?.document_type || '-'}</div>
-          <div><strong>Category:</strong> {archive?.category || '-'}</div>
-          <div><strong>Department:</strong> {archive?.department || '-'}</div>
-          <div><strong>Reference #:</strong> {archive?.reference_number || '-'}</div>
+          <div><strong>Document Type:</strong> <span>{archive?.document_type || '-'}</span></div>
+          <div><strong>Document #:</strong> <span>{archive?.document_number || '-'}</span></div>
+          <div><strong>Reference #:</strong> <span>{archive?.reference_number || '-'}</span></div>
           <div>
             <strong>Document Date:</strong>{' '}
             {!editingDate ? (
@@ -78,16 +96,19 @@ export default function ArchiveViewModal({ initialData, onClose, onDelete, onUna
             {editingDate && (
               <button className="btn btn-primary" onClick={saveDate} disabled={processing} style={{marginLeft: '8px'}}>{processing ? 'Saving...' : 'Save'}</button>
             )}
-            {dateError && <div style={{color: 'var(--danger, #c00)', marginTop: '6px'}}>{dateError}</div>}
-          </div>
-          <div style={{marginTop: '12px'}}><strong>Description:</strong>
-            <div style={{marginTop: '6px'}}>{archive?.description || '-'}</div>
+            {dateError && <div style={{color: 'var(--danger, #ef4444)', marginTop: '6px', fontSize: '0.875rem'}}>{dateError}</div>}
           </div>
         </div>
 
         <div className="form-actions">
-          {/* Unarchive button removed per request; only Delete remains */}
-          <button className="btn btn-danger" onClick={() => { if (onDelete) onDelete(archive.id); }}>{'Delete'}</button>
+          <button
+            className="btn btn-secondary"
+            onClick={handleUnarchiveClick}
+            disabled={processing || unarchived}
+          >
+            {processing ? 'Unarchiving...' : (unarchived ? 'Unarchived' : 'Unarchive')}
+          </button>
+          <button className="btn btn-danger" onClick={() => { if (onDelete) onDelete(archive.id); }}>Delete</button>
         </div>
       </div>
     </div>

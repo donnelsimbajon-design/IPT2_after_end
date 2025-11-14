@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
+import { FiCheck, FiX, FiEdit2, FiArchive, FiRotateCcw, FiTrash2, FiCalendar, FiUsers, FiBook, FiPlus, FiSave } from 'react-icons/fi';
+import { HiAcademicCap, HiOfficeBuilding } from 'react-icons/hi';
 
 export default function SchoolYear() {
   const [years, setYears] = useState([]);
@@ -12,6 +14,10 @@ export default function SchoolYear() {
   const TARGET_YEAR = 2025;
   const [stats2025, setStats2025] = useState(null);
   const [semesters2025, setSemesters2025] = useState(['1st Semester', '2nd Semester']);
+  const [selectedSemester, setSelectedSemester] = useState(null);
+  const [semesterStats, setSemesterStats] = useState(null);
+  const [selectedYearSemesters, setSelectedYearSemesters] = useState({}); // Track selected semesters per year
+  const [globalStats, setGlobalStats] = useState({ departments: 0, courses: 0, faculty: 0 });
 
   useEffect(() => {
     fetchYears();
@@ -91,7 +97,17 @@ export default function SchoolYear() {
           } catch { coursesCount = 0; }
         } catch (_) { coursesCount = 0; }
 
-        setStats2025({ students: studentsCount, faculty: facultyCount, courses: coursesCount });
+        // Total departments (from departments table)
+        let departmentsCount = 0;
+        try {
+          const resDepts = await axios.get('/api/departments');
+          departmentsCount = Array.isArray(resDepts.data) ? resDepts.data.length : 0;
+        } catch (_) { departmentsCount = 0; }
+
+        // Store global stats for all year cards
+        setGlobalStats({ departments: departmentsCount, courses: coursesCount, faculty: facultyCount });
+
+        setStats2025({ students: studentsCount, faculty: facultyCount, courses: coursesCount, departments: departmentsCount });
       } catch (e) {
         // Non-fatal: just omit stats
         setStats2025({ students: 0, faculty: 0, courses: 0 });
@@ -133,7 +149,7 @@ export default function SchoolYear() {
   const saveEdit = async (id) => {
     try {
       await axios.put(`/api/school-years/${id}`, editForm);
-      setMessage('School year updated');
+      setMessage('Academic year updated');
       setEditingId(null);
       fetchYears();
     } catch (e) {
@@ -143,7 +159,7 @@ export default function SchoolYear() {
   };
 
   const archiveYear = async (id) => {
-    if (!confirm('Archive this school year?')) return;
+    if (!confirm('Archive this academic year?')) return;
     try {
       await axios.post(`/api/school-years/${id}/archive`);
       setMessage('Archived successfully');
@@ -165,17 +181,193 @@ export default function SchoolYear() {
     }
   };
 
+  const deleteYear = async (id) => {
+    if (!confirm('Are you sure you want to delete this academic year? This action cannot be undone.')) return;
+    try {
+      await axios.delete(`/api/school-years/${id}`);
+      setMessage('Academic year deleted successfully');
+      fetchYears();
+    } catch (e) {
+      console.error('Delete failed', e);
+      setMessage(e.response?.data?.message || 'Error deleting academic year');
+    }
+  };
+
+  const handleSemesterClick = async (semesterName, index) => {
+    if (selectedSemester === semesterName) {
+      // Close if clicking the same semester
+      setSelectedSemester(null);
+      setSemesterStats(null);
+      return;
+    }
+
+    setSelectedSemester(semesterName);
+    
+    try {
+      // First, get all semesters to find the ID of the selected semester
+      let semesterId = null;
+      try {
+        const resSemesters = await axios.get('/api/semesters');
+        const semesters = Array.isArray(resSemesters.data) ? resSemesters.data : [];
+        const semester = semesters.find(s => s.name === semesterName);
+        semesterId = semester?.id;
+      } catch (_) { }
+
+      // Get students count for this semester
+      let studentsCount = 0;
+      try {
+        const resStudents = await axios.get('/api/students');
+        const students = Array.isArray(resStudents.data) ? resStudents.data : [];
+        // Filter students for this semester
+        studentsCount = students.filter(s => {
+          if (s.status === 'Archived') return false;
+          // Filter by semester_id if available
+          if (semesterId && s.semester_id) {
+            return s.semester_id === semesterId;
+          }
+          // Otherwise count all active students
+          return true;
+        }).length;
+      } catch (_) { studentsCount = 0; }
+
+      // Get faculty count for this semester
+      let facultyCount = 0;
+      try {
+        const resFaculty = await axios.get('/api/faculties');
+        const faculties = Array.isArray(resFaculty.data) ? resFaculty.data : [];
+        // Filter faculty for this semester
+        facultyCount = faculties.filter(f => {
+          if (f.status === 'Archived') return false;
+          // Filter by semester_id if available
+          if (semesterId && f.semester_id) {
+            return f.semester_id === semesterId;
+          }
+          // Otherwise count all active faculty
+          return true;
+        }).length;
+      } catch (_) { facultyCount = 0; }
+
+      // Get total courses count (not semester-specific)
+      let coursesCount = 0;
+      try {
+        const resCourses = await axios.get('/api/settings/key/courses');
+        const raw = resCourses.data?.setting_value;
+        const parsed = JSON.parse(raw || '[]');
+        coursesCount = Array.isArray(parsed) ? parsed.length : 0;
+      } catch (_) { coursesCount = 0; }
+
+      // Get total departments count (not semester-specific)
+      let departmentsCount = 0;
+      try {
+        const resDepts = await axios.get('/api/departments');
+        departmentsCount = Array.isArray(resDepts.data) ? resDepts.data.length : 0;
+      } catch (_) { departmentsCount = 0; }
+
+      setSemesterStats({
+        students: studentsCount,
+        faculty: facultyCount,
+        courses: coursesCount,
+        departments: departmentsCount
+      });
+    } catch (e) {
+      console.error('Error fetching semester stats', e);
+      setSemesterStats({ students: 0, faculty: 0, courses: 0, departments: 0 });
+    }
+  };
+
+  const handleYearSemesterClick = async (yearId, semesterId, semesterName) => {
+    const key = `${yearId}-${semesterId}`;
+    
+    if (selectedYearSemesters[key]) {
+      // Close if clicking the same semester
+      const newState = { ...selectedYearSemesters };
+      delete newState[key];
+      setSelectedYearSemesters(newState);
+      return;
+    }
+
+    try {
+      // Get students count for this semester
+      let studentsCount = 0;
+      try {
+        const resStudents = await axios.get('/api/students');
+        const students = Array.isArray(resStudents.data) ? resStudents.data : [];
+        // Filter students for this semester AND school year
+        studentsCount = students.filter(s => {
+          if (s.status === 'Archived') return false;
+          // Must match semester_id
+          if (s.semester_id !== semesterId) return false;
+          // Must be linked to this school year
+          if (s.school_years && Array.isArray(s.school_years)) {
+            return s.school_years.some(sy => sy.id === yearId);
+          }
+          return false;
+        }).length;
+      } catch (_) { studentsCount = 0; }
+
+      // Get faculty count for this semester
+      let facultyCount = 0;
+      try {
+        const resFaculty = await axios.get('/api/faculties');
+        const faculties = Array.isArray(resFaculty.data) ? resFaculty.data : [];
+        // Filter faculty for this semester AND school year
+        facultyCount = faculties.filter(f => {
+          if (f.status === 'Archived') return false;
+          // Must match semester_id
+          if (f.semester_id !== semesterId) return false;
+          // Must be linked to this school year
+          if (f.school_years && Array.isArray(f.school_years)) {
+            return f.school_years.some(sy => sy.id === yearId);
+          }
+          return false;
+        }).length;
+      } catch (_) { facultyCount = 0; }
+
+      // Get total courses count (not semester-specific)
+      let coursesCount = 0;
+      try {
+        const resCourses = await axios.get('/api/settings/key/courses');
+        const raw = resCourses.data?.setting_value;
+        const parsed = JSON.parse(raw || '[]');
+        coursesCount = Array.isArray(parsed) ? parsed.length : 0;
+      } catch (_) { coursesCount = 0; }
+
+      // Get total departments count (not semester-specific)
+      let departmentsCount = 0;
+      try {
+        const resDepts = await axios.get('/api/departments');
+        departmentsCount = Array.isArray(resDepts.data) ? resDepts.data.length : 0;
+      } catch (_) { departmentsCount = 0; }
+
+      setSelectedYearSemesters({
+        ...selectedYearSemesters,
+        [key]: {
+          students: studentsCount,
+          faculty: facultyCount,
+          courses: coursesCount,
+          departments: departmentsCount
+        }
+      });
+    } catch (e) {
+      console.error('Error fetching semester stats', e);
+      setSelectedYearSemesters({
+        ...selectedYearSemesters,
+        [key]: { students: 0, faculty: 0, courses: 0, departments: 0 }
+      });
+    }
+  };
+
   const createYear = async (e) => {
     e.preventDefault();
     try {
       await axios.post('/api/school-years', createForm);
-      setMessage('School year created');
+      setMessage('Academic year created');
       setShowCreate(false);
       setCreateForm({ label: '', start_date: '', end_date: '', status: 'Active' });
       fetchYears();
     } catch (err) {
       console.error('Create failed', err);
-      setMessage(err.response?.data?.message || 'Error creating school year');
+      setMessage(err.response?.data?.message || 'Error creating academic year');
     }
   };
 
@@ -195,11 +387,11 @@ export default function SchoolYear() {
     <div className="module-page school-year-page">
       <div className="page-header">
         <div>
-          <h1>School Year Management</h1>
-          <p className="page-subtitle">Manage academic school years and their configurations</p>
+          <h1><FiCalendar className="page-icon" />Academic Year Management</h1>
+          <p className="page-subtitle">Manage academic years and their configurations</p>
         </div>
         <button className={`btn ${showCreate ? 'btn-secondary' : 'btn-primary'}`} onClick={() => setShowCreate(v => !v)}>
-          {showCreate ? 'Cancel' : '+ Add School Year'}
+          {showCreate ? <><FiX /> Cancel</> : <><FiPlus /> Add Academic Year</>}
         </button>
       </div>
 
@@ -208,7 +400,7 @@ export default function SchoolYear() {
 
       {showCreate && (
         <div className="sy-card" style={{ marginBottom: '16px' }}>
-          <h2 style={{ marginTop: 0 }}>Add School Year</h2>
+          <h2 style={{ marginTop: 0 }}><FiPlus className="section-icon" />Add Academic Year</h2>
           <form className="module-form" onSubmit={createYear}>
             <div className="form-row">
               <input
@@ -245,8 +437,8 @@ export default function SchoolYear() {
               </select>
             </div>
             <div className="form-actions">
-              <button type="submit" className="btn btn-primary">Create</button>
-              <button type="button" className="btn btn-secondary" onClick={() => setShowCreate(false)}>Cancel</button>
+              <button type="submit" className="btn btn-primary"><FiCheck /> Create</button>
+              <button type="button" className="btn btn-secondary" onClick={() => setShowCreate(false)}><FiX /> Cancel</button>
             </div>
           </form>
         </div>
@@ -268,10 +460,10 @@ export default function SchoolYear() {
         </div>
       )}
 
-      {/* School Year 2025 Overview */}
+      {/* Academic Year 2025 Overview */}
       <div className="sy-card">
         <div className="sy-card-header">
-          <h2>School Year 2025 Overview</h2>
+          <h2>Academic Year 2025 Overview</h2>
           <StatusBadge status="active">2025</StatusBadge>
         </div>
         <div className="stats-grid">
@@ -279,23 +471,50 @@ export default function SchoolYear() {
           <Stat value={stats2025?.students || 0} label="Total Students" />
           <Stat value={stats2025?.faculty || 0} label="Total Faculty" />
           <Stat value={stats2025?.courses || 0} label="Total Courses" />
+          <Stat value={stats2025?.departments || 0} label="Total Departments" />
         </div>
         <div className="sy-semesters">
           <div className="section-title">Semesters</div>
           <div className="semester-list">
             {semesters2025.map((name, idx) => (
-              <div key={name + idx} className="semester-item">
-                <div className="sem-name">{name}</div>
-                <div className="sem-range">—</div>
+              <div key={name + idx}>
+                <div 
+                  className={`semester-item ${selectedSemester === name ? 'active' : ''}`}
+                  onClick={() => handleSemesterClick(name, idx)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <div className="sem-name">{name}</div>
+                  <div className="sem-range">—</div>
+                </div>
+                {selectedSemester === name && semesterStats && (
+                  <div className="semester-stats" style={{ 
+                    marginTop: '12px', 
+                    padding: '16px', 
+                    background: '#f8f9fa', 
+                    borderRadius: '8px',
+                    marginBottom: '12px'
+                  }}>
+                    <div className="stats-grid" style={{ 
+                      display: 'grid', 
+                      gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', 
+                      gap: '16px' 
+                    }}>
+                      <Stat value={semesterStats.students} label="Total Students" />
+                      <Stat value={semesterStats.courses} label="Total Courses" />
+                      <Stat value={semesterStats.departments} label="Total Departments" />
+                      <Stat value={semesterStats.faculty} label="Total Faculty" />
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* School Year Management List */}
+      {/* Academic Year Management List */}
       <div className="sy-section">
-        <h3>School Year Management</h3>
+        <h3>Academic Year Management</h3>
 
         {years.map((y) => (
           <div key={y.id || y.label} className="sy-year-card">
@@ -319,11 +538,15 @@ export default function SchoolYear() {
                 </div>
                 <div>
                   <div className="meta-label">Total Faculty</div>
-                  <div className="meta-value">{0}</div>
+                  <div className="meta-value">{globalStats.faculty.toLocaleString()}</div>
                 </div>
                 <div>
                   <div className="meta-label">Total Courses</div>
-                  <div className="meta-value">{0}</div>
+                  <div className="meta-value">{globalStats.courses.toLocaleString()}</div>
+                </div>
+                <div>
+                  <div className="meta-label">Total Departments</div>
+                  <div className="meta-value">{globalStats.departments.toLocaleString()}</div>
                 </div>
               </div>
             </div>
@@ -331,36 +554,85 @@ export default function SchoolYear() {
             <div className="sy-semesters">
               <div className="section-title">Semesters</div>
               <div className="semester-list">
-                {(y.semesters || []).map((s) => (
-                  <div key={s.id || s.name} className="semester-item">
-                    <div className="sem-name">{s.name}</div>
-                    <div className="sem-range">{`${s.start_date ? new Date(s.start_date).toLocaleDateString() : '-'} — ${s.end_date ? new Date(s.end_date).toLocaleDateString() : '-'}`}</div>
-                  </div>
-                ))}
+                {(y.semesters || []).map((s) => {
+                  const key = `${y.id}-${s.id}`;
+                  const isSelected = !!selectedYearSemesters[key];
+                  return (
+                    <div key={s.id || s.name}>
+                      <div 
+                        className={`semester-item ${isSelected ? 'active' : ''}`}
+                        onClick={() => handleYearSemesterClick(y.id, s.id, s.name)}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <div className="sem-name">{s.name}</div>
+                        <div className="sem-range">{`${s.start_date ? new Date(s.start_date).toLocaleDateString() : '-'} — ${s.end_date ? new Date(s.end_date).toLocaleDateString() : '-'}`}</div>
+                      </div>
+                      {isSelected && selectedYearSemesters[key] && (
+                        <div className="semester-stats" style={{ 
+                          marginTop: '12px', 
+                          padding: '16px', 
+                          background: '#f8f9fa', 
+                          borderRadius: '8px',
+                          marginBottom: '12px'
+                        }}>
+                          <div className="stats-grid" style={{ 
+                            display: 'grid', 
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', 
+                            gap: '16px' 
+                          }}>
+                            <Stat value={selectedYearSemesters[key].students} label="Total Students" />
+                            <Stat value={selectedYearSemesters[key].courses} label="Total Courses" />
+                            <Stat value={selectedYearSemesters[key].departments} label="Total Departments" />
+                            <Stat value={selectedYearSemesters[key].faculty} label="Total Faculty" />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
             <div className="sy-actions">
               {editingId === y.id ? (
                 <>
-                  <button className="btn btn-primary" onClick={() => saveEdit(y.id)}>Save</button>
-                  <button className="btn btn-secondary" onClick={cancelEdit}>Cancel</button>
+                  <button className="btn btn-primary" onClick={() => saveEdit(y.id)}>
+                    <FiSave style={{ marginRight: '6px' }} />
+                    Save
+                  </button>
+                  <button className="btn btn-secondary" onClick={cancelEdit}>
+                    <FiX style={{ marginRight: '6px' }} />
+                    Cancel
+                  </button>
                 </>
               ) : (
                 <>
-                  <button className="btn btn-secondary" onClick={() => startEdit(y)}>Edit</button>
+                  <button className="btn btn-secondary" onClick={() => startEdit(y)}>
+                    <FiEdit2 style={{ marginRight: '6px' }} />
+                    Edit
+                  </button>
                   {String(y.status).toLowerCase() === 'archived' ? (
-                    <button className="btn" onClick={() => unarchiveYear(y.id)}>Unarchive</button>
+                    <button className="btn" onClick={() => unarchiveYear(y.id)}>
+                      <FiRotateCcw style={{ marginRight: '6px' }} />
+                      Unarchive
+                    </button>
                   ) : (
-                    <button className="btn btn-danger" onClick={() => archiveYear(y.id)}>Archive</button>
+                    <button className="btn btn-danger" onClick={() => archiveYear(y.id)}>
+                      <FiArchive style={{ marginRight: '6px' }} />
+                      Archive
+                    </button>
                   )}
+                  <button className="btn btn-danger" onClick={() => deleteYear(y.id)}>
+                    <FiTrash2 style={{ marginRight: '6px' }} />
+                    Delete
+                  </button>
                 </>
               )}
             </div>
 
             {editingId === y.id && (
               <div className="form-card" style={{marginTop: '12px'}}>
-                <h2>Edit School Year</h2>
+                <h2><FiEdit2 className="section-icon" />Edit Academic Year</h2>
                 <form className="module-form" onSubmit={(e) => { e.preventDefault(); saveEdit(y.id); }}>
                   <div className="form-row">
                     <input name="label" placeholder="Label (e.g., 2024–2025)" value={editForm.label} onChange={(e)=>setEditForm({...editForm, label: e.target.value})} required />
@@ -375,8 +647,8 @@ export default function SchoolYear() {
                     </select>
                   </div>
                   <div className="form-actions">
-                    <button type="submit" className="btn btn-primary">Save</button>
-                    <button type="button" className="btn btn-secondary" onClick={cancelEdit}>Cancel</button>
+                    <button type="submit" className="btn btn-primary"><FiSave /> Save</button>
+                    <button type="button" className="btn btn-secondary" onClick={cancelEdit}><FiX /> Cancel</button>
                   </div>
                 </form>
               </div>

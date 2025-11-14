@@ -1,0 +1,640 @@
+// Modern Minimalist Report Results Modal
+// System Theme: Maroon (#8B1538) and Gold (#D4AF37)
+
+// Variables
+$maroon-primary: #8B1538;
+$maroon-light: #A71D45;
+$maroon-dark: #6B0F28;
+$gold: #D4AF37;
+$gold-light: #E5C76B;
+$text-dark: #1a202c;
+$text-gray: #64748b;
+$text-light: #94a3b8;
+$bg-white: #ffffff;
+$bg-light: #f8fafc;
+$bg-gray: #f1f5f9;
+$border-color: #e2e8f0;
+
+// Modal Overlay
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(139, 21, 56, 0.15);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 24px;
+  animation: fadeIn 0.2s ease;
+}
+
+// Modal Content
+.modal-content {
+  background: $bg-white;
+  border-radius: 16px;
+  box-shadow: 
+    0 0 0 1px rgba(139, 21, 56, 0.05),
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  max-width: 1400px;
+  width: 100%;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+// Modal Header - Modern Minimalist
+.modal-header {
+  background: linear-gradient(135deg, $maroon-primary 0%, $maroon-light 100%);
+  padding: 24px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+
+    .header-icon {
+      width: 32px;
+      height: 32px;
+      opacity: 0.95;
+    }
+
+    .header-text {
+      flex: 1;
+
+      h2 {
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0 0 2px 0;
+        letter-spacing: -0.025em;
+      }
+
+      .header-subtitle {
+        font-size: 13px;
+        margin: 0;
+        opacity: 0.85;
+        font-weight: 500;
+      }
+    }
+
+    .result-count {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 700;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      min-width: 44px;
+      text-align: center;
+    }
+  }
+
+  .modal-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px; // Increased from 8px for better spacing
+
+    .btn {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      &-export {
+        background: white;
+        color: $maroon-primary;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.95);
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+      }
+
+      &-save {
+        background: rgba(255, 255, 255, 0.9); // More opaque for better text visibility
+        color: $maroon-primary; // Maroon text instead of white for better contrast
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        font-weight: 700; // Bolder text
+
+        &:hover {
+          background: white;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(255, 255, 255, 0.35);
+        }
+        
+        svg {
+          color: $maroon-primary; // Match icon color to text
+        }
+      }
+    }
+
+    .modal-close {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      margin-left: 4px; // Extra spacing before close button
+      
+      svg {
+        width: 22px;
+        height: 22px;
+      }
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: scale(1.05);
+      }
+    }
+  }
+}
+
+// Modal Body
+.modal-body {
+  display: flex;
+  gap: 24px;
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+  background: $bg-light;
+
+  // Custom Scrollbar
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(139, 21, 56, 0.2);
+    border-radius: 10px;
+
+    &:hover {
+      background: rgba(139, 21, 56, 0.35);
+    }
+  }
+}
+
+// Left Side - Summary (Modern Minimalist)
+.modal-left {
+  flex: 0 0 240px; // Reduced from 280px to avoid scrollbar
+  
+  .summary-content {
+    background: white;
+    border-radius: 12px;
+    padding: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    border: 1px solid $border-color;
+    overflow: hidden;
+  }
+
+  .summary-stat {
+    padding: 20px 16px; // Reduced padding
+    background: linear-gradient(135deg, rgba(139, 21, 56, 0.03) 0%, rgba(167, 29, 69, 0.05) 100%);
+    border-bottom: 1px solid $border-color;
+    display: flex;
+    flex-direction: column;
+    align-items: center; // Center the icon
+    text-align: center; // Center the text
+
+    .stat-icon {
+      width: 44px; // Reduced from 48px
+      height: 44px;
+      background: linear-gradient(135deg, $maroon-primary 0%, $maroon-light 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px; // Reduced spacing
+      margin-left: auto;
+      margin-right: auto; // Center the icon box
+      
+      svg {
+        width: 24px; // Reduced from 26px
+        height: 24px;
+        color: white;
+      }
+    }
+
+    .stat-details {
+      width: 100%;
+      
+      .stat-value {
+        font-size: 32px; // Reduced from 36px
+        font-weight: 800;
+        color: $maroon-primary;
+        line-height: 1;
+        margin-bottom: 6px; // Reduced spacing
+        letter-spacing: -0.05em;
+      }
+
+      h3 {
+        font-size: 10px; // Reduced from 11px
+        font-weight: 700;
+        color: $text-gray;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        margin: 0 0 3px 0;
+      }
+
+      .count {
+        font-size: 14px; // Reduced from 15px
+        font-weight: 600;
+        color: $text-dark;
+      }
+    }
+  }
+
+  .summary-filters {
+    padding: 12px; // Reduced from 16px
+    display: flex;
+    flex-direction: column;
+    gap: 6px; // Reduced from 8px
+
+    .filter-badge {
+      background: $bg-gray;
+      padding: 10px 12px; // Reduced padding
+      border-radius: 8px;
+      font-size: 12px; // Reduced from 13px
+      color: $text-dark;
+      border: 1px solid $border-color;
+      line-height: 1.4;
+      word-wrap: break-word; // Better text wrapping
+
+      strong {
+        color: $maroon-primary;
+        font-weight: 700;
+        display: block; // Changed to block for better layout
+        font-size: 10px; // Reduced from 11px
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 2px;
+      }
+
+      span {
+        color: $text-dark;
+        font-weight: 500;
+        display: block; // Changed to block
+        margin-left: 0;
+        word-break: break-word; // Better text wrapping
+      }
+    }
+  }
+}
+
+// Right Side - Table (Modern Minimalist)
+.modal-right {
+  flex: 1;
+  min-width: 0;
+
+  .table-wrapper {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    border: 1px solid $border-color;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+
+    thead {
+      background: $bg-gray;
+      
+      tr {
+        th {
+          padding: 14px 16px;
+          text-align: left;
+          font-weight: 700;
+          color: $text-gray;
+          text-transform: uppercase;
+          letter-spacing: 0.6px;
+          font-size: 11px;
+          border-bottom: 1px solid $border-color;
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        transition: background-color 0.15s ease;
+        border-bottom: 1px solid $border-color;
+
+        &:hover {
+          background: rgba(139, 21, 56, 0.02);
+        }
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        td {
+          padding: 16px;
+          vertical-align: middle;
+        }
+      }
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .user-avatar {
+        .avatar-circle {
+          width: 40px;
+          height: 40px;
+          border-radius: 10px;
+          overflow: hidden;
+          position: relative;
+          background: linear-gradient(135deg, $maroon-primary 0%, $maroon-light 100%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+          }
+
+          .initials {
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+            position: relative;
+            z-index: 1;
+
+            &.fallback {
+              display: none;
+            }
+          }
+
+          &.avatar-error {
+            .initials.fallback {
+              display: block;
+            }
+          }
+        }
+      }
+
+      .user-details {
+        min-width: 0;
+        flex: 1;
+
+        .user-name {
+          font-weight: 700;
+          color: $text-dark;
+          font-size: 14px;
+          margin-bottom: 2px;
+        }
+
+        .user-email {
+          font-size: 12px;
+          color: $text-gray;
+        }
+      }
+    }
+
+    .id-badge {
+      background: linear-gradient(135deg, rgba(139, 21, 56, 0.06) 0%, rgba(167, 29, 69, 0.08) 100%);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: $maroon-primary;
+      border: 1px solid rgba(139, 21, 56, 0.12);
+      display: inline-block;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0.3px;
+    }
+
+    .contact-info {
+      color: $text-gray;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .program-info {
+      .program-name {
+        font-weight: 700;
+        color: $text-dark;
+        font-size: 13px;
+        margin-bottom: 3px;
+        line-height: 1.3;
+      }
+
+      .department {
+        font-size: 12px;
+        color: $text-gray;
+        font-weight: 500;
+      }
+    }
+
+    .year-badge {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(229, 199, 107, 0.12) 100%);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: darken($gold, 20%);
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .status-badge {
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+
+      &.status-active {
+        background: rgba(16, 185, 129, 0.1);
+        color: #059669;
+        border: 1px solid rgba(16, 185, 129, 0.25);
+      }
+
+      &.status-inactive {
+        background: rgba(239, 68, 68, 0.1);
+        color: #dc2626;
+        border: 1px solid rgba(239, 68, 68, 0.25);
+      }
+    }
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+// Responsive Design
+@media (max-width: 1200px) {
+  .modal-body {
+    flex-direction: column;
+  }
+
+  .modal-left {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding: 16px;
+  }
+
+  .modal-header {
+    padding: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    .header-left {
+      flex: 1 1 100%;
+      
+      .header-icon {
+        width: 28px;
+        height: 28px;
+      }
+
+      .header-text h2 {
+        font-size: 18px;
+      }
+    }
+
+    .modal-actions {
+      flex: 1 1 100%;
+      justify-content: space-between;
+
+      .btn {
+        padding: 8px 14px;
+        font-size: 13px;
+        
+        span {
+          display: none;
+        }
+
+        svg {
+          width: 18px;
+          height: 18px;
+        }
+      }
+
+      .modal-close {
+        width: 36px;
+        height: 36px;
+      }
+    }
+  }
+
+  .modal-body {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .modal-left {
+    .summary-content {
+      .summary-stat {
+        padding: 20px;
+      }
+    }
+  }
+
+  .data-table {
+    font-size: 13px;
+
+    thead tr th {
+      padding: 12px;
+      font-size: 10px;
+    }
+
+    tbody tr td {
+      padding: 12px;
+    }
+
+    .user-info {
+      gap: 10px;
+
+      .avatar-circle {
+        width: 36px !important;
+        height: 36px !important;
+      }
+
+      .user-details {
+        .user-name {
+          font-size: 13px;
+        }
+
+        .user-email {
+          font-size: 11px;
+        }
+      }
+    }
+  }
+}
+

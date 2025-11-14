@@ -31,4 +31,9 @@ class SchoolYear extends Model
     {
         return $this->belongsToMany(Student::class, 'student_school_years')->withTimestamps();
     }
+
+    public function faculties(): BelongsToMany
+    {
+        return $this->belongsToMany(Faculty::class, 'faculty_school_years')->withTimestamps();
+    }
 }

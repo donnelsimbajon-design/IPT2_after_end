@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { FiTrash2, FiPlus, FiSearch, FiBook, FiSave, FiRotateCcw } from 'react-icons/fi';
 
 const DEFAULT_COURSES = [
   'AB-C BACHELOR OF ARTS MAJOR IN COMMUNICATION',
@@ -219,33 +220,54 @@ export default function Courses() {
   const visible = filter ? list.filter(c => c.toLowerCase().includes(filter.toLowerCase())) : list;
 
   return (
-    <div className="students-page">
+    <div className="students-page courses-page">
       <div className="module-page">
         <div className="page-header">
-          <h1>Courses</h1>
+          <div>
+            <h1><FiBook className="page-icon" />Courses</h1>
+            <p className="page-subtitle">Manage all available courses in the system</p>
+          </div>
         </div>
 
         {message && <div className="alert alert-info" style={{marginTop:8}}>{message}</div>}
 
         <div className="students-panel">
           <div className="panel-header">
-            <h2>Course Management</h2>
+            <h2>
+              Course Management
+              <span className="course-count">{visible.length}</span>
+            </h2>
             <div className="panel-controls">
-              <input className="search-input" placeholder="Filter courses" value={filter} onChange={(e)=>setFilter(e.target.value)} />
+              <div className="input-with-icon">
+                <FiSearch className="search-icon" />
+                <input className="search-input" placeholder="Search courses..." value={filter} onChange={(e)=>setFilter(e.target.value)} />
+              </div>
               <div className="filters">
-                <button type="button" className="btn btn-primary" onClick={saveCourses}>Save</button>
+                <button type="button" className="btn btn-primary" onClick={saveCourses}>
+                  <FiSave />
+                  Save Changes
+                </button>
               </div>
             </div>
           </div>
         </div>
 
         <div className="form-card">
-          <h2>Manage Courses</h2>
+          <h2><FiPlus className="section-icon" />Add New Course</h2>
           <div className="module-form" style={{gap:12}}>
             <div className="form-row" style={{gridTemplateColumns:'1fr auto auto'}}>
-              <input placeholder="Add a course" onKeyDown={(e)=>{ if(e.key==='Enter'){ addCourse(e.target.value); e.target.value=''; } }} />
-              <button type="button" className="btn btn-secondary" onClick={(e)=>{ const el = e.currentTarget.previousSibling; addCourse(el.value||''); el.value=''; }}>Add</button>
-              <button type="button" className="btn btn-secondary" onClick={resetToDefault}>Use Default List</button>
+              <input 
+                placeholder="Enter course name or code..." 
+                onKeyDown={(e)=>{ if(e.key==='Enter'){ addCourse(e.target.value); e.target.value=''; } }} 
+              />
+              <button type="button" className="btn btn-secondary" onClick={(e)=>{ const el = e.currentTarget.previousSibling; addCourse(el.value||''); el.value=''; }}>
+                <FiPlus />
+                Add Course
+              </button>
+              <button type="button" className="btn btn-secondary btn-reset" onClick={resetToDefault}>
+                <FiRotateCcw />
+                Reset to Default
+              </button>
             </div>
           </div>
         </div>
@@ -254,22 +276,29 @@ export default function Courses() {
           <table className="data-table">
             <thead>
               <tr>
-                <th>Course</th>
+                <th><FiBook style={{marginRight: '8px', verticalAlign: 'middle'}} />Course Name</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading && (
-                <tr><td colSpan="2">Loading...</td></tr>
+                <tr><td colSpan="2" className="loading-cell">Loading courses...</td></tr>
               )}
               {!loading && visible.length === 0 && (
-                <tr><td colSpan="2" style={{color:'var(--text-secondary)'}}>No courses to show.</td></tr>
+                <tr><td colSpan="2" className="empty-cell">
+                  <FiBook className="empty-icon" />
+                  <p>No courses found</p>
+                  <span>Add a course above to get started</span>
+                </td></tr>
               )}
               {!loading && visible.map((c, idx) => (
                 <tr key={c + idx}>
-                  <td style={{minWidth:0, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>{c}</td>
+                  <td className="course-name">{c}</td>
                   <td className="actions">
-                    <button type="button" className="btn-chip btn-delete" onClick={()=>removeCourse(list.indexOf(c))}>Remove</button>
+                    <button type="button" className="btn-chip btn-delete" onClick={()=>removeCourse(list.indexOf(c))}>
+                      <FiTrash2 />
+                      Remove
+                    </button>
                   </td>
                 </tr>
               ))}

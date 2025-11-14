@@ -21,17 +21,35 @@
     padding: $spacing-xl;
     transition: all 0.25s ease;
     box-shadow: $shadow-sm;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, $primary-color, $secondary-color);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
 
     &:hover {
       transform: translateY(-3px);
       box-shadow: $shadow-lg;
       border-color: $primary-color;
+
+      &::before {
+        opacity: 1;
+      }
     }
 
     .card-value {
       font-size: 1.75rem;
       font-weight: 700;
-      color: var(--text-primary);
+      color: $primary-color;
       margin-bottom: $spacing-sm;
     }
 
@@ -43,20 +61,252 @@
   }
 }
 
-// School Year Management styles
-.school-year-page {
-  .page-subtitle {
-    color: var(--text-secondary);
-    margin-top: 4px;
+// Department Module styles
+.department-page {
+  .dept-red-card {
+    border: 1px solid $primary-color;
+    box-shadow: 0 0 0 1px rgba($primary-color, 0.2) inset;
   }
 
-  .sy-card {
+  // Updated accent card styling aligned with dashboard cards
+  .stat-card.dept-accent {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: $radius-lg;
     padding: $spacing-lg;
-    box-shadow: $shadow-sm;
-    margin-bottom: $spacing-lg;
+    position: relative;
+    overflow: hidden;
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, $primary-color, $secondary-color);
+    }
+
+    &:hover { transform: translateY(-3px); box-shadow: $shadow-lg; border-color: rgba($primary-color, .35); }
+    .stat-value { 
+      font-size: 1.8rem; 
+      font-weight: 800; 
+      color: $primary-color; 
+    }
+    .stat-label { color: var(--text-secondary); font-weight: 600; margin-top: 2px; letter-spacing: .2px; }
+  }
+
+  .btn.dept-red {
+    background: $primary-color;
+    color: #fff;
+    border: 1px solid rgba($primary-color, 0.35);
+    &:hover { 
+      background: $primary-hover; 
+      border-color: $secondary-color;
+      box-shadow: 0 0 0 2px rgba($secondary-color, 0.2);
+    }
+  }
+
+  // Subtle outline button variant in brand color
+  .btn.dept-outline {
+    background: transparent;
+    color: $primary-color;
+    border: 1px solid rgba($primary-color, .45);
+    border-radius: $radius-md;
+    font-weight: 700;
+    &:hover { 
+      background: rgba($primary-color, .12); 
+      border-color: $secondary-color;
+    }
+  }
+
+  // Department code small pill near heading
+  .dept-code-pill {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 2px 8px;
+    font-size: .75rem;
+    line-height: 1.4;
+    border-radius: 9999px;
+    background: rgba($primary-color, .14);
+    color: $primary-color;
+    border: 1px solid rgba($primary-color, .28);
+    vertical-align: middle;
+  }
+
+  // Toolbar area in page header
+  .dept-toolbar {
+    display: flex; align-items: center; justify-content: space-between; gap: $spacing-lg;
+    .dept-toolbar-left { display: flex; align-items: center; gap: $spacing-lg; h1 { margin: 0; } }
+    .dept-picker { display: inline-flex; align-items: center; gap: $spacing-sm; }
+    .dept-picker .label { color: var(--text-secondary); font-weight: 600; }
+    .dept-picker select { padding: $spacing-sm $spacing-md; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); border-radius: $radius-md; }
+  }
+
+  // Meta grid below the header
+  .dept-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: $spacing-md;
+    margin: $spacing-md 0 $spacing-lg;
+    .meta-label { color: var(--text-secondary); font-size: .8rem; text-transform: uppercase; letter-spacing: .3px; }
+    .meta-value { color: var(--text-primary); font-weight: 700; margin-top: 2px; }
+  }
+
+  .dept-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: $spacing-lg;
+    height: 180px;
+    padding: $spacing-sm $spacing-md;
+    border: 1px solid rgba(166, 0, 47, 0.35);
+    border-radius: $radius-md;
+    background: rgba(166, 0, 47, 0.05);
+  }
+
+  .dept-chart-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+  }
+
+  .dept-bar-value-badge {
+    background: rgba($primary-color, .12);
+    color: $primary-color;
+    border: 1px solid rgba($primary-color, .35);
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 2px 8px;
+    margin-bottom: 6px;
+  }
+
+  .dept-bar {
+    width: 52px;
+    background: linear-gradient(180deg, #b3003c 0%, #8b0000 100%);
+    border-radius: 6px 6px 0 0;
+    box-shadow: 0 4px 10px rgba(139, 0, 0, 0.35);
+  }
+
+  .dept-bar-label {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--text-primary);
+  }
+
+  .dept-bar-value {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  // Icon style consistent with dashboard stat cards
+  .stat-card .stat-icon {
+    width: 44px; height: 44px; border-radius: $radius-md; display: inline-flex; align-items: center; justify-content: center;
+    background: rgba($primary-color, .12); color: $primary-color; margin-bottom: $spacing-sm; box-shadow: inset 0 0 0 1px rgba($primary-color,.2);
+    svg { width: 22px; height: 22px; display: block; }
+  }
+
+  @media (max-width: 768px) {
+    .dept-chart { gap: $spacing-md; height: 160px; }
+    .dept-bar { width: 40px; }
+  }
+}
+
+// School Year Management styles - Modern Minimalist Design
+.school-year-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-md;
+
+  .page-header {
+    margin-bottom: 48px;
+    
+    h1 {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 2.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0 0 8px 0;
+      letter-spacing: -0.8px;
+
+      .page-icon {
+        width: 36px;
+        height: 36px;
+        color: $primary-color;
+        padding: 8px;
+        background: rgba($primary-color, 0.1);
+        border-radius: 10px;
+        flex-shrink: 0;
+      }
+    }
+    
+    .page-subtitle {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      font-weight: 400;
+      padding-left: 52px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.875rem;
+      transition: all 0.25s ease;
+      border: 1px solid var(--border-color);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      }
+    }
+  }
+
+  // Section icons in headings
+  h2, h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .section-icon {
+      width: 20px;
+      height: 20px;
+      color: $primary-color;
+      flex-shrink: 0;
+    }
+  }
+  }
+
+  // Minimalist Card Design
+  .sy-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 24px;
+    transition: border-color 0.2s ease;
+
+    &:hover {
+      border-color: rgba($primary-color, 0.3);
+    }
+
+    h2 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0 0 24px 0;
+      letter-spacing: -0.3px;
+    }
   }
 
   .sy-card-header {
@@ -64,140 +314,466 @@
     align-items: center;
     justify-content: space-between;
     gap: $spacing-md;
-    h2 { margin: 0; font-size: 1.1rem; color: var(--text-primary); }
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+
+    h2 {
+      margin: 0;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
   }
 
+  // Clean Status Badge
   .status-badge {
     display: inline-flex;
     align-items: center;
-    padding: 6px 12px;
-    border-radius: 9999px;
-    font-weight: 700;
-    font-size: .85rem;
-    border: 1px solid var(--border-color);
-    &.active { background: rgba($success-color,.12); color: $success-color; border-color: rgba($success-color,.35); }
-    &.completed { background: rgba($dark-border,.15); color: var(--text-secondary); border-color: rgba($dark-border,.35); }
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.75rem;
+    text-transform: capitalize;
+    letter-spacing: 0.3px;
+
+    &.active {
+      background: rgba(16, 185, 129, 0.1);
+      color: #059669;
+    }
+
+    &.completed {
+      background: rgba(99, 102, 241, 0.1);
+      color: #4f46e5;
+    }
+
+    &.archived {
+      background: rgba(100, 116, 139, 0.1);
+      color: #475569;
+    }
   }
 
+  // Minimalist Stats Grid
   .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: $spacing-lg;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
     margin-top: $spacing-md;
   }
 
   .sy-stat {
     background: var(--bg-primary);
     border: 1px solid var(--border-color);
-    border-radius: $radius-md;
-    padding: $spacing-lg;
+    border-radius: 10px;
+    padding: 24px 20px;
     text-align: center;
-    .value { font-size: 1.75rem; font-weight: 800; color: var(--text-primary); }
-    .label { color: var(--text-secondary); margin-top: $spacing-xs; font-weight: 500; }
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: $primary-color;
+      box-shadow: 0 2px 12px rgba($primary-color, 0.08);
+    }
+
+    .value {
+      font-size: 2.25rem;
+      font-weight: 600;
+      color: $primary-color;
+      margin-bottom: 6px;
+      line-height: 1;
+    }
+
+    .label {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
   }
 
-  .sy-section {
-    margin-top: $spacing-xl;
-    h3 { font-size: 1.1rem; color: var(--text-primary); margin-bottom: $spacing-md; }
+  // Clean Semesters Section
+  .sy-semesters {
+    margin-top: 32px;
+
+    .section-title {
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+      opacity: 0.7;
+    }
+
+    .semester-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .semester-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px 20px;
+      transition: all 0.15s ease;
+      cursor: pointer;
+
+      &:hover {
+        background: var(--sidebar-active);
+        border-color: $primary-color;
+      }
+
+      &.active {
+        background: rgba($primary-color, 0.04);
+        border-color: $primary-color;
+
+        .sem-name {
+          color: $primary-color;
+          font-weight: 600;
+        }
+      }
+
+      .sem-name {
+        color: var(--text-primary);
+        font-weight: 500;
+        font-size: 0.95rem;
+      }
+
+      .sem-range {
+        color: var(--text-secondary);
+        font-size: 0.8rem;
+        font-weight: 400;
+      }
+    }
+
+    .semester-stats {
+      margin-top: 12px;
+      padding: 20px;
+      background: rgba($primary-color, 0.02);
+      border: 1px solid rgba($primary-color, 0.15);
+      border-radius: 8px;
+      animation: fadeIn 0.2s ease;
+    }
   }
 
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  // Clean School Year Cards
   .sy-year-card {
-    @extend .sy-card;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 20px;
+    transition: border-color 0.2s ease;
+
+    &:hover {
+      border-color: rgba($primary-color, 0.3);
+    }
   }
 
   .sy-year-header {
     .title-row {
-      display: flex; align-items: center; justify-content: space-between; gap: $spacing-md;
-      h4 { margin: 0; font-size: 1.1rem; color: var(--text-primary); }
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: $spacing-md;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+
+      h4 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        letter-spacing: -0.4px;
+      }
     }
 
     .meta-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: $spacing-md;
-      margin-top: $spacing-md;
-      .meta-label { color: var(--text-secondary); font-size: .8rem; text-transform: uppercase; letter-spacing: .3px; }
-      .meta-value { color: var(--text-primary); font-weight: 600; margin-top: 2px; }
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+
+      > div {
+        padding: 16px;
+        background: var(--bg-primary);
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        transition: all 0.15s ease;
+
+        &:hover {
+          background: var(--sidebar-active);
+          border-color: $primary-color;
+        }
+      }
+
+      .meta-label {
+        color: var(--text-secondary);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-weight: 500;
+        margin-bottom: 4px;
+      }
+
+      .meta-value {
+        color: var(--text-primary);
+        font-weight: 600;
+        font-size: 1rem;
+      }
     }
   }
 
-  .sy-semesters {
-    margin-top: $spacing-lg;
-    .section-title { color: var(--text-primary); font-weight: 600; margin-bottom: $spacing-sm; }
-    .semester-list { display: grid; gap: $spacing-sm; }
-    .semester-item {
-      display: flex; align-items: center; justify-content: space-between;
-      background: var(--bg-primary);
-      border: 1px solid var(--border-color);
-      border-radius: $radius-md;
-      padding: $spacing-md;
-      .sem-name { color: var(--text-primary); font-weight: 600; }
-      .sem-range { color: var(--text-secondary); font-size: .9rem; }
-      &:hover { background: var(--sidebar-active); }
-    }
-  }
-
+  // Modern Action Buttons with Icons
   .sy-actions {
-    display: flex; gap: $spacing-sm; margin-top: $spacing-md;
-    .btn { border-radius: 9999px; padding: 8px 14px; font-weight: 700; font-size: .9rem; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); }
-    .btn:hover { background: var(--sidebar-active); }
-    .btn-danger { background: rgba($danger-color,.12); color: $danger-color; border-color: rgba($danger-color,.35); }
-    .btn-danger:hover { background: rgba($danger-color,.18); }
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+
+    .btn {
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-weight: 500;
+      font-size: 0.875rem;
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      transition: all 0.25s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      &:hover {
+        background: var(--sidebar-active);
+        border-color: $primary-color;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba($primary-color, 0.15);
+      }
+
+      &.btn-primary {
+        background: $primary-color;
+        color: white;
+        border-color: $primary-color;
+
+        &:hover {
+          background: darken($primary-color, 5%);
+          box-shadow: 0 4px 16px rgba($primary-color, 0.3);
+        }
+      }
+
+      &.btn-danger {
+        background: transparent;
+        color: $danger-color;
+        border-color: rgba($danger-color, 0.3);
+
+        &:hover {
+          background: rgba($danger-color, 0.1);
+          border-color: $danger-color;
+          box-shadow: 0 4px 12px rgba($danger-color, 0.2);
+        }
+      }
+
+      &.btn-secondary {
+        background: transparent;
+        color: var(--text-secondary);
+
+        &:hover {
+          background: var(--sidebar-active);
+          color: $primary-color;
+          border-color: $primary-color;
+        }
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
   }
 
-  // Ensure forms inside .sy-card look like other module forms
-  .sy-card {
-    .module-form {
-      .form-row {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: $spacing-md;
-        margin-bottom: $spacing-md;
+  // Clean Form Styling
+  .module-form {
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
 
-        input, select, textarea {
-          padding: $spacing-sm $spacing-md;
-          border: 1px solid var(--border-color);
-          border-radius: $radius-md;
-          background: var(--bg-secondary);
-          color: var(--text-primary);
-          font-size: 0.9rem;
-          transition: all 0.2s ease;
+      input, select, textarea {
+        padding: 10px 14px;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        font-size: 0.875rem;
+        transition: all 0.15s ease;
+        font-weight: 400;
 
-          &:focus {
-            outline: none;
-            border-color: $primary-color;
-            box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
-          }
-
-          &::placeholder { color: var(--text-secondary); }
+        &:focus {
+          outline: none;
+          border-color: $primary-color;
+          box-shadow: 0 0 0 3px rgba($primary-color, 0.08);
+          background: var(--bg-card);
         }
 
-        textarea { resize: vertical; min-height: 100px; }
-      }
-
-      .form-actions {
-        display: flex; gap: $spacing-md; margin-top: $spacing-lg;
-
-        button {
-          padding: $spacing-sm $spacing-lg;
-          border: none;
-          border-radius: $radius-md;
-          cursor: pointer;
-          font-weight: 500;
-          transition: all 0.2s ease;
-
-          &.btn-primary { background: $primary-color; color: white; &:hover { background: $primary-hover; } }
-          &.btn-secondary { background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color); &:hover { background: var(--sidebar-active); } }
+        &::placeholder {
+          color: var(--text-secondary);
+          font-weight: 400;
         }
       }
+
+      textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-color);
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 0.875rem;
+        transition: all 0.25s ease;
+        cursor: pointer;
+
+        svg {
+          width: 16px;
+          height: 16px;
+        }
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
+      }
+    }
+  }
+
+  // Clean Section Headers
+  .sy-section {
+    margin-top: 48px;
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 24px;
+      letter-spacing: -0.4px;
+    }
+  }
+
+  // Clean Alert Messages
+  // Clean Alert Messages
+  .alert {
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-weight: 500;
+    border-left: 3px solid;
+    animation: fadeIn 0.2s ease;
+
+    &.alert-info {
+      background: rgba($primary-color, 0.06);
+      color: $primary-color;
+      border-color: $primary-color;
+    }
+  }
+
+  // Loading State
+  .loading {
+    text-align: center;
+    padding: 48px;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  // Current Year Highlight
+  .current-year {
+    background: rgba($primary-color, 0.03);
+    border-color: rgba($primary-color, 0.25);
+
+    &:hover {
+      border-color: $primary-color;
+    }
+  }
+
+// Responsive Design
+@media (max-width: 1024px) {
+  .school-year-page {
+    .stats-grid {
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    }
+
+    .sy-year-header .meta-grid {
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
     }
   }
 }
 
 @media (max-width: 768px) {
   .school-year-page {
-    .stats-grid { grid-template-columns: 1fr 1fr; }
-    .sy-actions { flex-wrap: wrap; }
+    padding: $spacing-sm;
+
+    .page-header {
+      margin-bottom: 32px;
+
+      h1 {
+        font-size: 1.75rem;
+      }
+    }
+
+    .stats-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .sy-actions {
+      .btn {
+        width: 100%;
+      }
+    }
+
+    .sy-card {
+      padding: 20px;
+    }
+
+    .sy-year-header .meta-grid {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 }
 

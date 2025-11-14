@@ -28,6 +28,29 @@ class SchoolYearController extends Controller
             'status' => 'required|in:Active,Completed,Archived',
         ]);
         $year = SchoolYear::create($data);
+        
+        // Automatically create default semesters
+        $year->semesters()->createMany([
+            [
+                'name' => '1st Semester',
+                'start_date' => $data['start_date'] ?? null,
+                'end_date' => null,
+            ],
+            [
+                'name' => '2nd Semester',
+                'start_date' => null,
+                'end_date' => null,
+            ],
+            [
+                'name' => 'Summer',
+                'start_date' => null,
+                'end_date' => $data['end_date'] ?? null,
+            ],
+        ]);
+        
+        // Reload with semesters
+        $year->load('semesters');
+        
         return response()->json(['year' => $year], 201);
     }
 

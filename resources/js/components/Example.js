@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios'; // ensure axios is imported
+import { FiCheck, FiX, FiEdit2, FiTrash2 } from 'react-icons/fi';
 
 export default function Example() {
     const [fname, setFirstname] = useState("");
@@ -298,22 +299,22 @@ export default function Example() {
                                               aria-label="Save changes"
                                               disabled={!isEditingDirty()}
                                             >
-                                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                              <FiCheck />
                                               <span className="visually-hidden">Save</span>
                                             </button>
                                             <button type="button" className="btn btn-cancel" onClick={cancelEdit} aria-label="Cancel edit">
-                                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                              <FiX />
                                               <span className="visually-hidden">Cancel</span>
                                             </button>
                                         </>
                                     ) : (
                                         <>
                                             <button type="button" className="btn btn-edit" onClick={() => startEdit(profile)} aria-label={`Edit ${profile.fname || 'profile'}`}>
-                                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M3 21v-3l11-11 3 3L6 21H3z" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                              <FiEdit2 />
                                               <span className="visually-hidden">Edit</span>
                                             </button>
                                             <button type="button" className="btn btn-delete" onClick={() => deleteProfile(profile.id)} aria-label={`Delete ${profile.fname || 'profile'}`}>
-                                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M3 6h18M8 6v14m8-14v14M10 6V4h4v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                              <FiTrash2 />
                                               <span className="visually-hidden">Delete</span>
                                             </button>
                                         </>

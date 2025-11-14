@@ -15,6 +15,7 @@ import Archive from './Archive';
 import AccountSettings from './AccountSettings';
 import SchoolYear from './settings/SchoolYear';
 import Departments from './settings/Departments';
+import DepartmentModule from './settings/DepartmentModule';
 import Courses from './settings/Courses';
 import Subjects from './settings/Subjects';
 import Calendar from './settings/Calendar';
@@ -64,6 +65,11 @@ export default function Routers() {
             <Route path="/settings/departments" element={
               <ProtectedRoute>
                 <Layout><Departments /></Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/settings/departments/:code" element={
+              <ProtectedRoute>
+                <Layout><DepartmentModule /></Layout>
               </ProtectedRoute>
             } />
             <Route path="/settings/courses" element={

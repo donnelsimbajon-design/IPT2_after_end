@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { FiEdit2, FiArchive } from 'react-icons/fi';
 
 export default function Departments() {
   const DEFAULT_DEPARTMENTS = [
@@ -16,6 +18,9 @@ export default function Departments() {
   const [message, setMessage] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [selectedDept, setSelectedDept] = useState('');
+  const [stats, setStats] = useState({ faculty: 0, students: 0, semesters: 0 });
+  const navigate = useNavigate();
 
   const [filters, setFilters] = useState({ search: '', status: '' });
   const [formData, setFormData] = useState({ code: '', name: '', chair: '', email: '', status: 'Active' });
@@ -42,6 +47,33 @@ export default function Departments() {
       setLoading(false);
     }
   };
+
+  const fetchStats = async (code) => {
+    if (!code) {
+      setStats({ faculty: 0, students: 0, semesters: 0 });
+      return;
+    }
+    try {
+      const [facRes, stuRes, yearsRes] = await Promise.all([
+        axios.get('/api/faculties', { params: { department: code } }),
+        axios.get('/api/students', { params: { department: code } }),
+        axios.get('/api/school-years'),
+      ]);
+      const facultyCount = Array.isArray(facRes.data) ? facRes.data.length : 0;
+      const studentCount = Array.isArray(stuRes.data) ? stuRes.data.length : 0;
+      const years = Array.isArray(yearsRes.data) ? yearsRes.data : [];
+      const activeSemesters = years
+        .filter(y => String(y.status || '').toLowerCase() === 'active')
+        .reduce((sum, y) => sum + (y.semesters_count || (Array.isArray(y.semesters) ? y.semesters.length : 0) || 0), 0);
+      setStats({ faculty: facultyCount, students: studentCount, semesters: activeSemesters });
+    } catch (_) {
+      setStats({ faculty: 0, students: 0, semesters: 0 });
+    }
+  };
+
+  useEffect(() => {
+    fetchStats(selectedDept);
+  }, [selectedDept]);
 
   const filtered = useMemo(() => {
     const q = filters.search.trim().toLowerCase();
@@ -90,14 +122,14 @@ export default function Departments() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm('Delete this department?')) return;
+  const handleArchive = async (id) => {
+    if (!confirm('Archive this department? It will be moved to archives.')) return;
     try {
-      await axios.delete(`/api/departments/${id}`);
-      setMessage('Department deleted successfully');
+      await axios.post(`/api/departments/${id}/archive`);
+      setMessage('Department archived successfully');
       fetchDepartments();
     } catch (e) {
-      setMessage('Error deleting department');
+      setMessage('Error archiving department');
     }
   };
 
@@ -128,7 +160,23 @@ export default function Departments() {
     <div className="students-page">
       <div className="module-page">
         <div className="page-header">
-          <h1>Departments</h1>
+          <div style={{display:'flex', gap:'12px', alignItems:'center', flexWrap:'wrap'}}>
+            <h1 style={{margin:0}}>Departments</h1>
+            <div className="header-filter">
+              <label className="label" htmlFor="deptPicker">Select Department</label>
+              <div className="select-with-icon">
+                <select id="deptPicker" value={selectedDept} onChange={(e)=>{ const v = e.target.value; setSelectedDept(v); if (v) navigate(`/settings/departments/${encodeURIComponent(v)}`); }}>
+                  <option value="">Select Department</option>
+                  {departments.map(d => (
+                    <option key={d.id || d.code} value={d.code}>{d.code} - {d.name}</option>
+                  ))}
+                </select>
+                <svg className="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </div>
+            </div>
+          </div>
           <div style={{display:'flex', gap: '8px', alignItems: 'center'}}>
             <button className="btn btn-primary" onClick={() => setShowForm(v => !v)}>{showForm ? 'Cancel' : '+ Add Department'}</button>
             <button className="btn btn-secondary" onClick={importDefaults}>Import Default Departments</button>
@@ -137,11 +185,26 @@ export default function Departments() {
 
         {message && <div className="alert alert-info">{message}</div>}
 
+
         <div className="students-panel">
           <div className="panel-header">
             <h2>Department Management</h2>
             <div className="panel-controls">
-              <input className="search-input" name="search" placeholder="Search" value={filters.search} onChange={handleFilterChange} />
+              <div className="input-with-icon">
+                <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <input
+                  className="search-input"
+                  name="search"
+                  type="search"
+                  aria-label="Search departments"
+                  placeholder="Search departments"
+                  value={filters.search}
+                  onChange={handleFilterChange}
+                />
+              </div>
               <div className="filters">
                 <select className="filter" name="status" value={filters.status} onChange={handleFilterChange}>
                   <option value="">Any Status</option>
@@ -198,8 +261,12 @@ export default function Departments() {
                   <td>{d.email || ''}</td>
                   <td><span className={`badge badge-${String(d.status || 'Active').toLowerCase().replace(' ', '-')}`}>{d.status || 'Active'}</span></td>
                   <td className="actions">
-                    <button className="btn-chip btn-edit" onClick={() => handleEdit(d)}>Edit</button>
-                    <button className="btn-chip btn-delete" onClick={() => handleDelete(d.id || d.code)}>Delete</button>
+                    <button className="btn-icon btn-edit" onClick={() => handleEdit(d)} title="Edit">
+                      <FiEdit2 />
+                    </button>
+                    <button className="btn-icon btn-archive" onClick={() => handleArchive(d.id || d.code)} title="Archive">
+                      <FiArchive />
+                    </button>
                   </td>
                 </tr>
               ))}

@@ -20,6 +20,7 @@ class StudentController extends Controller
         $status = request()->query('status');
         $schoolYear = request()->query('school_year'); // filter by enrollment calendar year (legacy)
         $schoolYearId = request()->query('school_year_id'); // filter by school_years.id via pivot
+        $semesterId = request()->query('semester_id'); // filter by semester_id column
 
         $query = Student::query();
         if ($q) {
@@ -35,6 +36,7 @@ class StudentController extends Controller
         if ($yearLevel) { $query->where('year_level', $yearLevel); }
         if ($status) { $query->where('status', $status); }
         if ($schoolYear) { $query->whereYear('enrollment_date', $schoolYear); }
+        if ($semesterId) { $query->where('semester_id', $semesterId); }
         if ($schoolYearId) {
             $query->whereHas('schoolYears', function($sq) use ($schoolYearId) {
                 $sq->where('school_years.id', $schoolYearId);
@@ -45,7 +47,7 @@ class StudentController extends Controller
             $query->where('status', '!=', 'Archived');
         }
 
-        $students = $query->orderBy('created_at', 'desc')->get();
+        $students = $query->with(['schoolYears', 'semester'])->orderBy('created_at', 'desc')->get();
         return response()->json($students);
     }
 
@@ -75,6 +77,7 @@ class StudentController extends Controller
             'department' => 'nullable|string|max:255',
             'course' => 'nullable|string|max:255',
             'year_level' => 'nullable|string|max:50',
+            'semester_id' => 'nullable|exists:semesters,id',
             'status' => 'nullable|in:Active,Inactive,Graduated,Suspended,Archived',
             'school_year_id' => 'nullable|exists:school_years,id',
         ]);
@@ -125,7 +128,7 @@ class StudentController extends Controller
      */
     public function show($id)
     {
-        $student = Student::findOrFail($id);
+        $student = Student::with(['schoolYears', 'semester'])->findOrFail($id);
         return response()->json($student);
     }
 
@@ -158,6 +161,7 @@ class StudentController extends Controller
             'course' => 'sometimes|nullable|string|max:255',
             'year_level' => 'sometimes|nullable|string|max:50',
             'status' => 'sometimes|nullable|in:Active,Inactive,Graduated,Suspended,Archived',
+            'semester_id' => 'sometimes|nullable|exists:semesters,id',
             'school_year_id' => 'sometimes|nullable|exists:school_years,id',
             'detach_school_year_id' => 'sometimes|nullable|exists:school_years,id',
         ]);
@@ -169,7 +173,7 @@ class StudentController extends Controller
         $student->update($data);
 
         if ($schoolYearIdAttach) {
-            $student->schoolYears()->syncWithoutDetaching([$schoolYearIdAttach]);
+            $student->schoolYears()->sync([$schoolYearIdAttach]);
         }
         if ($schoolYearIdDetach) {
             $student->schoolYears()->detach($schoolYearIdDetach);
@@ -230,7 +234,29 @@ class StudentController extends Controller
         $student = Student::findOrFail($id);
         $student->status = 'Archived';
         $student->save();
-        return response()->json(['student' => $student, 'message' => 'Student archived successfully']);
+
+        // Create or update archive record for this student (prevents duplicates)
+        $archive = \App\Models\Archive::updateOrCreate(
+            [
+                'archivable_type' => 'App\\Models\\Student',
+                'archivable_id' => $student->id,
+            ],
+            [
+                'archive_id' => 'STU-' . $student->student_id,
+                'document_number' => \App\Models\Archive::generateDocumentNumber(),
+                'reference_number' => \App\Models\Archive::generateReferenceNumber(),
+                'title' => $student->first_name . ' ' . $student->last_name,
+                'description' => 'Archived Student: ' . $student->first_name . ' ' . $student->last_name . ' (' . $student->student_id . ')',
+                'document_type' => 'Student',
+                'category' => 'Record',
+                'department' => $student->department,
+                'avatar_path' => $student->avatar_path,
+                'archived_date' => now(),
+                'archived_by' => auth()->user()->name ?? 'System',
+            ]
+        );
+
+        return response()->json(['student' => $student, 'archive' => $archive, 'message' => 'Student archived successfully']);
     }
 
     public function unarchive($id)
@@ -238,6 +264,12 @@ class StudentController extends Controller
         $student = Student::findOrFail($id);
         $student->status = 'Active';
         $student->save();
+
+        // Update archive record status if it exists
+        \App\Models\Archive::where('archivable_type', 'App\\Models\\Student')
+            ->where('archivable_id', $student->id)
+            ->update(['status' => 'Active']);
+
         return response()->json(['student' => $student, 'message' => 'Student unarchived successfully']);
     }
 }

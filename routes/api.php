@@ -40,6 +40,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::put('/account/appearance', [AccountController::class, 'updateAppearance']);
     Route::post('/account/background', [AccountController::class, 'uploadBackground']);
     Route::get('/account/history', [AccountController::class, 'history']);
+    Route::post('/account/password', [AccountController::class, 'changePassword']);
 
     // Subject offerings
     Route::get('/subject-offerings', [SubjectOfferingController::class, 'index']);
@@ -55,6 +56,8 @@ Route::middleware(['auth:web'])->group(function () {
     Route::put('/departments/{id}', [DepartmentController::class, 'update']);
     Route::patch('/departments/{id}', [DepartmentController::class, 'update']);
     Route::delete('/departments/{id}', [DepartmentController::class, 'destroy']);
+    Route::post('/departments/{id}/archive', [DepartmentController::class, 'archive']);
+    Route::post('/departments/{id}/unarchive', [DepartmentController::class, 'unarchive']);
 
     Route::get('/courses', [CourseController::class, 'index']);
     Route::post('/courses', [CourseController::class, 'store']);
@@ -89,6 +92,7 @@ Route::middleware(['auth:web'])->group(function () {
     // Dashboard routes
     Route::get('/dashboard', [DashboardController::class, 'index']);
     Route::get('/dashboard/statistics', [DashboardController::class, 'statistics']);
+    Route::get('/dashboard/charts', [DashboardController::class, 'chartData']);
 
     // Activity calendar
     Route::get('/activities/summary', [ActivityController::class, 'summary']);
@@ -122,7 +126,12 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('/reports', [ReportController::class, 'index']);
     Route::post('/reports', [ReportController::class, 'store']);
     Route::post('/reports/generate', [ReportController::class, 'generate']);
+    Route::get('/reports/filter-options', [ReportController::class, 'getFilterOptions']);
+    Route::get('/reports/courses', [ReportController::class, 'getCourses']);
+    Route::get('/reports/departments', [ReportController::class, 'getDepartments']);
+    Route::get('/reports/statistics', [ReportController::class, 'getStatistics']);
     Route::get('/reports/{id}', [ReportController::class, 'show']);
+    Route::get('/reports/{id}/download', [ReportController::class, 'download']);
     Route::put('/reports/{id}', [ReportController::class, 'update']);
     Route::patch('/reports/{id}', [ReportController::class, 'update']);
     Route::delete('/reports/{id}', [ReportController::class, 'destroy']);
@@ -162,6 +171,11 @@ Route::middleware(['auth:web'])->group(function () {
     Route::delete('/school-years/{id}', [SchoolYearController::class, 'destroy']);
     Route::post('/school-years/{id}/archive', [SchoolYearController::class, 'archive']);
     Route::post('/school-years/{id}/unarchive', [SchoolYearController::class, 'unarchive']);
+
+    // Semesters - get all semesters
+    Route::get('/semesters', function() {
+        return response()->json(\App\Models\Semester::with('schoolYear')->orderBy('id')->get());
+    });
 
     // Semesters under a school year
     Route::post('/school-years/{id}/semesters', [SchoolYearController::class, 'addSemester']);

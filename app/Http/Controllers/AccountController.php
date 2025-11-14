@@ -162,6 +162,35 @@ class AccountController extends Controller
         return response()->json(['history' => $data]);
     }
 
+    public function changePassword(Request $request)
+    {
+        $user = $request->user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
+
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|min:8|confirmed',
+        ]);
+
+        // Verify current password
+        if (!\Hash::check($request->current_password, $user->password)) {
+            return response()->json([
+                'message' => 'Current password is incorrect',
+                'errors' => ['current_password' => ['Current password is incorrect']]
+            ], 422);
+        }
+
+        // Update password
+        $user->password = \Hash::make($request->new_password);
+        $user->save();
+
+        return response()->json([
+            'message' => 'Password changed successfully'
+        ]);
+    }
+
     private function parseUserAgent(?string $ua): array
     {
         $ua = $ua ?? '';
